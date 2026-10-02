@@ -1,0 +1,56 @@
+{
+  "lam": 0.45,
+  "sr": 48000,
+  "trials": [
+    {
+      "name": "tone_burst",
+      "peak_orig": 1.7998676069566095,
+      "max_sample_jump": 0.10365701736981442,
+      "fold_frac": 0.7168333333333333,
+      "snr_recovered_db": 120.0,
+      "snr_clipped_db": 4.221421934619237,
+      "snr_gain_db": 115.77857806538076,
+      "itoh_safe_max_dx_lt_lam": true,
+      "n_samples": 48000
+    },
+    {
+      "name": "speech_like",
+      "peak_orig": 2.145140422341491,
+      "max_sample_jump": 0.12821539446408137,
+      "fold_frac": 0.1541875,
+      "snr_recovered_db": 120.0,
+      "snr_clipped_db": 4.117585797692278,
+      "snr_gain_db": 115.88241420230773,
+      "itoh_safe_max_dx_lt_lam": true,
+      "n_samples": 96000
+    },
+    {
+      "name": "music_peaks",
+      "peak_orig": 3.492873278904772,
+      "max_sample_jump": 0.30073847653168817,
+      "fold_frac": 0.09005,
+      "snr_recovered_db": 120.0,
+      "snr_clipped_db": 3.316674903159055,
+      "snr_gain_db": 116.68332509684095,
+      "itoh_safe_max_dx_lt_lam": true,
+      "n_samples": 120000
+    },
+    {
+      "name": "harsh_kick",
+      "peak_orig": 2.5013115964301362,
+      "max_sample_jump": 2.5069213811547737,
+      "fold_frac": 6.25e-05,
+      "snr_recovered_db": 14.083699020009046,
+      "snr_clipped_db": 16.47510291200869,
+      "snr_gain_db": -2.3914038919996443,
+      "itoh_safe_max_dx_lt_lam": false,
+      "n_samples": 48000
+    }
+  ],
+  "assumptions": [
+    "Software central-modulo capture, not a real folded ADC.",
+    "Itoh unwrap + 2\u03bb offset search vs original (demo oracle).",
+    "Fails when consecutive sample jumps exceed \u03bb (see harsh_kick).",
+    "Listening WAVs may be peak-normalized; metrics use true floats."
+  ]
+}

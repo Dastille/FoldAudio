@@ -1,0 +1,10 @@
+{
+  "sr": 48000,
+  "files": [
+    "tone_burst.wav",
+    "speech_like.wav",
+    "music_peaks.wav",
+    "harsh_kick.wav"
+  ],
+  "note": "Synthetic FoldAudio testdata. Listening WAVs may be peak-normalized; SNR analysis uses in-memory float arrays with true amplitudes."
+}
