@@ -1,8 +1,36 @@
 # FoldCrypt
 
-**Plain-language first.** Public product trial (software). **Not** Sigil, **not** Regenamatron, **not** production crypto, **not** wet-lab DNA, **not** a phone ADC claim.
+**Plain-language first.** Company licensing bet + public math proof. **Not** Sigil, **not** Regenamatron, **not** production crypto, **not** wet-lab DNA, **not** a claim about a specific OEM ADC chip.
 
-## Product trial (2026-10-02) — FoldAudio
+## Company bet (2026-10-04) — ShockDAQ **BIG**
+
+**Problem:** IEPE / vibration DAQ front-ends **soft-clip** (~±5 V rail, ASSUMPTION) **without an overload flag**. Startup shocks and impacts flat-top; acceptance tests understate the real transient.
+
+**Fix:** fold at the soft-sat rail instead of saturating; unwrap later; emit an honest “would have overloaded” flag. OEM wedge: HDR vibration without a second channel.
+
+**OEM one-pager:** [`docs/shockdaq-oem-onepager.md`](docs/shockdaq-oem-onepager.md) · **Scouts:** [`docs/company-adoption-scout.md`](docs/company-adoption-scout.md)
+
+### How to run ShockDAQ
+
+```bash
+cd /workspace/foldcrypt
+source .venv/bin/activate
+python -m foldcrypt shockdaq-demo
+python -m pytest -q
+```
+
+Artifacts → `artifacts/shockdaq/` (`.npy` + listening WAVs + `metrics.json`).
+
+### ShockDAQ v0 metrics (λ=5.0 V, sr=51200, synthetic — real run)
+
+| case | peak V | pk err clip | pk err fold | SNR clip | SNR fold | gain dB | OLflag | Itoh |
+|------|--------|-------------|-------------|----------|----------|---------|--------|------|
+| gearbox_startup | 12.82 | 7.82 | ~0 | 13.35 | ~∞ (120) | **+106.7** | yes | yes |
+| impact_transient | 8.27 | 3.27 | ~0 | 19.35 | ~∞ (120) | **+100.6** | yes | yes |
+
+---
+
+## Public proof (2026-10-02) — FoldAudio **MID**
 
 **Problem:** when sound gets too loud, normal recorders **hard-clip**. Peaks are gone forever.
 
@@ -10,7 +38,8 @@
 
 | Piece | Role |
 |-------|------|
-| **FoldAudio** | Product trial — software fold → recover vs hard-clip |
+| **ShockDAQ** | **BIG company bet** — IEPE/vibration fold firmware / SDK path |
+| **FoldAudio** | **MID public proof** — software fold → recover vs hard-clip |
 | **WrapCancel / modulo / Itoh** | Engine (archived symbol-detect toys still in tree) |
 | **Recovery shares** | Parked — Sigil constellation already covers seed/backup |
 
@@ -18,13 +47,8 @@
 
 **Repo:** https://github.com/Dastille/FoldAudio
 
-### How to run
-
 ```bash
-cd /workspace/foldcrypt
-source .venv/bin/activate
 python -m foldcrypt audio-demo
-python -m pytest -q
 ```
 
 Artifacts land in `artifacts/foldaudio/` (original / clipped / folded / recovered WAVs + `metrics.json`).
@@ -61,8 +85,9 @@ Testdata (synthetic speech + music-like peaks + tone burst) in `testdata/`.
 
 | Lead | Score | One sentence |
 |------|-------|--------------|
-| **FoldAudio** | **MID trial** | Fold loud audio instead of clipping; recover peaks; beat hard-clip SNR on synthetic music/speech. |
-| WrapCancel / FoldDetect | **engine / archived** | Modulo-ADC symbol detect (arXiv:2609.11298). Powers FoldAudio’s fold math. |
+| **ShockDAQ** | **BIG company bet** | Fold inside IEPE/vibration DAQ front-ends; silent soft-clip corrupts acceptance; OEM HDR without second channel. |
+| **FoldAudio** | **MID proof** | Fold loud audio instead of clipping; recover peaks; beat hard-clip SNR on synthetic music/speech. Public math proof. |
+| WrapCancel / FoldDetect | **engine / archived** | Modulo-ADC symbol detect (arXiv:2609.11298). Powers fold math. |
 | Recovery shares | **parked** | Hamming share split — overlaps Sigil constellation for Ashlynn’s own stash. |
 | FoldAsync CRT compose | **NO** | [`docs/foldasync-decision.md`](docs/foldasync-decision.md). |
 | SettleSeal / FoldOrbit | **parked** | No clear win. |
@@ -74,24 +99,27 @@ Testdata (synthetic speech + music-like peaks + tone burst) in `testdata/`.
 ```
 foldcrypt/
   foldcrypt/
-    foldaudio.py       # PRODUCT TRIAL: fold / clip / recover / SNR
-    __main__.py        # CLI (audio-demo first)
+    shockdaq.py        # COMPANY BET: IEPE fold vs silent soft-clip
+    foldaudio.py       # PUBLIC PROOF: fold / clip / recover / SNR
+    __main__.py        # CLI (shockdaq-demo / audio-demo)
     modulo.py          # central M_λ (engine)
     unfold_detect.py   # Itoh unwrap (engine)
     # --- parked / archived ---
     recovery_shares.py
     defect_mask.py
     wrapcancel.py block_search.py channel.py constellation.py simulate.py
-  testdata/            # synthetic WAVs
-  artifacts/foldaudio/ # A/B outputs + metrics.json
-  docs/
+  testdata/            # synthetic audio WAVs
+  artifacts/shockdaq/  # IEPE A/B + metrics.json
+  artifacts/foldaudio/ # audio A/B + metrics.json
+  docs/                # OEM one-pager + company scouts + whitepaper
   tests/
 ```
 
 ## Intentionally deferred
 
+- Claims about a specific OEM IEPE/DAQ chip soft-sat rail (λ=5 V is an ASSUMPTION)
+- Real IEPE field capture / named DAQ card validation
+- Absolute-level prior without original (live DAQ / recorder path)
 - Absolute claims of phone-ready folded ADC
-- Real phone/interface folded capture (needs hardware or driver hook)
-- Absolute-level prior without original (live recorder path)
 - Better-than-Itoh unwrap (block / smoothness priors)
 - Sigil / Regenamatron wiring

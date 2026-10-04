@@ -10,3 +10,6 @@ dist/
 build/
 *.wav.bak
 .DS_Store
+
+# ShockDAQ float dumps (regenerate via shockdaq-demo)
+artifacts/shockdaq/*.npy

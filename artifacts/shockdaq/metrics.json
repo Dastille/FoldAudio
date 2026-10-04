@@ -1,0 +1,44 @@
+{
+  "product": "ShockDAQ v0",
+  "lam_V": 5.0,
+  "sr": 51200,
+  "assumptions": [
+    "\u03bb\u22485.0 V models \u00b15 V IEPE soft-sat rail (ASSUMPTION, not a specific OEM chip).",
+    "Soft-sat without overload flag \u2261 hard_clip for v0; would_overload_flag is the honest missing flag.",
+    "Synthetic numpy generators only \u2014 not real field IEPE captures.",
+    "Itoh + 2\u03bb offset search vs original (demo oracle).",
+    "spectral_bias = relative RMS in HF band (0.15\u20130.45 Nyquist); not ISO vibration metrics."
+  ],
+  "cases": [
+    {
+      "name": "gearbox_startup",
+      "peak_orig_V": 12.819069165996602,
+      "max_sample_jump_V": 0.9397386245272719,
+      "peak_error_clip_V": 7.819069165996602,
+      "peak_error_fold_V": 3.552713678800501e-15,
+      "snr_clip_db": 13.348948218061185,
+      "snr_fold_db": 120.0,
+      "snr_gain_db": 106.65105178193882,
+      "spectral_bias_clip": 0.01440785173919723,
+      "spectral_bias_fold": 0.0,
+      "overload_would_have_flagged": true,
+      "itoh_ok_max_dx_lt_lam": true,
+      "n_samples": 102400
+    },
+    {
+      "name": "impact_transient",
+      "peak_orig_V": 8.267118423205169,
+      "max_sample_jump_V": 1.2078809973588491,
+      "peak_error_clip_V": 3.2671184232051687,
+      "peak_error_fold_V": 0.0,
+      "snr_clip_db": 19.35418449367358,
+      "snr_fold_db": 120.0,
+      "snr_gain_db": 100.64581550632641,
+      "spectral_bias_clip": 0.08015556569870433,
+      "spectral_bias_fold": 0.0,
+      "overload_would_have_flagged": true,
+      "itoh_ok_max_dx_lt_lam": true,
+      "n_samples": 76800
+    }
+  ]
+}

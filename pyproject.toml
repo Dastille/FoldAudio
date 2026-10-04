@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "foldcrypt"
 version = "0.1.0"
-description = "FoldCrypt — FoldAudio trial (fold vs clip) + WrapCancel engine"
+description = "FoldCrypt — ShockDAQ (IEPE fold) + FoldAudio proof + WrapCancel engine"
 requires-python = ">=3.10"
 dependencies = ["numpy"]
 

@@ -1,4 +1,4 @@
-"""CLI: python -m foldcrypt audio-demo | shares-demo | demo | ser | defect-demo | block-demo"""
+"""CLI: python -m foldcrypt shockdaq-demo | audio-demo | shares-demo | demo | ser | defect-demo | block-demo"""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ from .constellation import injective_8pam
 from .defect_mask import defect_decrypt, defect_encrypt, flip_bits
 from .recovery_shares import PARAMS, corrupt_share, recover_secret, split_secret
 from .foldaudio import DEFAULT_LAM, format_snr_table, run_audio_demo
+from .shockdaq import DEFAULT_LAM_V, format_shockdaq_table, run_shockdaq_demo
 from .simulate import format_ser_table, run_ser_table
 from .unfold_detect import unfold_then_detect
 from .wrapcancel import wrapcancel_detect, block_mahalanobis_detect
@@ -168,6 +169,20 @@ def cmd_shares_demo(args: argparse.Namespace) -> int:
 
 
 
+
+def cmd_shockdaq_demo(args: argparse.Namespace) -> int:
+    """ShockDAQ v0 company bet: IEPE fold-vs-clip on synthetic vibration."""
+    rows = run_shockdaq_demo(lam=args.lam, sr=args.sr)
+    print("ShockDAQ v0 — IEPE / vibration fold vs silent soft-clip")
+    print(f"  λ={args.lam} V (ASSUMPTION ±5 V soft-sat rail)  sr={args.sr}")
+    print(format_shockdaq_table(rows))
+    print("  artifacts → /workspace/foldcrypt/artifacts/shockdaq/")
+    wins = sum(1 for r in rows if r.snr_gain_db > 5.0 and r.peak_error_fold < r.peak_error_clip)
+    print(f"  cases_fold_beats_clip(>5dB+better_peak)={wins}/{len(rows)}")
+    print(f"  shockdaq_demo={'OK' if wins >= 1 else 'WEAK'}")
+    return 0 if wins >= 1 else 1
+
+
 def cmd_audio_demo(args: argparse.Namespace) -> int:
     """FoldAudio product trial: fold capture vs hard clip on synthetic WAVs."""
     rows = run_audio_demo(lam=args.lam, sr=args.sr)
@@ -188,7 +203,7 @@ def cmd_audio_demo(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(prog="foldcrypt", description="FoldCrypt — FoldAudio trial + recovery shares + WrapCancel archive")
+    p = argparse.ArgumentParser(prog="foldcrypt", description="FoldCrypt — ShockDAQ company bet + FoldAudio proof + WrapCancel archive")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     d = sub.add_parser("demo", help="one-shot WrapCancel vs unfold")
@@ -225,6 +240,12 @@ def main(argv: list[str] | None = None) -> int:
     sh.add_argument("--secret", default="backup-seed-demo")
     sh.add_argument("--passphrase", default="ashlynn-test-pass")
     sh.set_defaults(func=cmd_shares_demo)
+
+
+    sd = sub.add_parser("shockdaq-demo", help="ShockDAQ: IEPE fold vs silent soft-clip (company bet)")
+    sd.add_argument("--lam", type=float, default=DEFAULT_LAM_V, help="soft-sat rail λ in volts (default 5.0)")
+    sd.add_argument("--sr", type=int, default=51200, help="sample rate (51.2 kHz-style default)")
+    sd.set_defaults(func=cmd_shockdaq_demo)
 
     au = sub.add_parser("audio-demo", help="FoldAudio: fold vs hard-clip SNR on synthetic WAVs")
     au.add_argument("--lam", type=float, default=DEFAULT_LAM, help="fold threshold λ")
