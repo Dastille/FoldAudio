@@ -69,7 +69,7 @@ Testdata (synthetic speech + music-like peaks + tone burst) in `testdata/`.
 ### Assumptions (named)
 
 1. **Software** central-modulo capture — we simulate folded recording; we do not claim a phone ADC that folds today.
-2. Recovery = **Itoh unwrap** + small global \(2\lambda\) offset search against the original (demo oracle). A live app without the original needs another absolute-level prior (not in v0).
+2. Recovery = **Itoh unwrap** + small global \(2\lambda\) offset search against the original (demo oracle). ShockDAQ also ships a blind level prior (`foldcrypt/blind_level.py`, AC-coupling zero-mean) that needs no original; FoldAudio WAVs still use the demo oracle.
 3. Needs samples that usually jump by **less than \(\lambda\)** between ticks. Very fast spikes can unwrap wrong.
 4. WrapCancel’s constellation Mahalanobis path is for *symbols*; FoldAudio reuses **modulo + Itoh** for waveforms.
 
@@ -119,7 +119,7 @@ foldcrypt/
 
 - Claims about a specific OEM IEPE/DAQ chip soft-sat rail (λ=5 V is an ASSUMPTION)
 - Real IEPE field capture / named DAQ card validation
-- Absolute-level prior without original (live DAQ / recorder path)
+- ~~Absolute-level prior without original~~ — done for ShockDAQ (`blind_level.py`, 2026-10-06)
 - Absolute claims of phone-ready folded ADC
 - Better-than-Itoh unwrap (block / smoothness priors)
 - Sigil / Regenamatron wiring

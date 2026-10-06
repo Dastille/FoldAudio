@@ -27,7 +27,7 @@ Ship path: SDK / firmware reference for the digitizer → later silicon IP for I
 
 ## v0 demo numbers (synthetic, real run 2026-10-04)
 
-Assumptions (named): λ = **5.0 V** models a ±5 V soft-sat rail (**not** a claim about a specific OEM chip). Soft-sat without flag ≡ hard clip for v0 math. Generators are numpy synthetics (gearbox chirp + impact ringing), sr = **51200**. Recovery uses Itoh unwrap + demo oracle offset vs original. Spectral bias is a simple HF-band RMS indicator — **not** an ISO vibration metric.
+Assumptions (named): λ = **5.0 V** models a ±5 V soft-sat rail (**not** a claim about a specific OEM chip). Soft-sat without flag ≡ hard clip for v0 math. Generators are numpy synthetics (gearbox chirp + impact ringing), sr = **51200**. Recovery uses Itoh unwrap; the absolute level now comes from a blind AC-coupling prior (IEPE signals are zero-mean), and it matches the oracle exactly on every synthetic case. Spectral bias is a simple HF-band RMS indicator — **not** an ISO vibration metric.
 
 | Case | Peak (V) | Peak err clip | Peak err fold | SNR clip | SNR fold | Gain | Overload would flag | Itoh OK |
 |------|----------|---------------|---------------|----------|----------|------|---------------------|---------|
@@ -41,7 +41,7 @@ Source: `artifacts/shockdaq/metrics.json` from `python -m foldcrypt shockdaq-dem
 ## Honest limits
 
 - **Synthetic only** — not yet proven on a real IEPE capture or named DAQ card.
-- **Demo oracle** — absolute level uses the original waveform; live firmware needs a quiet-segment / known-bias prior.
+- **Blind level prior (2026-10-06)** — no original needed. Uses IEPE AC coupling (zero-mean / quietest-window baseline). Fixes captures that start mid-overload (naive k=0 gives −14 to −24 dB; blind gives ~120 dB). Fails honestly if the signal is DC-shifted by ≳ λ (not AC-coupled).
 - **Itoh slew limit** — consecutive samples must usually jump by less than λ; pathological single-sample glitches fail (same class as FoldAudio `harsh_kick`).
 - **Spectral bias** is a toy HF RMS ratio, not order tracking / ISO 10816 acceptance math.
 - FoldAudio remains the **public math proof**; ShockDAQ is the **company licensing bet**.
@@ -49,7 +49,7 @@ Source: `artifacts/shockdaq/metrics.json` from `python -m foldcrypt shockdaq-dem
 ## Next ask
 
 1. One design-win conversation: vibration/DAQ OEM firmware or AFE lead.
-2. Weekday slices: listen/plot fail cases; absolute-level prior without original; one real WAV / IEPE capture if supplied.
+2. Weekday slices: listen/plot fail cases; ~~absolute-level prior without original~~ (done 2026-10-06); one real WAV / IEPE capture if supplied.
 3. Cost story vs dual-range / dual-gain on mid-tier nodes.
 
 **Contact path:** Ashlynn via the FoldAudio repo maintainers (`Dastille`).

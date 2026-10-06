@@ -17,11 +17,12 @@
 - **FoldAudio v0** (2026-10-02) — Ashlynn green-lit build+test + public repo + whitepaper v0.1.
 - **Company scouts** (2026-10-02) — `docs/company-adoption-scout.md`, `docs/bigger-problem-scout.md` (ShockDAQ recommended).
 - **ShockDAQ v0** (2026-10-04 Sunday hard push) — IEPE fold-vs-clip demo, metrics, OEM one-pager, CLI `shockdaq-demo`.
+- **Blind level prior** (2026-10-06 weekday slice) — `blind_level.recover_blind`: AC-coupling zero-mean or quietest-window prior, no original. Matches oracle on gearbox/impact; fixes mid-overload-start captures (naive k=0 −14/−24 dB → ~120 dB); fails honestly on DC shift ≳ λ. `shockdaq-demo` shows SNR_bl + bl=or columns. 49 tests.
 
 ## Next slices (weekday-sized, soft freeze)
 
 1. **Listen / plot fail cases** — where gearbox/impact unwrap wrong; document λ vs peak / slew tradeoff.
-2. **Absolute-level prior without original** — quiet-segment anchor so live DAQ doesn’t need the clean capture.
+2. ~~**Absolute-level prior without original**~~ — done 2026-10-06 (`blind_level.py`).
 3. **One real WAV / IEPE capture** (Ashlynn or OEM sample) if supplied — replace synthetic-only claim.
 
 ## Do not do

@@ -6,7 +6,7 @@
     "\u03bb\u22485.0 V models \u00b15 V IEPE soft-sat rail (ASSUMPTION, not a specific OEM chip).",
     "Soft-sat without overload flag \u2261 hard_clip for v0; would_overload_flag is the honest missing flag.",
     "Synthetic numpy generators only \u2014 not real field IEPE captures.",
-    "Itoh + 2\u03bb offset search vs original (demo oracle).",
+    "Itoh + 2\u03bb offset search vs original (demo oracle); blind column uses AC-coupling zero-mean prior, no original.",
     "spectral_bias = relative RMS in HF band (0.15\u20130.45 Nyquist); not ISO vibration metrics."
   ],
   "cases": [
@@ -23,7 +23,10 @@
       "spectral_bias_fold": 0.0,
       "overload_would_have_flagged": true,
       "itoh_ok_max_dx_lt_lam": true,
-      "n_samples": 102400
+      "n_samples": 102400,
+      "snr_blind_db": 120.0,
+      "peak_error_blind_V": 3.552713678800501e-15,
+      "blind_matches_oracle": true
     },
     {
       "name": "impact_transient",
@@ -38,7 +41,10 @@
       "spectral_bias_fold": 0.0,
       "overload_would_have_flagged": true,
       "itoh_ok_max_dx_lt_lam": true,
-      "n_samples": 76800
+      "n_samples": 76800,
+      "snr_blind_db": 120.0,
+      "peak_error_blind_V": 0.0,
+      "blind_matches_oracle": true
     }
   ]
 }

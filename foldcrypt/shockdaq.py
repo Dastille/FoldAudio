@@ -13,8 +13,9 @@ ASSUMPTIONS (named — keep honest):
    flag the silent soft-clip path lacks. Folded capture uses fold_capture instead.
 3. Synthetic generators only (numpy). Gearbox = rising RPM-like chirp + startup
    transient peaks. Impact = quiet baseline + ringing spikes. Not real field data.
-4. Recovery reuses FoldAudio recover_itoh with anchor (demo A/B oracle). A live
-   DAQ without the original needs an absolute-level prior — not in v0.
+4. Recovery reuses FoldAudio recover_itoh with anchor (demo A/B oracle). Since
+   2026-10-06 a blind column (blind_level.recover_blind, AC-coupling zero-mean
+   prior) recovers WITHOUT the original — what a live DAQ would actually run.
 5. Itoh needs consecutive true samples to jump by ≲ λ. At DAQ rates (48 kHz or
    51.2 kHz-style) impact ringing usually satisfies this; pathological single-
    sample glitches do not (same limit as FoldAudio harsh_kick).
@@ -34,6 +35,7 @@ from pathlib import Path
 
 import numpy as np
 
+from .blind_level import recover_blind
 from .foldaudio import (
     fold_capture,
     hard_clip,
@@ -208,6 +210,9 @@ class ShockDAQResult:
     overload_would_have_flagged: bool
     itoh_ok: bool
     n_samples: int
+    snr_blind_db: float = 0.0
+    peak_error_blind: float = 0.0
+    blind_matches_oracle: bool = False
 
 
 def run_case(
@@ -229,6 +234,7 @@ def run_case(
     clipped = hard_clip(x, lam)
     folded = fold_capture(x, lam)
     recovered = recover_itoh(folded, lam, anchor=x)
+    blind, _k = recover_blind(folded, lam)
 
     pe_c = peak_abs_error(x, clipped)
     pe_f = peak_abs_error(x, recovered)
@@ -265,6 +271,9 @@ def run_case(
         overload_would_have_flagged=flagged,
         itoh_ok=dx < lam,
         n_samples=len(x),
+        snr_blind_db=snr_db(x, blind),
+        peak_error_blind=peak_abs_error(x, blind),
+        blind_matches_oracle=bool(np.allclose(blind, recovered, atol=1e-9)),
     )
 
 
@@ -274,7 +283,7 @@ def format_shockdaq_table(rows: list[ShockDAQResult]) -> str:
         f"{'pkErrC':>7} {'pkErrF':>7} "
         f"{'SNR_c':>7} {'SNR_f':>7} {'gain':>7} "
         f"{'biasC':>7} {'biasF':>7} "
-        f"{'OLflg':>5} {'Itoh':>4}"
+        f"{'OLflg':>5} {'Itoh':>4} {'SNR_bl':>7} {'bl=or':>5}"
     )
     lines = [hdr, "-" * len(hdr)]
     for r in rows:
@@ -284,7 +293,8 @@ def format_shockdaq_table(rows: list[ShockDAQResult]) -> str:
             f"{r.snr_clip_db:7.2f} {r.snr_fold_db:7.2f} {r.snr_gain_db:7.2f} "
             f"{r.spectral_bias_clip:7.3f} {r.spectral_bias_fold:7.3f} "
             f"{'yes' if r.overload_would_have_flagged else 'no':>5} "
-            f"{'yes' if r.itoh_ok else 'NO':>4}"
+            f"{'yes' if r.itoh_ok else 'NO':>4} "
+            f"{r.snr_blind_db:7.2f} {'yes' if r.blind_matches_oracle else 'NO':>5}"
         )
     return "\n".join(lines)
 
@@ -316,7 +326,7 @@ def run_shockdaq_demo(
             "λ≈5.0 V models ±5 V IEPE soft-sat rail (ASSUMPTION, not a specific OEM chip).",
             "Soft-sat without overload flag ≡ hard_clip for v0; would_overload_flag is the honest missing flag.",
             "Synthetic numpy generators only — not real field IEPE captures.",
-            "Itoh + 2λ offset search vs original (demo oracle).",
+            "Itoh + 2λ offset search vs original (demo oracle); blind column uses AC-coupling zero-mean prior, no original.",
             "spectral_bias = relative RMS in HF band (0.15–0.45 Nyquist); not ISO vibration metrics.",
         ],
         "cases": [
@@ -334,6 +344,9 @@ def run_shockdaq_demo(
                 "overload_would_have_flagged": r.overload_would_have_flagged,
                 "itoh_ok_max_dx_lt_lam": r.itoh_ok,
                 "n_samples": r.n_samples,
+                "snr_blind_db": r.snr_blind_db,
+                "peak_error_blind_V": r.peak_error_blind,
+                "blind_matches_oracle": r.blind_matches_oracle,
             }
             for r in rows
         ],
