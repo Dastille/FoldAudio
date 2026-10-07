@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="670" height="420" font-family="sans-serif" font-size="11">
+<text x="90" y="20" font-size="13" font-weight="bold">ShockDAQ fold fail map — λ=5 V, sr=51200 Hz, blind recovery</text>
+<text x="82" y="74.0" text-anchor="end">40 V</text>
+<rect x="90" y="50" width="68" height="38" fill="#3a9d5d"/>
+<text x="124.0" y="74.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="160" y="50" width="68" height="38" fill="#e0a030"/>
+<text x="194.0" y="74.0" text-anchor="middle" fill="#fff">-32 dB</text>
+<rect x="230" y="50" width="68" height="38" fill="#e0a030"/>
+<text x="264.0" y="74.0" text-anchor="middle" fill="#fff">-25 dB</text>
+<rect x="300" y="50" width="68" height="38" fill="#e0a030"/>
+<text x="334.0" y="74.0" text-anchor="middle" fill="#fff">-23 dB</text>
+<rect x="370" y="50" width="68" height="38" fill="#e0a030"/>
+<text x="404.0" y="74.0" text-anchor="middle" fill="#fff">-10 dB</text>
+<rect x="440" y="50" width="68" height="38" fill="#e0a030"/>
+<text x="474.0" y="74.0" text-anchor="middle" fill="#fff">-26 dB</text>
+<rect x="510" y="50" width="68" height="38" fill="#e0a030"/>
+<text x="544.0" y="74.0" text-anchor="middle" fill="#fff">-16 dB</text>
+<rect x="580" y="50" width="68" height="38" fill="#e0a030"/>
+<text x="614.0" y="74.0" text-anchor="middle" fill="#fff">-36 dB</text>
+<text x="82" y="114.0" text-anchor="end">30 V</text>
+<rect x="90" y="90" width="68" height="38" fill="#3a9d5d"/>
+<text x="124.0" y="114.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="160" y="90" width="68" height="38" fill="#3a9d5d"/>
+<text x="194.0" y="114.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="230" y="90" width="68" height="38" fill="#e0a030"/>
+<text x="264.0" y="114.0" text-anchor="middle" fill="#fff">-29 dB</text>
+<rect x="300" y="90" width="68" height="38" fill="#e0a030"/>
+<text x="334.0" y="114.0" text-anchor="middle" fill="#fff">-32 dB</text>
+<rect x="370" y="90" width="68" height="38" fill="#e0a030"/>
+<text x="404.0" y="114.0" text-anchor="middle" fill="#fff">-18 dB</text>
+<rect x="440" y="90" width="68" height="38" fill="#e0a030"/>
+<text x="474.0" y="114.0" text-anchor="middle" fill="#fff">-30 dB</text>
+<rect x="510" y="90" width="68" height="38" fill="#e0a030"/>
+<text x="544.0" y="114.0" text-anchor="middle" fill="#fff">-31 dB</text>
+<rect x="580" y="90" width="68" height="38" fill="#e0a030"/>
+<text x="614.0" y="114.0" text-anchor="middle" fill="#fff">-27 dB</text>
+<text x="82" y="154.0" text-anchor="end">20 V</text>
+<rect x="90" y="130" width="68" height="38" fill="#3a9d5d"/>
+<text x="124.0" y="154.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="160" y="130" width="68" height="38" fill="#3a9d5d"/>
+<text x="194.0" y="154.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="230" y="130" width="68" height="38" fill="#e0a030"/>
+<text x="264.0" y="154.0" text-anchor="middle" fill="#fff">-21 dB</text>
+<rect x="300" y="130" width="68" height="38" fill="#e0a030"/>
+<text x="334.0" y="154.0" text-anchor="middle" fill="#fff">-25 dB</text>
+<rect x="370" y="130" width="68" height="38" fill="#e0a030"/>
+<text x="404.0" y="154.0" text-anchor="middle" fill="#fff">-29 dB</text>
+<rect x="440" y="130" width="68" height="38" fill="#e0a030"/>
+<text x="474.0" y="154.0" text-anchor="middle" fill="#fff">-21 dB</text>
+<rect x="510" y="130" width="68" height="38" fill="#e0a030"/>
+<text x="544.0" y="154.0" text-anchor="middle" fill="#fff">-40 dB</text>
+<rect x="580" y="130" width="68" height="38" fill="#e0a030"/>
+<text x="614.0" y="154.0" text-anchor="middle" fill="#fff">-27 dB</text>
+<text x="82" y="194.0" text-anchor="end">14 V</text>
+<rect x="90" y="170" width="68" height="38" fill="#3a9d5d"/>
+<text x="124.0" y="194.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="160" y="170" width="68" height="38" fill="#3a9d5d"/>
+<text x="194.0" y="194.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="230" y="170" width="68" height="38" fill="#3a9d5d"/>
+<text x="264.0" y="194.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="300" y="170" width="68" height="38" fill="#e0a030"/>
+<text x="334.0" y="194.0" text-anchor="middle" fill="#fff">-24 dB</text>
+<rect x="370" y="170" width="68" height="38" fill="#e0a030"/>
+<text x="404.0" y="194.0" text-anchor="middle" fill="#fff">-18 dB</text>
+<rect x="440" y="170" width="68" height="38" fill="#e0a030"/>
+<text x="474.0" y="194.0" text-anchor="middle" fill="#fff">-30 dB</text>
+<rect x="510" y="170" width="68" height="38" fill="#e0a030"/>
+<text x="544.0" y="194.0" text-anchor="middle" fill="#fff">-18 dB</text>
+<rect x="580" y="170" width="68" height="38" fill="#e0a030"/>
+<text x="614.0" y="194.0" text-anchor="middle" fill="#fff">-27 dB</text>
+<text x="82" y="234.0" text-anchor="end">10 V</text>
+<rect x="90" y="210" width="68" height="38" fill="#3a9d5d"/>
+<text x="124.0" y="234.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="160" y="210" width="68" height="38" fill="#3a9d5d"/>
+<text x="194.0" y="234.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="230" y="210" width="68" height="38" fill="#3a9d5d"/>
+<text x="264.0" y="234.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="300" y="210" width="68" height="38" fill="#3a9d5d"/>
+<text x="334.0" y="234.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="370" y="210" width="68" height="38" fill="#e0a030"/>
+<text x="404.0" y="234.0" text-anchor="middle" fill="#fff">-26 dB</text>
+<rect x="440" y="210" width="68" height="38" fill="#e0a030"/>
+<text x="474.0" y="234.0" text-anchor="middle" fill="#fff">-26 dB</text>
+<rect x="510" y="210" width="68" height="38" fill="#e0a030"/>
+<text x="544.0" y="234.0" text-anchor="middle" fill="#fff">-26 dB</text>
+<rect x="580" y="210" width="68" height="38" fill="#e0a030"/>
+<text x="614.0" y="234.0" text-anchor="middle" fill="#fff">-32 dB</text>
+<text x="82" y="274.0" text-anchor="end">8 V</text>
+<rect x="90" y="250" width="68" height="38" fill="#3a9d5d"/>
+<text x="124.0" y="274.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="160" y="250" width="68" height="38" fill="#3a9d5d"/>
+<text x="194.0" y="274.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="230" y="250" width="68" height="38" fill="#3a9d5d"/>
+<text x="264.0" y="274.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="300" y="250" width="68" height="38" fill="#3a9d5d"/>
+<text x="334.0" y="274.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="370" y="250" width="68" height="38" fill="#3a9d5d"/>
+<text x="404.0" y="274.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="440" y="250" width="68" height="38" fill="#e0a030"/>
+<text x="474.0" y="274.0" text-anchor="middle" fill="#fff">-34 dB</text>
+<rect x="510" y="250" width="68" height="38" fill="#e0a030"/>
+<text x="544.0" y="274.0" text-anchor="middle" fill="#fff">-28 dB</text>
+<rect x="580" y="250" width="68" height="38" fill="#e0a030"/>
+<text x="614.0" y="274.0" text-anchor="middle" fill="#fff">-23 dB</text>
+<text x="82" y="314.0" text-anchor="end">6 V</text>
+<rect x="90" y="290" width="68" height="38" fill="#3a9d5d"/>
+<text x="124.0" y="314.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="160" y="290" width="68" height="38" fill="#3a9d5d"/>
+<text x="194.0" y="314.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="230" y="290" width="68" height="38" fill="#3a9d5d"/>
+<text x="264.0" y="314.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="300" y="290" width="68" height="38" fill="#3a9d5d"/>
+<text x="334.0" y="314.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="370" y="290" width="68" height="38" fill="#3a9d5d"/>
+<text x="404.0" y="314.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="440" y="290" width="68" height="38" fill="#9fd27a"/>
+<text x="474.0" y="314.0" text-anchor="middle" fill="#fff">120 dB</text>
+<rect x="510" y="290" width="68" height="38" fill="#e0a030"/>
+<text x="544.0" y="314.0" text-anchor="middle" fill="#fff">-30 dB</text>
+<rect x="580" y="290" width="68" height="38" fill="#e0a030"/>
+<text x="614.0" y="314.0" text-anchor="middle" fill="#fff">-38 dB</text>
+<text x="125.0" y="344" text-anchor="middle">500 Hz</text>
+<text x="195.0" y="344" text-anchor="middle">1000 Hz</text>
+<text x="265.0" y="344" text-anchor="middle">2000 Hz</text>
+<text x="335.0" y="344" text-anchor="middle">3000 Hz</text>
+<text x="405.0" y="344" text-anchor="middle">4000 Hz</text>
+<text x="475.0" y="344" text-anchor="middle">6000 Hz</text>
+<text x="545.0" y="344" text-anchor="middle">8000 Hz</text>
+<text x="615.0" y="344" text-anchor="middle">12000 Hz</text>
+<rect x="90" y="366" width="12" height="12" fill="#3a9d5d"/>
+<text x="106" y="376">recovered</text>
+<rect x="240" y="366" width="12" height="12" fill="#9fd27a"/>
+<text x="256" y="376">recovered, edge warning</text>
+<rect x="390" y="366" width="12" height="12" fill="#e0a030"/>
+<text x="406" y="376">failed, flagged</text>
+<rect x="540" y="366" width="12" height="12" fill="#c0392b"/>
+<text x="556" y="376">failed SILENTLY</text>
+<text x="90" y="398">Rule: max slew &lt; λ·sr = 256,000 V/s (pure sine: peak·Hz &lt; 40,744). Burst has a 0.4× harmonic at 2.1 f, so its limit is ~1.8× tighter.</text>
+</svg>

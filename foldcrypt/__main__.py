@@ -1,4 +1,4 @@
-"""CLI: python -m foldcrypt shockdaq-demo | audio-demo | shares-demo | demo | ser | defect-demo | block-demo"""
+"""CLI: python -m foldcrypt shockdaq-demo | shockdaq-failmap | audio-demo | shares-demo | demo | ser | defect-demo | block-demo"""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from .defect_mask import defect_decrypt, defect_encrypt, flip_bits
 from .recovery_shares import PARAMS, corrupt_share, recover_secret, split_secret
 from .foldaudio import DEFAULT_LAM, format_snr_table, run_audio_demo
 from .shockdaq import DEFAULT_LAM_V, format_shockdaq_table, run_shockdaq_demo
+from .failmap import format_failmap, run_failmap_report
 from .simulate import format_ser_table, run_ser_table
 from .unfold_detect import unfold_then_detect
 from .wrapcancel import wrapcancel_detect, block_mahalanobis_detect
@@ -183,6 +184,19 @@ def cmd_shockdaq_demo(args: argparse.Namespace) -> int:
     return 0 if wins >= 1 else 1
 
 
+def cmd_shockdaq_failmap(args: argparse.Namespace) -> int:
+    """Where blind fold recovery breaks (peak V x ring Hz) and whether it flags itself."""
+    cells, summ = run_failmap_report(lam=args.lam, sr=args.sr)
+    print("ShockDAQ fail map — blind recovery vs ringing impact (peak V x ring Hz)")
+    print(f"  λ={args.lam} V  sr={args.sr}  rule: max slew < λ·sr = {args.lam*args.sr:,.0f} V/s")
+    print(format_failmap(cells))
+    print(f"  summary={summ}")
+    print("  artifacts → artifacts/shockdaq/failmap.json, failmap.svg")
+    ok = summ["fails_silent"] == 0 and summ["slip_false_alarms_on_ok"] == 0
+    print(f"  failmap={'OK (every failure flagged, no false alarms)' if ok else 'SILENT FAILS PRESENT'}")
+    return 0 if ok else 1
+
+
 def cmd_audio_demo(args: argparse.Namespace) -> int:
     """FoldAudio product trial: fold capture vs hard clip on synthetic WAVs."""
     rows = run_audio_demo(lam=args.lam, sr=args.sr)
@@ -246,6 +260,11 @@ def main(argv: list[str] | None = None) -> int:
     sd.add_argument("--lam", type=float, default=DEFAULT_LAM_V, help="soft-sat rail λ in volts (default 5.0)")
     sd.add_argument("--sr", type=int, default=51200, help="sample rate (51.2 kHz-style default)")
     sd.set_defaults(func=cmd_shockdaq_demo)
+
+    fm = sub.add_parser("shockdaq-failmap", help="ShockDAQ: map where fold recovery fails and whether it flags it")
+    fm.add_argument("--lam", type=float, default=DEFAULT_LAM_V, help="soft-sat rail λ in volts (default 5.0)")
+    fm.add_argument("--sr", type=int, default=51200, help="sample rate (51.2 kHz-style default)")
+    fm.set_defaults(func=cmd_shockdaq_failmap)
 
     au = sub.add_parser("audio-demo", help="FoldAudio: fold vs hard-clip SNR on synthetic WAVs")
     au.add_argument("--lam", type=float, default=DEFAULT_LAM, help="fold threshold λ")

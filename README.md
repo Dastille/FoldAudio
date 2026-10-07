@@ -16,10 +16,13 @@
 cd /workspace/foldcrypt
 source .venv/bin/activate
 python -m foldcrypt shockdaq-demo
+python -m foldcrypt shockdaq-failmap   # where fold breaks + self-flags
 python -m pytest -q
 ```
 
 Artifacts → `artifacts/shockdaq/` (`.npy` + listening WAVs + `metrics.json`).
+
+**Fail map:** [`docs/shockdaq-failmap.md`](docs/shockdaq-failmap.md) — fold recovers iff max slew < λ × sample rate (280/280 sweep cells); every failure flagged itself blind (0 silent).
 
 ### ShockDAQ v0 metrics (λ=5.0 V, sr=51200, synthetic — real run)
 
@@ -101,7 +104,8 @@ foldcrypt/
   foldcrypt/
     shockdaq.py        # COMPANY BET: IEPE fold vs silent soft-clip
     foldaudio.py       # PUBLIC PROOF: fold / clip / recover / SNR
-    __main__.py        # CLI (shockdaq-demo / audio-demo)
+    __main__.py        # CLI (shockdaq-demo / shockdaq-failmap / audio-demo)
+    failmap.py         # ShockDAQ fail map: slew rule + blind slip/edge flags
     modulo.py          # central M_λ (engine)
     unfold_detect.py   # Itoh unwrap (engine)
     # --- parked / archived ---

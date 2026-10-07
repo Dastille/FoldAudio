@@ -17,13 +17,17 @@
 - **FoldAudio v0** (2026-10-02) — Ashlynn green-lit build+test + public repo + whitepaper v0.1.
 - **Company scouts** (2026-10-02) — `docs/company-adoption-scout.md`, `docs/bigger-problem-scout.md` (ShockDAQ recommended).
 - **ShockDAQ v0** (2026-10-04 Sunday hard push) — IEPE fold-vs-clip demo, metrics, OEM one-pager, CLI `shockdaq-demo`.
+- **Fail map** (2026-10-07 weekday slice) — `failmap.py`, `shockdaq-failmap` CLI, `docs/shockdaq-failmap.md`. Rule max slew < λ·sr predicted 280/280 cells (5 seeds); every failure (166/166) flagged by blind slip/edge checks, 0 silent, 0 slip false alarms. 53 tests.
 - **Blind level prior** (2026-10-06 weekday slice) — `blind_level.recover_blind`: AC-coupling zero-mean or quietest-window prior, no original. Matches oracle on gearbox/impact; fixes mid-overload-start captures (naive k=0 −14/−24 dB → ~120 dB); fails honestly on DC shift ≳ λ. `shockdaq-demo` shows SNR_bl + bl=or columns. 49 tests.
 
 ## Next slices (weekday-sized, soft freeze)
 
-1. **Listen / plot fail cases** — where gearbox/impact unwrap wrong; document λ vs peak / slew tradeoff.
+1. ~~**Listen / plot fail cases**~~ — done 2026-10-07 (`failmap.py`, slew rule + self-flags).
 2. ~~**Absolute-level prior without original**~~ — done 2026-10-06 (`blind_level.py`).
 3. **One real WAV / IEPE capture** (Ashlynn or OEM sample) if supplied — replace synthetic-only claim.
+
+4. **Wire slip/edge flags into `shockdaq-demo` output** as an `overload_unrecoverable` column (light).
+5. **Quantization in the fail map** — does a 16/24-bit ADC step move the slew edge? (light/medium).
 
 ## Do not do
 
