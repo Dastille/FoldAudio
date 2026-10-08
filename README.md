@@ -30,6 +30,9 @@ Artifacts → `artifacts/shockdaq/` (`.npy` + listening WAVs + `metrics.json`).
 |------|--------|-------------|-------------|----------|----------|---------|--------|------|
 | gearbox_startup | 12.82 | 7.82 | ~0 | 13.35 | ~∞ (120) | **+106.7** | yes | yes |
 | impact_transient | 8.27 | 3.27 | ~0 | 19.35 | ~∞ (120) | **+100.6** | yes | yes |
+| impact_too_fast *(past slew limit, on purpose)* | 53.47 | 48.47 | 303 | 2.22 | −31.3 | −33.5 | yes | **NO** |
+
+`UNREC` column (2026-10-08): blind self-check, no original. The two good cases read `no`; `impact_too_fast` reads `SLIP+EDGE`, so the firmware knows not to trust that record (and should fall back to the clipped value + overload flag).
 
 ---
 

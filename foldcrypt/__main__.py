@@ -180,8 +180,15 @@ def cmd_shockdaq_demo(args: argparse.Namespace) -> int:
     print("  artifacts → /workspace/foldcrypt/artifacts/shockdaq/")
     wins = sum(1 for r in rows if r.snr_gain_db > 5.0 and r.peak_error_fold < r.peak_error_clip)
     print(f"  cases_fold_beats_clip(>5dB+better_peak)={wins}/{len(rows)}")
-    print(f"  shockdaq_demo={'OK' if wins >= 1 else 'WEAK'}")
-    return 0 if wins >= 1 else 1
+    bad = [r for r in rows if r.snr_blind_db < 60.0]
+    silent = [r.name for r in bad if not r.overload_unrecoverable]
+    false_alarm = [r.name for r in rows if r.snr_blind_db >= 60.0 and r.slip_flag]
+    print(f"  UNREC = blind self-check (no original): SLIP = unwrap slip, EDGE = step within 10% of λ")
+    print(f"  unrecoverable_cases={len(bad)} flagged={len(bad) - len(silent)} silent={silent or 'none'} "
+          f"slip_false_alarms={false_alarm or 'none'}")
+    ok = wins >= 1 and not silent and not false_alarm
+    print(f"  shockdaq_demo={'OK' if ok else 'WEAK'}")
+    return 0 if ok else 1
 
 
 def cmd_shockdaq_failmap(args: argparse.Namespace) -> int:

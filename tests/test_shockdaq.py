@@ -63,3 +63,26 @@ def test_generators_exceed_lambda():
     i = gen_impact_transient(sr=16000, duration_s=0.5, lam=lam)
     assert np.max(np.abs(g)) > lam
     assert np.max(np.abs(i)) > lam
+
+
+def test_demo_flags_past_slew_case_and_not_good_cases(tmp_path):
+    """shockdaq-demo UNREC column: good captures clear, past-limit capture flagged blind."""
+    from foldcrypt.shockdaq import DEFAULT_SR
+
+    lam, sr = DEFAULT_LAM_V, DEFAULT_SR
+    good = run_case("impact_ok", gen_impact_transient(sr=sr, duration_s=1.0, lam=lam), sr, lam, tmp_path)
+    assert good.snr_blind_db >= 60.0
+    assert good.overload_unrecoverable is False
+    bad_x = gen_impact_transient(sr=sr, duration_s=1.0, lam=lam, peak_amp=60.0)
+    assert max_sample_jump(bad_x) > lam
+    bad = run_case("impact_too_fast", bad_x, sr, lam, tmp_path)
+    assert bad.snr_blind_db < 60.0
+    assert bad.overload_unrecoverable is True
+    assert bad.slip_flag is True
+
+
+def test_failmap_reexports_flags():
+    from foldcrypt import blind_level, failmap
+
+    assert failmap.slip_flag is blind_level.slip_flag
+    assert failmap.edge_flag is blind_level.edge_flag

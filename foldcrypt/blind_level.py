@@ -69,3 +69,27 @@ def recover_blind(
 def naive_k0(y_folded: np.ndarray, lam: float) -> np.ndarray:
     """What v0 did with no anchor: trust folded[0] as the true level (k=0)."""
     return itoh_unwrap(np.asarray(y_folded, dtype=float), lam)
+
+
+# ---------------------------------------------------------------------------
+# Blind self-checks (moved here from failmap so shockdaq can use them without
+# a circular import; failmap re-exports them).
+# ---------------------------------------------------------------------------
+
+EDGE_FRAC = 0.9
+
+
+def slip_flag(recovered: np.ndarray, lam: float, *, frac: float = 0.2, win: int = 1024) -> bool:
+    """Blind check: quiet baseline at the start vs end of record differ by > λ."""
+    r = np.asarray(recovered, dtype=float)
+    m = max(int(len(r) * frac), win + 1)
+    a = quietest_window_mean(r[:m], win)
+    b = quietest_window_mean(r[-m:], win)
+    return bool(abs(a - b) > lam)
+
+
+def edge_flag(y_folded: np.ndarray, lam: float, *, frac: float = EDGE_FRAC) -> bool:
+    """Blind check: any wrapped folded step |d| ≥ frac·λ (recovery at its limit)."""
+    d = np.diff(np.asarray(y_folded, dtype=float))
+    d = d - 2.0 * lam * np.round(d / (2.0 * lam))
+    return bool(np.any(np.abs(d) >= frac * lam))

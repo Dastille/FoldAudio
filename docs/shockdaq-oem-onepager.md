@@ -33,6 +33,7 @@ Assumptions (named): λ = **5.0 V** models a ±5 V soft-sat rail (**not** a clai
 |------|----------|---------------|---------------|----------|----------|------|---------------------|---------|
 | gearbox_startup | 12.82 | **7.82 V** | **~0** | 13.35 dB | ~∞ (120) | **+106.7 dB** | yes | yes |
 | impact_transient | 8.27 | **3.27 V** | **~0** | 19.35 dB | ~∞ (120) | **+100.6 dB** | yes | yes |
+| impact_too_fast *(deliberately past slew limit)* | 53.47 | 48.47 V | 303 V | 2.22 dB | −31.3 dB | −33.5 dB | yes | **NO** — self-flagged `SLIP+EDGE` |
 
 Source: `artifacts/shockdaq/metrics.json` from `python -m foldcrypt shockdaq-demo`.
 
@@ -42,6 +43,7 @@ Source: `artifacts/shockdaq/metrics.json` from `python -m foldcrypt shockdaq-dem
 
 - **Synthetic only** — not yet proven on a real IEPE capture or named DAQ card.
 - **Blind level prior (2026-10-06)** — no original needed. Uses IEPE AC coupling (zero-mean / quietest-window baseline). Fixes captures that start mid-overload (naive k=0 gives −14 to −24 dB; blind gives ~120 dB). Fails honestly if the signal is DC-shifted by ≳ λ (not AC-coupled).
+- **Past the slew limit fold is WORSE than clip** (impact_too_fast: −31 dB vs +2 dB), but it is never silent: the demo's `UNREC` column (blind slip/edge self-check, 2026-10-08) flags it. Firmware rule: when UNREC is set, report overload and fall back to the clipped value.
 - **Itoh slew limit** — consecutive samples must usually jump by less than λ; pathological single-sample glitches fail (same class as FoldAudio `harsh_kick`).
 - **Spectral bias** is a toy HF RMS ratio, not order tracking / ISO 10816 acceptance math.
 - FoldAudio remains the **public math proof**; ShockDAQ is the **company licensing bet**.

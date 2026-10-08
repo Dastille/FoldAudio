@@ -33,12 +33,11 @@ from pathlib import Path
 
 import numpy as np
 
-from .blind_level import quietest_window_mean, recover_blind
+from .blind_level import EDGE_FRAC, edge_flag, recover_blind, slip_flag  # noqa: F401 (re-export)
 from .foldaudio import fold_capture, max_sample_jump, snr_db
 from .shockdaq import DEFAULT_LAM_V, DEFAULT_SR
 
 OK_SNR_DB = 60.0
-EDGE_FRAC = 0.9
 DEFAULT_AMPS = (6.0, 8.0, 10.0, 14.0, 20.0, 30.0, 40.0)
 DEFAULT_FREQS = (500.0, 1000.0, 2000.0, 3000.0, 4000.0, 6000.0, 8000.0, 12000.0)
 
@@ -65,22 +64,6 @@ def ring_burst(
     x += amp * env * np.sin(2 * np.pi * f_ring * t)
     x += 0.4 * amp * env * np.sin(2 * np.pi * 2.1 * f_ring * t)
     return x
-
-
-def slip_flag(recovered: np.ndarray, lam: float, *, frac: float = 0.2, win: int = 1024) -> bool:
-    """Blind check: quiet baseline at the start vs end of record differ by > λ."""
-    r = np.asarray(recovered, dtype=float)
-    m = max(int(len(r) * frac), win + 1)
-    a = quietest_window_mean(r[:m], win)
-    b = quietest_window_mean(r[-m:], win)
-    return bool(abs(a - b) > lam)
-
-
-def edge_flag(y_folded: np.ndarray, lam: float, *, frac: float = EDGE_FRAC) -> bool:
-    """Blind check: any wrapped folded step |d| ≥ frac·λ (recovery at its limit)."""
-    d = np.diff(np.asarray(y_folded, dtype=float))
-    d = d - 2.0 * lam * np.round(d / (2.0 * lam))
-    return bool(np.any(np.abs(d) >= frac * lam))
 
 
 @dataclass

@@ -35,7 +35,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .blind_level import recover_blind
+from .blind_level import edge_flag, recover_blind, slip_flag
 from .foldaudio import (
     fold_capture,
     hard_clip,
@@ -213,6 +213,18 @@ class ShockDAQResult:
     snr_blind_db: float = 0.0
     peak_error_blind: float = 0.0
     blind_matches_oracle: bool = False
+    slip_flag: bool = False
+    edge_flag: bool = False
+
+    @property
+    def overload_unrecoverable(self) -> bool:
+        """Blind firmware verdict: this capture's fold recovery can't be trusted.
+
+        slip = baseline before/after event disagree by > λ (an unwrap slip);
+        edge = some folded step sat within 10 % of λ (recovery at its limit).
+        Both use only the folded capture / blind output — no original.
+        """
+        return self.slip_flag or self.edge_flag
 
 
 def run_case(
@@ -274,7 +286,15 @@ def run_case(
         snr_blind_db=snr_db(x, blind),
         peak_error_blind=peak_abs_error(x, blind),
         blind_matches_oracle=bool(np.allclose(blind, recovered, atol=1e-9)),
+        slip_flag=slip_flag(blind, lam),
+        edge_flag=edge_flag(folded, lam),
     )
+
+
+def _unrec_tag(r: ShockDAQResult) -> str:
+    if not r.overload_unrecoverable:
+        return "no"
+    return "+".join(t for t, on in (("slip", r.slip_flag), ("edge", r.edge_flag)) if on).upper()
 
 
 def format_shockdaq_table(rows: list[ShockDAQResult]) -> str:
@@ -283,7 +303,7 @@ def format_shockdaq_table(rows: list[ShockDAQResult]) -> str:
         f"{'pkErrC':>7} {'pkErrF':>7} "
         f"{'SNR_c':>7} {'SNR_f':>7} {'gain':>7} "
         f"{'biasC':>7} {'biasF':>7} "
-        f"{'OLflg':>5} {'Itoh':>4} {'SNR_bl':>7} {'bl=or':>5}"
+        f"{'OLflg':>5} {'Itoh':>4} {'SNR_bl':>7} {'bl=or':>5} {'UNREC':>6}"
     )
     lines = [hdr, "-" * len(hdr)]
     for r in rows:
@@ -294,7 +314,8 @@ def format_shockdaq_table(rows: list[ShockDAQResult]) -> str:
             f"{r.spectral_bias_clip:7.3f} {r.spectral_bias_fold:7.3f} "
             f"{'yes' if r.overload_would_have_flagged else 'no':>5} "
             f"{'yes' if r.itoh_ok else 'NO':>4} "
-            f"{r.snr_blind_db:7.2f} {'yes' if r.blind_matches_oracle else 'NO':>5}"
+            f"{r.snr_blind_db:7.2f} {'yes' if r.blind_matches_oracle else 'NO':>5} "
+            f"{_unrec_tag(r):>6}"
         )
     return "\n".join(lines)
 
@@ -313,6 +334,9 @@ def run_shockdaq_demo(
     cases = {
         "gearbox_startup": gen_gearbox_startup(sr=sr, lam=lam),
         "impact_transient": gen_impact_transient(sr=sr, lam=lam),
+        # Deliberately past the slew limit (max|Δx| > λ): fold can't recover
+        # this one — the point is that firmware SAYS so instead of going silent.
+        "impact_too_fast": gen_impact_transient(sr=sr, lam=lam, peak_amp=60.0),
     }
     rows: list[ShockDAQResult] = []
     for name, x in cases.items():
@@ -327,6 +351,7 @@ def run_shockdaq_demo(
             "Soft-sat without overload flag ≡ hard_clip for v0; would_overload_flag is the honest missing flag.",
             "Synthetic numpy generators only — not real field IEPE captures.",
             "Itoh + 2λ offset search vs original (demo oracle); blind column uses AC-coupling zero-mean prior, no original.",
+            "overload_unrecoverable = blind slip OR edge self-check (failmap.py rule); impact_too_fast is a deliberate past-limit case.",
             "spectral_bias = relative RMS in HF band (0.15–0.45 Nyquist); not ISO vibration metrics.",
         ],
         "cases": [
@@ -347,6 +372,9 @@ def run_shockdaq_demo(
                 "snr_blind_db": r.snr_blind_db,
                 "peak_error_blind_V": r.peak_error_blind,
                 "blind_matches_oracle": r.blind_matches_oracle,
+                "slip_flag": r.slip_flag,
+                "edge_flag": r.edge_flag,
+                "overload_unrecoverable": r.overload_unrecoverable,
             }
             for r in rows
         ],

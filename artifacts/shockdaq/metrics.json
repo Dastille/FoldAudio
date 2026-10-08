@@ -7,6 +7,7 @@
     "Soft-sat without overload flag \u2261 hard_clip for v0; would_overload_flag is the honest missing flag.",
     "Synthetic numpy generators only \u2014 not real field IEPE captures.",
     "Itoh + 2\u03bb offset search vs original (demo oracle); blind column uses AC-coupling zero-mean prior, no original.",
+    "overload_unrecoverable = blind slip OR edge self-check (failmap.py rule); impact_too_fast is a deliberate past-limit case.",
     "spectral_bias = relative RMS in HF band (0.15\u20130.45 Nyquist); not ISO vibration metrics."
   ],
   "cases": [
@@ -26,7 +27,10 @@
       "n_samples": 102400,
       "snr_blind_db": 120.0,
       "peak_error_blind_V": 3.552713678800501e-15,
-      "blind_matches_oracle": true
+      "blind_matches_oracle": true,
+      "slip_flag": false,
+      "edge_flag": false,
+      "overload_unrecoverable": false
     },
     {
       "name": "impact_transient",
@@ -44,7 +48,31 @@
       "n_samples": 76800,
       "snr_blind_db": 120.0,
       "peak_error_blind_V": 0.0,
-      "blind_matches_oracle": true
+      "blind_matches_oracle": true,
+      "slip_flag": false,
+      "edge_flag": false,
+      "overload_unrecoverable": false
+    },
+    {
+      "name": "impact_too_fast",
+      "peak_orig_V": 53.466161775696094,
+      "max_sample_jump_V": 7.423879558722668,
+      "peak_error_clip_V": 48.466161775696094,
+      "peak_error_fold_V": 303.315079780771,
+      "snr_clip_db": 2.2176379220279316,
+      "snr_fold_db": -31.274344979993337,
+      "snr_gain_db": -33.49198290202127,
+      "spectral_bias_clip": 3.0116537509448116,
+      "spectral_bias_fold": 16.114042282567095,
+      "overload_would_have_flagged": true,
+      "itoh_ok_max_dx_lt_lam": false,
+      "n_samples": 76800,
+      "snr_blind_db": -29.70419622113105,
+      "peak_error_blind_V": 243.315079780771,
+      "blind_matches_oracle": false,
+      "slip_flag": true,
+      "edge_flag": true,
+      "overload_unrecoverable": true
     }
   ]
 }
