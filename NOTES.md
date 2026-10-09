@@ -21,6 +21,7 @@
 - **Blind level prior** (2026-10-06 weekday slice) — `blind_level.recover_blind`: AC-coupling zero-mean or quietest-window prior, no original. Matches oracle on gearbox/impact; fixes mid-overload-start captures (naive k=0 −14/−24 dB → ~120 dB); fails honestly on DC shift ≳ λ. `shockdaq-demo` shows SNR_bl + bl=or columns. 49 tests.
 
 - **UNREC in demo** (2026-10-08 weekday slice) — `shockdaq-demo` now has an `overload_unrecoverable` (`UNREC`) column from blind slip/edge checks (moved to `blind_level.py`, re-exported by `failmap`). New deliberate past-limit case `impact_too_fast` (60 V ring, maxΔ 7.4 V > λ): fold −31 dB (worse than clip +2 dB) but flagged `SLIP+EDGE`; good cases read `no`. Demo exits non-zero on any silent fail or slip false alarm. 55 tests.
+- **Quantization** (2026-10-09 weekday slice) — `shockdaq-failmap --quant` / `failmap.run_quant_sweep`: 4–24-bit modulo-ADC through the same grid; slew edge does not move (rule 56/56 at every depth), 0 silent fails, 0 slip false alarms. 57 tests.
 
 ## Next slices (weekday-sized, soft freeze)
 
@@ -29,7 +30,8 @@
 3. **One real WAV / IEPE capture** (Ashlynn or OEM sample) if supplied — replace synthetic-only claim.
 
 4. ~~**Wire slip/edge flags into `shockdaq-demo`**~~ — done 2026-10-08 (`UNREC` column + `impact_too_fast` case).
-5. **Quantization in the fail map** — does a 16/24-bit ADC step move the slew edge? (light/medium).
+5. ~~**Quantization in the fail map**~~ — done 2026-10-09 (`--quant`, `run_quant_sweep`).
+6. **Next:** real IEPE/WAV capture (#3) if supplied; else sensor-noise + non-ideal ADC (INL) in the sweep, or refresh whitepaper/OEM one-pager with fail-map + quantization numbers.
 
 ## Do not do
 

@@ -40,3 +40,19 @@ def test_report_writes_json_and_svg(tmp_path):
     svg = (tmp_path / "failmap.svg").read_text()
     assert svg.startswith("<svg") and "fail map" in svg
     assert summ["cells"] == len(cells)
+
+
+def test_quantization_does_not_move_slew_edge_and_stays_loud():
+    sweep = fm.run_quant_sweep((6, 12), AMPS, FREQS)
+    ideal = sweep["rows"][0]
+    for r in sweep["rows"]:
+        assert r["rule_agrees_with_outcome"] == r["cells"]
+        assert r["fails_silent"] == 0
+        assert r["slip_false_alarms_on_ok"] == 0
+        assert r["recovered_ok"] == ideal["recovered_ok"]
+    assert "ideal" in fm.format_quant_sweep(sweep)
+
+
+def test_eval_cell_quantized_matches_ideal_on_easy_cell():
+    c = fm.eval_cell(10.0, 500.0, bits=8)
+    assert c.bits == 8 and c.recovered_ok and not c.slip_flag

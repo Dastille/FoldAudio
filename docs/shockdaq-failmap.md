@@ -57,6 +57,34 @@ F! = failed and flagged · FS = failed silently (none).
 
 ## Named assumptions
 
-Synthetic ringing burst only (not field data); no quantization; λ = 5 V is a
+Synthetic ringing burst only (not field data); main grid is ideal (no quantization — see below); λ = 5 V is a
 demo rail, not a specific OEM part; 60 dB SNR threshold for "recovered".
 Next proof still needed: one real IEPE capture (NOTES #3).
+
+## Quantization (2026-10-09, NOTES #5)
+
+Question: does a real N-bit ADC move the slew edge? Run
+`python -m foldcrypt shockdaq-failmap --quant` → `artifacts/shockdaq/quantmap.json`.
+The same 56-cell grid is passed through an N-bit modulo-ADC (step
+Δ = λ/2^(N−1)); "ok" = every recovered sample within one LSB of the true input.
+
+```
+ bits  step(V)  ok  fail  rule  tight  flagged  SILENT  slipFA  edge-on-ok
+ideal        -  23    33    56      -       33       0       0           1
+    4   0.6250  23    33    56     54       33       0       0           1
+    6   0.1562  23    33    56     56       33       0       0           1
+   8-24  …      23    33    56     56       33       0       0           1
+```
+
+Plain-language result: **the slew edge does not move.** The rule max slew < λ·sr
+predicted all 56 cells at every bit depth from 4 to 24, the same 33 cells fail
+at every depth, and every failure still flags itself (0 silent, 0 slip false
+alarms). The worst-case rule "max|Δx| < λ − Δ" is only needed to be that strict
+at ≤4 bits, where it is actually slightly *worse* than the plain rule (54/56)
+because rounding errors rarely line up adversely. Quantization costs
+resolution (LSB-sized error), not range or honesty.
+
+Caveats: single noise seed (7) in the CLI sweep (an ad-hoc 5-seed run for
+3–24 bits showed the same pattern — 0 silent failures at every depth; plain rule
+matched 280/280 from 4 bits up, 275/280 at 3 bits); quantizer is the ideal
+mid-riser in `modulo.py`, no ADC nonlinearity, no thermal/clock noise.

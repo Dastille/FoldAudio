@@ -20,9 +20,12 @@ Both flags use only the folded capture / recovered output — what live firmware
 would have. The point for a DAQ buyer: when fold fails, does it fail LOUDLY
 (flagged) instead of silently like a soft-clip?
 
+Quantization (NOTES #5, 2026-10-09): run_quant_sweep re-runs the grid through an
+N-bit modulo-ADC (modulo.quantize_folded) — see docs/shockdaq-failmap.md.
+
 ASSUMPTIONS (named): synthetic ringing burst (same shape family as
 shockdaq.gen_impact_transient: fundamental + 0.4× at 2.1 f, noise 1.5 % λ);
-no quantization; λ is a demo rail, not an OEM part. CPU only, numpy only.
+quantization only in run_quant_sweep (default grid is ideal); λ is a demo rail, not an OEM part. CPU only, numpy only.
 """
 
 from __future__ import annotations
@@ -35,6 +38,7 @@ import numpy as np
 
 from .blind_level import EDGE_FRAC, edge_flag, recover_blind, slip_flag  # noqa: F401 (re-export)
 from .foldaudio import fold_capture, max_sample_jump, snr_db
+from .modulo import quantize_folded
 from .shockdaq import DEFAULT_LAM_V, DEFAULT_SR
 
 OK_SNR_DB = 60.0
@@ -78,18 +82,40 @@ class FailCell:
     recovered_ok: bool
     slip_flag: bool
     edge_flag: bool
+    bits: int | None = None  # None = ideal (unquantized) capture
 
     @property
     def silent_fail(self) -> bool:
         return (not self.recovered_ok) and not (self.slip_flag or self.edge_flag)
 
 
-def eval_cell(amp: float, f_ring: float, *, lam: float = DEFAULT_LAM_V, sr: int = DEFAULT_SR) -> FailCell:
-    x = ring_burst(sr, amp=amp, f_ring=f_ring, lam=lam)
+def eval_cell(
+    amp: float,
+    f_ring: float,
+    *,
+    lam: float = DEFAULT_LAM_V,
+    sr: int = DEFAULT_SR,
+    bits: int | None = None,
+    seed: int = 7,
+) -> FailCell:
+    """One (peak, ring) cell. bits=None: ideal ADC, ok = SNR >= 60 dB.
+
+    bits=N: the folded signal goes through an N-bit modulo-ADC quantizer
+    (step Δ = λ/2^(N-1)); "ok" then means every recovered sample is within one
+    LSB (Δ) of the true input — i.e. exact to ADC resolution, no unwrap slip.
+    (A 60 dB SNR bar is meaningless at 4 bits.)
+    """
+    x = ring_burst(sr, amp=amp, f_ring=f_ring, lam=lam, seed=seed)
     y = fold_capture(x, lam)
+    if bits is not None:
+        y, _ = quantize_folded(y, lam, bits)
     rec, _k = recover_blind(y, lam, prior="quiet_window")
     dx = max_sample_jump(x)
     s = snr_db(x, rec)
+    if bits is None:
+        ok = bool(s >= OK_SNR_DB)
+    else:
+        ok = bool(np.max(np.abs(rec - x)) <= lam / 2 ** (bits - 1))
     return FailCell(
         amp_V=amp,
         f_ring_Hz=f_ring,
@@ -98,16 +124,68 @@ def eval_cell(amp: float, f_ring: float, *, lam: float = DEFAULT_LAM_V, sr: int 
         max_dx_V=dx,
         predicted_ok=bool(dx < lam),
         snr_blind_db=s,
-        recovered_ok=bool(s >= OK_SNR_DB),
+        recovered_ok=ok,
         slip_flag=slip_flag(rec, lam),
         edge_flag=edge_flag(y, lam),
+        bits=bits,
     )
 
 
 def run_failmap(
-    amps=DEFAULT_AMPS, freqs=DEFAULT_FREQS, *, lam: float = DEFAULT_LAM_V, sr: int = DEFAULT_SR
+    amps=DEFAULT_AMPS,
+    freqs=DEFAULT_FREQS,
+    *,
+    lam: float = DEFAULT_LAM_V,
+    sr: int = DEFAULT_SR,
+    bits: int | None = None,
+    seed: int = 7,
 ) -> list[FailCell]:
-    return [eval_cell(a, f, lam=lam, sr=sr) for a in amps for f in freqs]
+    return [eval_cell(a, f, lam=lam, sr=sr, bits=bits, seed=seed) for a in amps for f in freqs]
+
+
+DEFAULT_BITS = (4, 6, 8, 12, 16, 24)
+
+
+def run_quant_sweep(
+    bits_list=DEFAULT_BITS,
+    amps=DEFAULT_AMPS,
+    freqs=DEFAULT_FREQS,
+    *,
+    lam: float = DEFAULT_LAM_V,
+    sr: int = DEFAULT_SR,
+    seed: int = 7,
+) -> dict:
+    """Does ADC resolution move the slew edge? One summary row per bit depth, plus
+    the ideal (unquantized) row for reference. `rule_agrees` uses the plain slew
+    rule max|Δx| < λ; `tight_rule_agrees` uses the worst-case max|Δx| < λ − Δ.
+    """
+    rows = []
+    for bits in (None, *bits_list):
+        cells = run_failmap(amps, freqs, lam=lam, sr=sr, bits=bits, seed=seed)
+        s = summarize(cells)
+        step = None if bits is None else lam / 2 ** (bits - 1)
+        s["bits"] = bits
+        s["step_V"] = step
+        s["tight_rule_agrees"] = (
+            None if step is None else sum((c.max_dx_V < lam - step) == c.recovered_ok for c in cells)
+        )
+        rows.append(s)
+    return {"lam_V": lam, "sr": sr, "seed": seed, "rows": rows}
+
+
+def format_quant_sweep(sweep: dict) -> str:
+    hdr = " bits  step(V)  ok  fail  rule  tight  flagged  SILENT  slipFA  edge-on-ok"
+    lines = [hdr, "-" * len(hdr)]
+    for r in sweep["rows"]:
+        b = "ideal" if r["bits"] is None else f"{r['bits']:>5}"
+        st = "     -" if r["step_V"] is None else f"{r['step_V']:>7.4f}"
+        tight = "   -" if r["tight_rule_agrees"] is None else f"{r['tight_rule_agrees']:>4}"
+        lines.append(f"{b:>5} {st:>8} {r['recovered_ok']:>3} {r['failed']:>5} {r['rule_agrees_with_outcome']:>5} "
+                     f"{tight:>6} {r['fails_flagged']:>8} {r['fails_silent']:>7} {r['slip_false_alarms_on_ok']:>7} "
+                     f"{r['edge_warnings_on_ok']:>11}")
+    n = sweep["rows"][0]["cells"]
+    lines.append(f"{n} cells per row. rule = plain slew rule matches outcome; tight = worst-case rule (λ−step) matches.")
+    return "\n".join(lines)
 
 
 def summarize(cells: list[FailCell]) -> dict:
