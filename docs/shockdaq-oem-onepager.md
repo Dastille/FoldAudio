@@ -1,6 +1,6 @@
 # ShockDAQ — OEM one-pager (v0)
 
-**Date:** 2026-10-04 (ET)  
+**Date:** 2026-10-04 (ET); refreshed 2026-10-11 (ET) with fail-map, quantization and non-ideal numbers  
 **Ask:** design-win conversation with a vibration / DAQ OEM  
 **Public proof:** [Dastille/FoldAudio](https://github.com/Dastille/FoldAudio) (FoldAudio math)  
 **Company scout:** [`company-adoption-scout.md`](company-adoption-scout.md)
@@ -39,6 +39,20 @@ Source: `artifacts/shockdaq/metrics.json` from `python -m foldcrypt shockdaq-dem
 
 **Read for an OEM:** silent soft-clip lost multi-volt peaks; fold recovered them with negligible peak error and >100 dB SNR gain vs clip on these synthetic cases. The missing overload flag would have been **true** on both records.
 
+## Where fold breaks and whether it tells you (synthetic, refreshed 2026-10-11)
+
+All numbers below are **synthetic** ringing-impact bursts (peak 6–40 V, ring 0.5–12 kHz, sr 51.2 kHz, λ = 5 V *assumed*, blind recovery with no original). **No real IEPE capture yet.** Detail: [`shockdaq-failmap.md`](shockdaq-failmap.md).
+
+| Question | Result (synthetic) |
+|---|---|
+| Spec line for the limit | **max slew < λ × sample rate** (5 V, 51.2 kHz → 256,000 V/s; pure sine: peak V × Hz < ~40,700). Predicted 280/280 cells (56 cells × 5 seeds). Doubling sr doubles the allowed slew. |
+| When it fails, is it silent? | **No: 166/166 failures self-flagged** (slip + edge checks, capture-only, no original), 0 silent, 0 slip false alarms. |
+| ADC resolution 4–24 bit | **Does not move the slew edge**; same cells fail at every depth, 0 silent. Costs one LSB of resolution, not range. |
+| Sensor noise (SNR 60→0 dB vs burst RMS) | Rule on the noisy input still 280/280; **0 silent**. Noise eats slew margin: a noiseless-spec rule drops to 266/280 at 10 dB and 219/280 at 0 dB SNR. Derate the slew spec by several σ of front-end noise. |
+| Fold/ADC non-idealities (wrap gain mismatch, threshold error, offset, INL; 24 configs × 280 cells) | **0 silent unwrap failures, 0 slip false alarms.** But these cost **unflagged accuracy on overloaded peaks**: error ≈ g of peak for gain mismatch g; e·λ, o·λ, a·λ for threshold / offset / INL. ≤ 1 % of peak needs each ≲ 0.5–1 % (calibration). |
+
+**Honest read:** fold is exact inside its slew limit, loud outside it, and ADC bit depth and sensor noise do not break that honesty. The one thing the self-checks cannot see is a slightly mis-calibrated fold step (small, bounded peak error) — that is a calibration spec, which is a normal DAQ conversation.
+
 ## Honest limits
 
 - **Synthetic only** — not yet proven on a real IEPE capture or named DAQ card.
@@ -51,7 +65,7 @@ Source: `artifacts/shockdaq/metrics.json` from `python -m foldcrypt shockdaq-dem
 ## Next ask
 
 1. One design-win conversation: vibration/DAQ OEM firmware or AFE lead.
-2. Weekday slices: listen/plot fail cases; ~~absolute-level prior without original~~ (done 2026-10-06); one real WAV / IEPE capture if supplied.
+2. Slices: ~~fail cases~~, ~~absolute-level prior~~, ~~quantization~~, ~~noise + non-ideal ADC~~ (done); fold-step calibration; one real WAV / IEPE capture if supplied.
 3. Cost story vs dual-range / dual-gain on mid-tier nodes.
 
 **Contact path:** Ashlynn via the FoldAudio repo maintainers (`Dastille`).

@@ -26,13 +26,14 @@ def itoh_unwrap(y_lam: np.ndarray, lam: float) -> np.ndarray:
     is resolved later by trying a few integer offsets at detection time.
     """
     y = np.asarray(y_lam, dtype=float)
+    if len(y) == 0:
+        return y.copy()
+    # Vectorized: wrap each consecutive difference into (−λ, λ], then cumulate.
+    d = np.diff(y)
+    d = d - 2.0 * lam * np.round(d / (2.0 * lam))
     out = np.empty_like(y)
     out[0] = y[0]
-    for i in range(1, len(y)):
-        d = y[i] - y[i - 1]
-        # Bring difference into (−λ, λ] by subtracting 2λ wraps
-        d = d - 2.0 * lam * np.round(d / (2.0 * lam))
-        out[i] = out[i - 1] + d
+    out[1:] = y[0] + np.cumsum(d)
     return out
 
 

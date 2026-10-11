@@ -88,3 +88,69 @@ Caveats: single noise seed (7) in the CLI sweep (an ad-hoc 5-seed run for
 3–24 bits showed the same pattern — 0 silent failures at every depth; plain rule
 matched 280/280 from 4 bits up, 275/280 at 3 bits); quantizer is the ideal
 mid-riser in `modulo.py`, no ADC nonlinearity, no thermal/clock noise.
+
+## Non-ideal front end (2026-10-11 Sunday hard push, NOTES #6)
+
+Question: with sensor noise and a sloppy modulo-ADC, does the slew rule still
+predict failure, and do failures still announce themselves? Run
+`python -m foldcrypt shockdaq-failmap --nonideal` →
+`artifacts/shockdaq/nonidealmap.json` (24 configs × 56 cells × 5 seeds = 280 cells
+per config, ~20 s CPU). **All synthetic**; the non-idealities are a toy model,
+not a measured part:
+
+| Effect | Model |
+|---|---|
+| sensor/electronic noise | white Gaussian before the fold, SNR vs the burst's RMS (σ = rms/10^(SNR/20)) |
+| gain mismatch *g* | fold subtracts 2λ(1+g) per wrap, recovery assumes 2λ |
+| wrap-threshold error *e* | wrap fires at λ(1−e); spill beyond the ADC rail clips |
+| offset *o* | quantizer DC offset o·λ (excluded from the accuracy error — a plain ADC has it too) |
+| INL *a* | smooth bow a·λ·sin(πy/λ) on the folded value |
+| combo-mild / combo-bad | 60 dB + g .1 % + e .5 % + o .5 % + INL .2 % + 16-bit / 40 dB + g .5 % + e 1 % + o 1 % + INL 1 % + 12-bit |
+
+"ok" = no unwrap slip (max error < λ). "accurate" = ok **and** max error ≤ 1 % of
+the true peak.
+
+### Results (280 cells per config; full table in the CLI output)
+
+- **Unwrap failures stay loud: 0 silent failures and 0 slip false alarms in all
+  24 configs** (every failure caught by the slip and/or edge check). No new
+  silent-failure mode found.
+- **Sensor noise does not break the slew rule; it moves the edge.** The rule
+  applied to the input the fold actually saw (noise included) predicts 280/280
+  at every noise level. But the *spec-sheet* rule on the noiseless signal
+  degrades: 279/280 at 40 dB, 266/280 at 10 dB, 219/280 at 0 dB SNR. Rough
+  numbers: a cell sitting right at the edge (max step 4.99 V of 5) flips at
+  σ ≈ 5 mV (0.1 % of λ); cells with 4.3 V steps flip at σ ≈ 90–160 mV
+  (2–3 % of λ). Noise costs slew margin only — the recovered waveform equals the noisy
+  input exactly (0 V fold error).
+  Practical line: derate the slew spec by several σ of the front-end noise
+  (noise std σ → steps can grow by ~4–6 σ over a long record).
+- **Fold/ADC errors cost accuracy, not honesty.** Recovery never slips because of
+  them, but the recovered peaks carry a bounded, **unflagged** error:
+  - wrap-threshold error *e* and offset *o*: max error = |e|·λ, |o|·λ
+    (2 % → 0.1 V; 10 % → 0.5 V),
+  - INL *a*: max error = a·λ,
+  - gain mismatch *g*: staircase of 2λ·g per wrap crossed, so peak error ≈ g
+    of the peak (1 % → ~1–2 % of peak, 5 % → up to ~10 %; −5 % worst 2.0 V on
+    a 40 V burst).
+  Thresholds for ≤ 1 % of peak: g ≲ 0.5 %, e ≲ 1 %, o ≲ 1 %, INL ≲ 1 % (combo-mild
+  passes everywhere; combo-bad: 40/112 recovered cells within 1 %, worst 1.9 %).
+  This is the same class as ordinary ADC gain/offset/INL specs — but only on
+  overloaded samples — and the current blind checks **cannot see it**
+  (a wrap-count-proportional error returns to zero at baseline). It needs
+  factory calibration of the fold step, not a self-flag.
+- **INL nudges the slew edge** (bow slope 1+π·a at mid-scale shrinks the limit
+  by ~π·a): the plain rule says "ok" for 12 cells (of 6,720 non-ideal cells) that
+  actually slipped — all in the INL / combo configs, all flagged. A derated rule
+  λ·(1 − 2|g| − |e| − |o| − π·a) never called a failing cell "ok" (0 of 6,720) at
+  the price of being conservative (69 cells that still recovered were called "no").
+- Edge warnings on recovered cells rise with noise (up to 15/114 at 15 dB) —
+  nuisance warnings, not slips; slip false alarms stay 0.
+
+### New limits to state to an OEM
+
+1. Spec the slew limit with margin for front-end noise σ and fold errors.
+2. Fold-step gain error, wrap threshold and offset must be calibrated to ≲ 0.5–1 %
+   for ≤ 1 %-of-peak overload accuracy; they are not self-detectable by the
+   current blind flags.
+3. Still no real IEPE capture; λ = 5 V and every number above is synthetic.

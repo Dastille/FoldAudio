@@ -13,7 +13,14 @@ from .defect_mask import defect_decrypt, defect_encrypt, flip_bits
 from .recovery_shares import PARAMS, corrupt_share, recover_secret, split_secret
 from .foldaudio import DEFAULT_LAM, format_snr_table, run_audio_demo
 from .shockdaq import DEFAULT_LAM_V, format_shockdaq_table, run_shockdaq_demo
-from .failmap import format_failmap, format_quant_sweep, run_failmap_report, run_quant_sweep
+from .failmap import (
+    format_failmap,
+    format_nonideal_sweep,
+    format_quant_sweep,
+    run_failmap_report,
+    run_nonideal_sweep,
+    run_quant_sweep,
+)
 from .simulate import format_ser_table, run_ser_table
 from .unfold_detect import unfold_then_detect
 from .wrapcancel import wrapcancel_detect, block_mahalanobis_detect
@@ -213,6 +220,18 @@ def cmd_shockdaq_failmap(args: argparse.Namespace) -> int:
         qsilent = sum(r["fails_silent"] + r["slip_false_alarms_on_ok"] for r in sweep["rows"])
         ok = ok and qsilent == 0
         print(f"  quantmap={'OK (no silent fails, no slip false alarms at any bit depth)' if qsilent == 0 else 'SILENT FAILS PRESENT'}")
+    if args.nonideal:
+        import json
+        from pathlib import Path
+        sweep = run_nonideal_sweep(lam=args.lam, sr=args.sr)
+        print("\nNon-ideal front-end sweep — sensor noise + fold/ADC errors (synthetic; ok = no unwrap slip)")
+        print(format_nonideal_sweep(sweep))
+        out = Path(__file__).resolve().parents[1] / "artifacts" / "shockdaq" / "nonidealmap.json"
+        out.write_text(json.dumps({k: v for k, v in sweep.items() if k != "cells"}, indent=2) + "\n")
+        print("  artifact → artifacts/shockdaq/nonidealmap.json")
+        nbad = sum(r["fails_silent"] + r["slip_false_alarms_on_ok"] for r in sweep["rows"])
+        ok = ok and nbad == 0
+        print(f"  nonidealmap={'OK (0 silent unwrap fails, 0 slip false alarms in every config)' if nbad == 0 else 'SILENT FAILS PRESENT'}")
     return 0 if ok else 1
 
 
@@ -284,6 +303,8 @@ def main(argv: list[str] | None = None) -> int:
     fm.add_argument("--lam", type=float, default=DEFAULT_LAM_V, help="soft-sat rail λ in volts (default 5.0)")
     fm.add_argument("--sr", type=int, default=51200, help="sample rate (51.2 kHz-style default)")
     fm.add_argument("--quant", action="store_true", help="also sweep ADC bit depth (4..24 bits)")
+    fm.add_argument("--nonideal", action="store_true",
+                    help="also sweep sensor noise + fold/ADC non-idealities (gain, threshold, offset, INL)")
     fm.set_defaults(func=cmd_shockdaq_failmap)
 
     au = sub.add_parser("audio-demo", help="FoldAudio: fold vs hard-clip SNR on synthetic WAVs")

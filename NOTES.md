@@ -23,6 +23,8 @@
 - **UNREC in demo** (2026-10-08 weekday slice) — `shockdaq-demo` now has an `overload_unrecoverable` (`UNREC`) column from blind slip/edge checks (moved to `blind_level.py`, re-exported by `failmap`). New deliberate past-limit case `impact_too_fast` (60 V ring, maxΔ 7.4 V > λ): fold −31 dB (worse than clip +2 dB) but flagged `SLIP+EDGE`; good cases read `no`. Demo exits non-zero on any silent fail or slip false alarm. 55 tests.
 - **Quantization** (2026-10-09 weekday slice) — `shockdaq-failmap --quant` / `failmap.run_quant_sweep`: 4–24-bit modulo-ADC through the same grid; slew edge does not move (rule 56/56 at every depth), 0 silent fails, 0 slip false alarms. 57 tests.
 
+- **Non-ideal front end** (2026-10-11 Sunday hard push) — `shockdaq-failmap --nonideal` / `failmap.run_nonideal_sweep`: sensor noise (60→0 dB SNR) + fold gain mismatch, wrap-threshold error, offset, INL, combos × 5 seeds. 0 silent unwrap fails and 0 slip false alarms in all 24 configs. Rule on the noisy input 280/280; spec-sheet (noiseless) rule slips to 219/280 at 0 dB. New honest limit: fold gain/threshold/offset/INL errors give bounded UNFLAGGED peak error (≈ g of peak; e·λ, o·λ, a·λ) — needs calibration, not a flag. `itoh_unwrap` vectorized (same output, ~50× faster). OEM one-pager refreshed with fail-map + quant + non-ideal numbers (synthetic). 63 tests.
+
 ## Next slices (weekday-sized, soft freeze)
 
 1. ~~**Listen / plot fail cases**~~ — done 2026-10-07 (`failmap.py`, slew rule + self-flags).
@@ -31,7 +33,10 @@
 
 4. ~~**Wire slip/edge flags into `shockdaq-demo`**~~ — done 2026-10-08 (`UNREC` column + `impact_too_fast` case).
 5. ~~**Quantization in the fail map**~~ — done 2026-10-09 (`--quant`, `run_quant_sweep`).
-6. **Next:** real IEPE/WAV capture (#3) if supplied; else sensor-noise + non-ideal ADC (INL) in the sweep, or refresh whitepaper/OEM one-pager with fail-map + quantization numbers.
+6. ~~**Sensor noise + non-ideal ADC in the sweep**~~ — done 2026-10-11 (`--nonideal`); OEM one-pager refreshed.
+7. **Next (light):** blind/factory calibration of the fold step (estimate gain mismatch g from known quiet→overload→quiet records; target ≤ 0.1 % residual) — closes the one unflagged-accuracy gap.
+8. **Next (light):** noise-aware slew rule (margin = k·σ) fitted properly; real-time flag logic sketch (fall back to clipped value when UNREC).
+9. **Still #3:** real IEPE/WAV capture if supplied — the only thing that turns "synthetic" into evidence. Refresh the FoldAudio whitepaper with the fail-map numbers once #3 or an OEM reply lands.
 
 ## Do not do
 

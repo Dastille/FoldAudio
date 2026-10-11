@@ -23,6 +23,10 @@ would have. The point for a DAQ buyer: when fold fails, does it fail LOUDLY
 Quantization (NOTES #5, 2026-10-09): run_quant_sweep re-runs the grid through an
 N-bit modulo-ADC (modulo.quantize_folded) — see docs/shockdaq-failmap.md.
 
+Non-ideal front end (NOTES #6, 2026-10-11): run_nonideal_sweep adds sensor noise
+and fold/ADC non-idealities (wrap gain mismatch, wrap-threshold error, offset, INL
+bow) — see docs/shockdaq-failmap.md.
+
 ASSUMPTIONS (named): synthetic ringing burst (same shape family as
 shockdaq.gen_impact_transient: fundamental + 0.4× at 2.1 f, noise 1.5 % λ);
 quantization only in run_quant_sweep (default grid is ideal); λ is a demo rail, not an OEM part. CPU only, numpy only.
@@ -185,6 +189,203 @@ def format_quant_sweep(sweep: dict) -> str:
                      f"{r['edge_warnings_on_ok']:>11}")
     n = sweep["rows"][0]["cells"]
     lines.append(f"{n} cells per row. rule = plain slew rule matches outcome; tight = worst-case rule (λ−step) matches.")
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Non-ideal front end (NOTES #6, 2026-10-11 Sunday hard push)
+# ---------------------------------------------------------------------------
+#
+# Model (all SYNTHETIC, all named — not any OEM part):
+#   noise_snr_db  additive white Gaussian sensor/electronic noise added BEFORE the
+#                 fold; σ = rms(clean x) / 10^(SNR/20). Truth = the noisy input
+#                 (the fold sees it; recovery can't remove noise, only unwrap it).
+#   gain_err  g   fold subtracts 2λ(1+g) per wrap while recovery assumes 2λ
+#                 ("gain mismatch between fold and quantizer"). Leaves a
+#                 2λ·g staircase error per wrap crossed, and for g>0 the folded
+#                 value can land below −λ (outside ADC range → clips).
+#   thresh_err e  wrap threshold sits at λ(1−e) instead of λ (comparator/
+#                 reference error). Folded value then spills outside the ADC range
+#                 by up to λ·|e| on one side and is clipped there.
+#   offset    o   quantizer DC offset o·λ added to the folded value (then ADC clip);
+#                 excluded from the accuracy error (a plain ADC has it too).
+#   inl       a   smooth INL bow a·λ·sin(π y/λ) on the folded value (zero at ±λ).
+#   bits          optional N-bit quantizer (modulo.quantize_folded).
+# ADC clip: folded value outside [−λ, λ) saturates at the ADC rails.
+
+NONIDEAL_OK_BAR_FRAC = 0.01  # "accurate" = max error <= 1 % of true peak
+
+
+@dataclass(frozen=True)
+class NonIdeal:
+    name: str = "ideal"
+    noise_snr_db: float | None = None
+    gain_err: float = 0.0
+    thresh_err: float = 0.0
+    offset: float = 0.0
+    inl: float = 0.0
+    bits: int | None = None
+
+
+def nonideal_fold(x: np.ndarray, lam: float, ni: NonIdeal) -> np.ndarray:
+    """Fold x through the non-ideal modulo front end described above."""
+    x = np.asarray(x, dtype=float)
+    m = np.floor((x + lam * (1.0 - ni.thresh_err)) / (2.0 * lam))
+    y = x - 2.0 * lam * (1.0 + ni.gain_err) * m
+    y = y + ni.offset * lam
+    y = np.clip(y, -lam, lam - 1e-12)  # ADC rails
+    if ni.inl:
+        y = y + ni.inl * lam * np.sin(np.pi * y / lam)
+    if ni.bits is not None:
+        y, _ = quantize_folded(y, lam, ni.bits)
+    return y
+
+
+@dataclass
+class NonIdealCell:
+    config: str
+    amp_V: float
+    f_ring_Hz: float
+    seed: int
+    sigma_V: float
+    max_dx_V: float            # max |Δ| of the (noisy) input the fold actually saw
+    max_dx_clean_V: float      # same, before noise was added
+    predicted_ok: bool         # plain slew rule on the noisy input: max_dx < λ
+    clean_rule_ok: bool        # slew rule on the noiseless burst (what a spec sheet would say)
+    derated_ok: bool           # max_dx < λ(1 − 2|g| − |e| − |o| − π·inl): rule derated for fold errors
+    recovered_ok: bool         # no unwrap slip: max|rec − truth| < λ
+    err_peak_V: float          # max |rec − truth|
+    peak_err_frac: float       # err_peak / true peak
+    accurate: bool             # recovered_ok and peak_err_frac <= 1 %
+    slip_flag: bool
+    edge_flag: bool
+
+    @property
+    def silent_fail(self) -> bool:
+        return (not self.recovered_ok) and not (self.slip_flag or self.edge_flag)
+
+    @property
+    def silent_inaccurate(self) -> bool:
+        """Recovered with no slip but off by > 1 % of peak, and nothing flagged."""
+        return self.recovered_ok and not self.accurate and not (self.slip_flag or self.edge_flag)
+
+
+def eval_nonideal_cell(
+    amp: float,
+    f_ring: float,
+    ni: NonIdeal,
+    *,
+    lam: float = DEFAULT_LAM_V,
+    sr: int = DEFAULT_SR,
+    seed: int = 7,
+) -> NonIdealCell:
+    x_clean = ring_burst(sr, amp=amp, f_ring=f_ring, lam=lam, seed=seed)
+    sigma = 0.0
+    x = x_clean
+    if ni.noise_snr_db is not None:
+        sigma = float(np.sqrt(np.mean(x_clean**2)) / 10 ** (ni.noise_snr_db / 20.0))
+        rng = np.random.default_rng(10_000 + seed)
+        x = x_clean + sigma * rng.standard_normal(len(x_clean))
+    y = nonideal_fold(x, lam, ni)
+    rec, _k = recover_blind(y, lam, prior="quiet_window")
+    dx = max_sample_jump(x)
+    dx_clean = max_sample_jump(x_clean)
+    # Truth includes the quantizer's constant DC offset: a plain ADC has that error
+    # too, so it is not fold-attributable (IEPE is AC-coupled anyway).
+    err = float(np.max(np.abs(rec - (x + ni.offset * lam))))
+    peak = float(np.max(np.abs(x)))
+    derate = 1.0 - 2.0 * abs(ni.gain_err) - abs(ni.thresh_err) - abs(ni.offset) - np.pi * abs(ni.inl)
+    ok = bool(err < lam)
+    frac = err / peak if peak > 0 else 0.0
+    return NonIdealCell(
+        config=ni.name, amp_V=amp, f_ring_Hz=f_ring, seed=seed, sigma_V=sigma,
+        max_dx_V=dx, max_dx_clean_V=dx_clean,
+        predicted_ok=bool(dx < lam), clean_rule_ok=bool(dx_clean < lam),
+        derated_ok=bool(dx < lam * derate),
+        recovered_ok=ok, err_peak_V=err, peak_err_frac=frac,
+        accurate=bool(ok and frac <= NONIDEAL_OK_BAR_FRAC),
+        slip_flag=slip_flag(rec, lam), edge_flag=edge_flag(y, lam),
+    )
+
+
+def default_nonideal_configs() -> list[NonIdeal]:
+    """One-factor-at-a-time sweeps plus two combined rows."""
+    cfgs = [NonIdeal("ideal")]
+    cfgs += [NonIdeal(f"noise {s:g} dB", noise_snr_db=s) for s in (60, 40, 30, 20, 15, 10, 5, 0)]
+    cfgs += [NonIdeal(f"gain {g:+.1%}", gain_err=g) for g in (-0.05, -0.01, 0.001, 0.01, 0.05)]
+    cfgs += [NonIdeal(f"thresh {e:+.0%}", thresh_err=e) for e in (-0.10, -0.02, 0.02, 0.10)]
+    cfgs += [NonIdeal(f"offset {o:+.0%}", offset=o) for o in (0.02, 0.10)]
+    cfgs += [NonIdeal(f"inl {a:.0%}", inl=a) for a in (0.01, 0.02, 0.05)]
+    cfgs += [
+        NonIdeal("combo-mild", noise_snr_db=60, gain_err=0.001, thresh_err=0.005, offset=0.005, inl=0.002, bits=16),
+        NonIdeal("combo-bad", noise_snr_db=40, gain_err=0.005, thresh_err=0.01, offset=0.01, inl=0.01, bits=12),
+    ]
+    return cfgs
+
+
+def summarize_nonideal(cells: list[NonIdealCell]) -> dict:
+    n = len(cells)
+    fails = [c for c in cells if not c.recovered_ok]
+    ok_cells = [c for c in cells if c.recovered_ok]
+    return {
+        "cells": n,
+        "recovered_ok": len(ok_cells),
+        "failed": len(fails),
+        "rule_agrees": sum(c.predicted_ok == c.recovered_ok for c in cells),
+        "clean_rule_agrees": sum(c.clean_rule_ok == c.recovered_ok for c in cells),
+        "derated_rule_agrees": sum(c.derated_ok == c.recovered_ok for c in cells),
+        "fails_flagged": sum(c.slip_flag or c.edge_flag for c in fails),
+        "fails_silent": sum(c.silent_fail for c in cells),
+        "slip_false_alarms_on_ok": sum(c.slip_flag for c in ok_cells),
+        "edge_warnings_on_ok": sum(c.edge_flag for c in ok_cells),
+        "accurate": sum(c.accurate for c in cells),
+        "inaccurate_but_recovered": sum(c.recovered_ok and not c.accurate for c in cells),
+        "silent_inaccurate": sum(c.silent_inaccurate for c in cells),
+        "median_peak_err_frac_on_ok": float(np.median([c.peak_err_frac for c in ok_cells])) if ok_cells else None,
+    }
+
+
+NONIDEAL_SEEDS = (7, 8, 9, 10, 11)
+
+
+def run_nonideal_sweep(
+    configs: list[NonIdeal] | None = None,
+    amps=DEFAULT_AMPS,
+    freqs=DEFAULT_FREQS,
+    *,
+    seeds=NONIDEAL_SEEDS,
+    lam: float = DEFAULT_LAM_V,
+    sr: int = DEFAULT_SR,
+) -> dict:
+    """Run the amp x freq grid through each non-ideal config (x seeds)."""
+    configs = configs if configs is not None else default_nonideal_configs()
+    rows, all_cells = [], []
+    for ni in configs:
+        cells = [eval_nonideal_cell(a, f, ni, lam=lam, sr=sr, seed=sd)
+                 for sd in seeds for a in amps for f in freqs]
+        s = summarize_nonideal(cells)
+        s["config"] = ni.name
+        s["params"] = {k: v for k, v in asdict(ni).items() if k != "name"}
+        s["median_sigma_V"] = float(np.median([c.sigma_V for c in cells]))
+        rows.append(s)
+        all_cells.extend(cells)
+    return {"lam_V": lam, "sr": sr, "seeds": list(seeds), "rows": rows, "cells": all_cells}
+
+
+def format_nonideal_sweep(sweep: dict) -> str:
+    hdr = ("config            ok  fail  rule  clean  derated  flagged  SILENT  slipFA  edge-on-ok  "
+           "accurate  off>1%pk-unflagged")
+    lines = [hdr, "-" * len(hdr)]
+    for r in sweep["rows"]:
+        lines.append(f"{r['config']:<16} {r['recovered_ok']:>4} {r['failed']:>5} {r['rule_agrees']:>5} "
+                     f"{r['clean_rule_agrees']:>6} {r['derated_rule_agrees']:>8} {r['fails_flagged']:>8} "
+                     f"{r['fails_silent']:>7} {r['slip_false_alarms_on_ok']:>7} {r['edge_warnings_on_ok']:>11} "
+                     f"{r['accurate']:>9} {r['silent_inaccurate']:>12}")
+    n = sweep["rows"][0]["cells"]
+    lines.append(f"{n} cells per row ({len(sweep['seeds'])} seed(s)). rule = slew rule on the noisy input; "
+                 "clean = rule on noiseless burst; derated = rule with λ shrunk by fold errors.")
+    lines.append("ok = no unwrap slip (max error < λ); accurate = ok AND max error ≤ 1 % of peak; "
+                 "off>1%pk-unflagged = recovered (no slip) but >1 % of peak off and unflagged (an accuracy limit, not an unwrap failure).")
     return "\n".join(lines)
 
 
