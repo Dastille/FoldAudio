@@ -50,8 +50,9 @@ All numbers below are **synthetic** ringing-impact bursts (peak 6–40 V, ring 0
 | ADC resolution 4–24 bit | **Does not move the slew edge**; same cells fail at every depth, 0 silent. Costs one LSB of resolution, not range. |
 | Sensor noise (SNR 60→0 dB vs burst RMS) | Rule on the noisy input still 280/280; **0 silent**. Noise eats slew margin: a noiseless-spec rule drops to 266/280 at 10 dB and 219/280 at 0 dB SNR. Derate the slew spec by several σ of front-end noise. |
 | Fold/ADC non-idealities (wrap gain mismatch, threshold error, offset, INL; 24 configs × 280 cells) | **0 silent unwrap failures, 0 slip false alarms.** But these cost **unflagged accuracy on overloaded peaks**: error ≈ g of peak for gain mismatch g; e·λ, o·λ, a·λ for threshold / offset / INL. ≤ 1 % of peak needs each ≲ 0.5–1 % (calibration). |
+| One-tone calibration (2026-10-12): 159.2 Hz test tone, 1 s, ≥ 60 dB | Estimates fold-step gain to ±0.0003 and INL bow. After it, gain −1 %, INL 2 % and INL 5 % are accurate in every recoverable cell (114/114); **0 invisible > 1 % errors in any config** (was 304). Remaining error only where the fold step pushed samples past the ADC rail — visible in the capture. Design rule: trim the fold step short (g ≤ 0), never long. |
 
-**Honest read:** fold is exact inside its slew limit, loud outside it, and ADC bit depth and sensor noise do not break that honesty. The one thing the self-checks cannot see is a slightly mis-calibrated fold step (small, bounded peak error) — that is a calibration spec, which is a normal DAQ conversation.
+**Honest read:** fold is exact inside its slew limit, loud outside it, and ADC bit depth and sensor noise do not break that honesty. The one thing the self-checks cannot see is a slightly mis-calibrated fold step (small, bounded peak error) — and a one-tone factory calibration now removes it (synthetic), leaving only rail-clipped samples that the capture itself shows.
 
 ## Honest limits
 
@@ -65,7 +66,7 @@ All numbers below are **synthetic** ringing-impact bursts (peak 6–40 V, ring 0
 ## Next ask
 
 1. One design-win conversation: vibration/DAQ OEM firmware or AFE lead.
-2. Slices: ~~fail cases~~, ~~absolute-level prior~~, ~~quantization~~, ~~noise + non-ideal ADC~~ (done); fold-step calibration; one real WAV / IEPE capture if supplied.
+2. Slices: ~~fail cases~~, ~~absolute-level prior~~, ~~quantization~~, ~~noise + non-ideal ADC~~, ~~fold-step calibration~~ (done); one real WAV / IEPE capture if supplied.
 3. Cost story vs dual-range / dual-gain on mid-tier nodes.
 
 **Contact path:** Ashlynn via the FoldAudio repo maintainers (`Dastille`).

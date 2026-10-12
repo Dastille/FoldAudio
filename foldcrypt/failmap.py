@@ -40,7 +40,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .blind_level import EDGE_FRAC, edge_flag, recover_blind, slip_flag  # noqa: F401 (re-export)
+from .blind_level import EDGE_FRAC, edge_flag, inl_inverse, rail_mask, recover_blind, slip_flag  # noqa: F401 (re-export)
 from .foldaudio import fold_capture, max_sample_jump, snr_db
 from .modulo import quantize_folded
 from .shockdaq import DEFAULT_LAM_V, DEFAULT_SR
@@ -259,6 +259,7 @@ class NonIdealCell:
     accurate: bool             # recovered_ok and peak_err_frac <= 1 %
     slip_flag: bool
     edge_flag: bool
+    rail_hits: int = 0         # folded samples sitting at the ADC rails (clipped; visible in the capture)
 
     @property
     def silent_fail(self) -> bool:
@@ -269,6 +270,11 @@ class NonIdealCell:
         """Recovered with no slip but off by > 1 % of peak, and nothing flagged."""
         return self.recovered_ok and not self.accurate and not (self.slip_flag or self.edge_flag)
 
+    @property
+    def silent_inaccurate_no_rail(self) -> bool:
+        """silent_inaccurate AND no rail-clipped sample to explain it (truly invisible)."""
+        return self.silent_inaccurate and self.rail_hits == 0
+
 
 def eval_nonideal_cell(
     amp: float,
@@ -278,7 +284,11 @@ def eval_nonideal_cell(
     lam: float = DEFAULT_LAM_V,
     sr: int = DEFAULT_SR,
     seed: int = 7,
+    gain_cal: float = 0.0,
+    inl_cal: tuple = (),
 ) -> NonIdealCell:
+    """gain_cal = calibrated fold-step gain ĝ; inl_cal = calibrated INL harmonics
+    (volts, calibrate.estimate_front_end). Defaults = uncalibrated recovery."""
     x_clean = ring_burst(sr, amp=amp, f_ring=f_ring, lam=lam, seed=seed)
     sigma = 0.0
     x = x_clean
@@ -287,7 +297,8 @@ def eval_nonideal_cell(
         rng = np.random.default_rng(10_000 + seed)
         x = x_clean + sigma * rng.standard_normal(len(x_clean))
     y = nonideal_fold(x, lam, ni)
-    rec, _k = recover_blind(y, lam, prior="quiet_window")
+    y_in = inl_inverse(y, lam, inl_cal) if len(inl_cal) else y
+    rec, _k = recover_blind(y_in, lam, prior="quiet_window", fold_gain=gain_cal)
     dx = max_sample_jump(x)
     dx_clean = max_sample_jump(x_clean)
     # Truth includes the quantizer's constant DC offset: a plain ADC has that error
@@ -305,6 +316,7 @@ def eval_nonideal_cell(
         recovered_ok=ok, err_peak_V=err, peak_err_frac=frac,
         accurate=bool(ok and frac <= NONIDEAL_OK_BAR_FRAC),
         slip_flag=slip_flag(rec, lam), edge_flag=edge_flag(y, lam),
+        rail_hits=int(np.count_nonzero(rail_mask(y, lam, bits=ni.bits))),
     )
 
 
@@ -341,6 +353,7 @@ def summarize_nonideal(cells: list[NonIdealCell]) -> dict:
         "accurate": sum(c.accurate for c in cells),
         "inaccurate_but_recovered": sum(c.recovered_ok and not c.accurate for c in cells),
         "silent_inaccurate": sum(c.silent_inaccurate for c in cells),
+        "silent_inaccurate_no_rail": sum(c.silent_inaccurate_no_rail for c in cells),
         "median_peak_err_frac_on_ok": float(np.median([c.peak_err_frac for c in ok_cells])) if ok_cells else None,
     }
 
@@ -356,12 +369,23 @@ def run_nonideal_sweep(
     seeds=NONIDEAL_SEEDS,
     lam: float = DEFAULT_LAM_V,
     sr: int = DEFAULT_SR,
+    gain_cal: dict[str, float] | None = None,
+    inl_cal: dict[str, tuple] | None = None,
 ) -> dict:
-    """Run the amp x freq grid through each non-ideal config (x seeds)."""
+    """Run the amp x freq grid through each non-ideal config (x seeds).
+
+    gain_cal: optional {config name: ĝ} — recover that config with the calibrated
+    fold step (calibrate.run_calibration_sweep). Missing names use ĝ = 0.
+    inl_cal: optional {config name: INL harmonic coefs} — same idea for INL.
+    """
     configs = configs if configs is not None else default_nonideal_configs()
+    gain_cal = gain_cal or {}
+    inl_cal = inl_cal or {}
     rows, all_cells = [], []
     for ni in configs:
-        cells = [eval_nonideal_cell(a, f, ni, lam=lam, sr=sr, seed=sd)
+        gc = float(gain_cal.get(ni.name, 0.0))
+        cells = [eval_nonideal_cell(a, f, ni, lam=lam, sr=sr, seed=sd, gain_cal=gc,
+                                     inl_cal=tuple(inl_cal.get(ni.name, ())))
                  for sd in seeds for a in amps for f in freqs]
         s = summarize_nonideal(cells)
         s["config"] = ni.name

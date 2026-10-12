@@ -154,3 +154,56 @@ the true peak.
    for ≤ 1 %-of-peak overload accuracy; they are not self-detectable by the
    current blind flags.
 3. Still no real IEPE capture; λ = 5 V and every number above is synthetic.
+
+## Front-end calibration — fold-step gain + INL (2026-10-12 weekday slice)
+
+`python -m foldcrypt shockdaq-calibrate` (`foldcrypt/calibrate.py`, artifact
+`artifacts/shockdaq/calibration.json`). Closes NOTES #7: the unflagged accuracy
+error left by fold-step gain mismatch (and, it turns out, INL).
+
+**Method.** Inject a known 159.2 Hz test tone at 4λ peak for 1 s (electrical
+injection at the DAQ input — the accelerometer is not in the loop). Itoh-unwrap it
+with the nominal 2λ step and count wraps M. With gain error g the unwrap is
+exactly r = x − 2λ·g·M, so one linear least-squares fit of
+r ≈ a·sin + b·cos + c − 2λ·g·M + Σ α_k·sin(kπ·y/λ) (k = 1..3; rail-clipped
+samples excluded) gives ĝ and the INL bow α. Recovery then undoes INL on the
+folded samples and unwraps with the calibrated step 2λ(1+ĝ).
+
+**Estimate accuracy** (worst |ĝ − g| over g = ±0.1…5 %, ideal/16/12-bit, 3 seeds;
+target ≤ 1e-3): noiseless 3e-6, 80 dB 1e-5, **60 dB 3e-4 (meets)**, 40 dB 3e-2
+(misses), 20 dB 1.0 (Itoh fails). INL estimate within 0.0002·λ of truth.
+The INL terms matter: without them an INL bow of 5 % leaks into ĝ as +4.7 %.
+
+**Burst grid before → after calibration** (280 cells per row = 56 × 5 seeds; 114
+is the ceiling because the other 166 cells are past the slew limit):
+
+| config | accurate (≤ 1 % of peak) | unflagged > 1 %-off cells with **no** rail-clipped sample |
+|---|---|---|
+| gain −1 % | 21 → **114** | 68 → 0 |
+| gain −5 % | 5 → 89 | 75 → 0 |
+| gain +1 % | 27 → 63 | 5 → 0 |
+| gain +5 % | 7 → 5 (no help) | 0 → 0 |
+| INL 2 % | 40 → **114** | 64 → 0 |
+| INL 5 % | 15 → **114** | 84 → 0 |
+| combo-mild | 113 → 113 | 0 → 0 |
+| combo-bad | 40 → 36 (no help) | 3 → 0 |
+
+Still 0 silent unwrap failures and 0 slip false alarms in every row.
+
+**What it means.**
+- Negative gain error and INL are fully fixable by a one-tone factory/service
+  calibration. Across all rows, 304 truly invisible > 1 %-off cells become 0.
+- What calibration can't fix is samples the gain error pushed **past the ADC
+  rail** — their value is clipped and gone. For g > 0 that happens right after
+  every wrap, so a +5 % fold step stays inaccurate. Those cells are not silent,
+  though: the capture shows rail-clipped samples (`rail_hits`), so firmware can
+  mark the overloaded peaks "bounded accuracy". The rail check is conservative
+  (it also fires on many cells that were accurate, e.g. 43/46 in combo-mild).
+- **Design rule for an OEM:** trim the fold step slightly *short* (g ≤ 0) and
+  calibrate it; never long. Wrap-threshold and offset errors (combo-bad) also
+  clip at the rails and are not helped by this calibration.
+- Tried and rejected: estimating g blind from the impact burst itself (≈ 4 %
+  bias — the signal moves too much per sample), and interpolating over
+  rail-clipped samples (made fast bursts worse).
+- Still synthetic; λ = 5 V is an assumption, not an OEM part.
+

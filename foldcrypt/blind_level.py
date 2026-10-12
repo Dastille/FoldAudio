@@ -50,20 +50,48 @@ def recover_blind(
     *,
     prior: str = "zero_mean",
     win: int = 2048,
+    fold_gain: float = 0.0,
 ) -> tuple[np.ndarray, int]:
     """Itoh unwrap + pick the 2λ offset from an AC-coupling prior (no original).
 
     Returns (recovered, k). prior ∈ {"zero_mean", "quiet_window"}.
+
+    fold_gain = ĝ (2026-10-12 calibration slice): the front end's fold step is
+    2λ(1+ĝ) instead of 2λ (gain mismatch, see failmap.NonIdeal.gain_err). Wraps
+    are still *detected* with the 2λ Itoh rule, but each one is undone with the
+    calibrated step 2λ(1+ĝ). ĝ comes from calibrate.estimate_front_end.
+    fold_gain=0 is bit-identical to the uncalibrated path.
     """
-    y_hat = itoh_unwrap(np.asarray(y_folded, dtype=float), lam)
+    y = np.asarray(y_folded, dtype=float)
+    y_hat = itoh_unwrap(y, lam)
+    step = 2.0 * lam
+    if fold_gain:
+        wraps = np.round((y_hat - y) / (2.0 * lam))
+        step = 2.0 * lam * (1.0 + fold_gain)
+        y_hat = y + step * wraps
     if prior == "zero_mean":
         level = float(np.mean(y_hat))
     elif prior == "quiet_window":
         level = quietest_window_mean(y_hat, win)
     else:
         raise ValueError(f"unknown prior {prior!r}")
-    k = _offset_for_level(level, lam)
-    return y_hat + 2.0 * lam * k, k
+    k = int(np.round(-level / step))
+    return y_hat + step * k, k
+
+
+def inl_inverse(y_folded: np.ndarray, lam: float, coefs) -> np.ndarray:
+    """Undo a calibrated INL bow: y − Σ_k α_k·sin(kπ·y/λ) (coefs = α_1..α_K in volts)."""
+    y = np.asarray(y_folded, dtype=float)
+    out = y.copy()
+    for k, a in enumerate(coefs, start=1):
+        out -= a * np.sin(k * np.pi * y / lam)
+    return out
+
+
+def rail_mask(y_folded: np.ndarray, lam: float, *, bits: int | None = None) -> np.ndarray:
+    """Samples sitting at the ADC rails (value clipped; true folded value lies beyond)."""
+    tol = lam * 1e-9 + (lam / 2 ** (bits - 1) if bits else 0.0)
+    return np.abs(np.asarray(y_folded, dtype=float)) >= lam - tol
 
 
 def naive_k0(y_folded: np.ndarray, lam: float) -> np.ndarray:

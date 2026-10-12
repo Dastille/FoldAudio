@@ -235,6 +235,29 @@ def cmd_shockdaq_failmap(args: argparse.Namespace) -> int:
     return 0 if ok else 1
 
 
+def cmd_shockdaq_calibrate(args: argparse.Namespace) -> int:
+    """Front-end calibration (fold-step gain + INL) from an injected test tone."""
+    import json
+    from pathlib import Path
+
+    from .calibrate import CAL_TARGET_ABS_ERR, format_calibration, run_cal_snr_limit, run_calibration_sweep
+    sweep = run_calibration_sweep(lam=args.lam, sr=args.sr, cal_snr_db=args.cal_snr)
+    limit = run_cal_snr_limit(lam=args.lam, sr=args.sr)
+    print("ShockDAQ front-end calibration — fold-step gain + INL from a 159.2 Hz test tone (synthetic)")
+    print(format_calibration(sweep, limit))
+    out = Path(__file__).resolve().parents[1] / "artifacts" / "shockdaq" / "calibration.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps({**sweep, "snr_limit": limit}, indent=2) + "\n")
+    print("  artifact → artifacts/shockdaq/calibration.json")
+    est_ok = all(r["g_abs_err"] <= CAL_TARGET_ABS_ERR for r in sweep["rows"])
+    invisible = sum(r["invisible_inaccurate_after"] for r in sweep["rows"])
+    silent = sum(r["fails_silent_after"] + r["slip_false_alarms_after"] for r in sweep["rows"])
+    ok = est_ok and invisible == 0 and silent == 0
+    print(f"  calibration={'OK' if ok else 'WEAK'} (|ĝ−g| ≤ {CAL_TARGET_ABS_ERR:g} every row: {est_ok}; "
+          f"invisible >1 % errors after cal: {invisible}; silent unwrap fails / slip false alarms: {silent})")
+    return 0 if ok else 1
+
+
 def cmd_audio_demo(args: argparse.Namespace) -> int:
     """FoldAudio product trial: fold capture vs hard clip on synthetic WAVs."""
     rows = run_audio_demo(lam=args.lam, sr=args.sr)
@@ -306,6 +329,13 @@ def main(argv: list[str] | None = None) -> int:
     fm.add_argument("--nonideal", action="store_true",
                     help="also sweep sensor noise + fold/ADC non-idealities (gain, threshold, offset, INL)")
     fm.set_defaults(func=cmd_shockdaq_failmap)
+
+    ca = sub.add_parser("shockdaq-calibrate", help="ShockDAQ: calibrate fold-step gain + INL from a test tone")
+    ca.add_argument("--lam", type=float, default=DEFAULT_LAM_V, help="soft-sat rail λ in volts (default 5.0)")
+    ca.add_argument("--sr", type=int, default=51200, help="sample rate (51.2 kHz-style default)")
+    ca.add_argument("--cal-snr", type=float, default=60.0, dest="cal_snr",
+                    help="SNR (dB) of the injected calibration tone (default 60)")
+    ca.set_defaults(func=cmd_shockdaq_calibrate)
 
     au = sub.add_parser("audio-demo", help="FoldAudio: fold vs hard-clip SNR on synthetic WAVs")
     au.add_argument("--lam", type=float, default=DEFAULT_LAM, help="fold threshold λ")

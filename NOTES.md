@@ -25,6 +25,8 @@
 
 - **Non-ideal front end** (2026-10-11 Sunday hard push) — `shockdaq-failmap --nonideal` / `failmap.run_nonideal_sweep`: sensor noise (60→0 dB SNR) + fold gain mismatch, wrap-threshold error, offset, INL, combos × 5 seeds. 0 silent unwrap fails and 0 slip false alarms in all 24 configs. Rule on the noisy input 280/280; spec-sheet (noiseless) rule slips to 219/280 at 0 dB. New honest limit: fold gain/threshold/offset/INL errors give bounded UNFLAGGED peak error (≈ g of peak; e·λ, o·λ, a·λ) — needs calibration, not a flag. `itoh_unwrap` vectorized (same output, ~50× faster). OEM one-pager refreshed with fail-map + quant + non-ideal numbers (synthetic). 63 tests.
 
+- **Front-end calibration** (2026-10-12 weekday slice) — `shockdaq-calibrate` / `calibrate.py`: 159.2 Hz test tone at 4λ, one least-squares fit gives fold-step gain ĝ (worst |ĝ−g| 3e-4 at 60 dB; misses at 40 dB) + INL bow (k=1..3; without INL terms a 5 % bow leaks into ĝ as +4.7 %). `recover_blind(fold_gain=)` + `inl_inverse`. Gain −1 %, INL 2 %/5 % → 114/114 accurate; invisible >1 %-off cells 304 → 0 across all rows. Limit: g>0 and threshold/offset errors push samples past the ADC rail (clipped, unfixable) — visible as `rail_hits`. Design rule: trim fold step short, never long. Rejected: blind g from the burst (~4 % bias), rail interpolation (worse). 69 tests.
+
 ## Next slices (weekday-sized, soft freeze)
 
 1. ~~**Listen / plot fail cases**~~ — done 2026-10-07 (`failmap.py`, slew rule + self-flags).
@@ -34,7 +36,8 @@
 4. ~~**Wire slip/edge flags into `shockdaq-demo`**~~ — done 2026-10-08 (`UNREC` column + `impact_too_fast` case).
 5. ~~**Quantization in the fail map**~~ — done 2026-10-09 (`--quant`, `run_quant_sweep`).
 6. ~~**Sensor noise + non-ideal ADC in the sweep**~~ — done 2026-10-11 (`--nonideal`); OEM one-pager refreshed.
-7. **Next (light):** blind/factory calibration of the fold step (estimate gain mismatch g from known quiet→overload→quiet records; target ≤ 0.1 % residual) — closes the one unflagged-accuracy gap.
+7. ~~**Fold-step calibration**~~ — done 2026-10-12 (`shockdaq-calibrate`; gain + INL; rail_hits flag the rest).
+7b. **Next (light):** wire a `RAIL` column into `shockdaq-demo` / firmware flag sketch ("overload peak, bounded accuracy") so rail-clipped samples are reported, not just counted in the sweep.
 8. **Next (light):** noise-aware slew rule (margin = k·σ) fitted properly; real-time flag logic sketch (fall back to clipped value when UNREC).
 9. **Still #3:** real IEPE/WAV capture if supplied — the only thing that turns "synthetic" into evidence. Refresh the FoldAudio whitepaper with the fail-map numbers once #3 or an OEM reply lands.
 
