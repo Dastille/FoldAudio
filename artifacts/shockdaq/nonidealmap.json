@@ -23,6 +23,7 @@
       "accurate": 114,
       "inaccurate_but_recovered": 0,
       "silent_inaccurate": 0,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 5.116583164624092e-16,
       "config": "ideal",
       "params": {
@@ -49,6 +50,7 @@
       "accurate": 114,
       "inaccurate_but_recovered": 0,
       "silent_inaccurate": 0,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 5.614640058239241e-16,
       "config": "noise 60 dB",
       "params": {
@@ -75,6 +77,7 @@
       "accurate": 113,
       "inaccurate_but_recovered": 0,
       "silent_inaccurate": 0,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 5.64379338996466e-16,
       "config": "noise 40 dB",
       "params": {
@@ -101,6 +104,7 @@
       "accurate": 113,
       "inaccurate_but_recovered": 0,
       "silent_inaccurate": 0,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 5.230216859122887e-16,
       "config": "noise 30 dB",
       "params": {
@@ -127,6 +131,7 @@
       "accurate": 113,
       "inaccurate_but_recovered": 0,
       "silent_inaccurate": 0,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 5.274262260850172e-16,
       "config": "noise 20 dB",
       "params": {
@@ -153,6 +158,7 @@
       "accurate": 111,
       "inaccurate_but_recovered": 0,
       "silent_inaccurate": 0,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 5.846108817475397e-16,
       "config": "noise 15 dB",
       "params": {
@@ -179,6 +185,7 @@
       "accurate": 100,
       "inaccurate_but_recovered": 0,
       "silent_inaccurate": 0,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 8.168795032346723e-16,
       "config": "noise 10 dB",
       "params": {
@@ -205,6 +212,7 @@
       "accurate": 76,
       "inaccurate_but_recovered": 0,
       "silent_inaccurate": 0,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 1.0157703719064684e-15,
       "config": "noise 5 dB",
       "params": {
@@ -231,6 +239,7 @@
       "accurate": 53,
       "inaccurate_but_recovered": 0,
       "silent_inaccurate": 0,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 1.4590159715229914e-15,
       "config": "noise 0 dB",
       "params": {
@@ -257,6 +266,7 @@
       "accurate": 5,
       "inaccurate_but_recovered": 109,
       "silent_inaccurate": 95,
+      "silent_inaccurate_no_rail": 75,
       "median_peak_err_frac_on_ok": 0.05884805499829726,
       "config": "gain -5.0%",
       "params": {
@@ -283,6 +293,7 @@
       "accurate": 21,
       "inaccurate_but_recovered": 93,
       "silent_inaccurate": 86,
+      "silent_inaccurate_no_rail": 68,
       "median_peak_err_frac_on_ok": 0.011769610999659588,
       "config": "gain -1.0%",
       "params": {
@@ -309,6 +320,7 @@
       "accurate": 114,
       "inaccurate_but_recovered": 0,
       "silent_inaccurate": 0,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 0.0011769610999659169,
       "config": "gain +0.1%",
       "params": {
@@ -335,6 +347,7 @@
       "accurate": 27,
       "inaccurate_but_recovered": 87,
       "silent_inaccurate": 80,
+      "silent_inaccurate_no_rail": 5,
       "median_peak_err_frac_on_ok": 0.011744275422952923,
       "config": "gain +1.0%",
       "params": {
@@ -361,6 +374,7 @@
       "accurate": 7,
       "inaccurate_but_recovered": 107,
       "silent_inaccurate": 100,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 0.058401545151466144,
       "config": "gain +5.0%",
       "params": {
@@ -387,6 +401,7 @@
       "accurate": 4,
       "inaccurate_but_recovered": 110,
       "silent_inaccurate": 98,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 0.05665071734917243,
       "config": "thresh -10%",
       "params": {
@@ -413,6 +428,7 @@
       "accurate": 63,
       "inaccurate_but_recovered": 51,
       "silent_inaccurate": 48,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 0.009687976577855667,
       "config": "thresh -2%",
       "params": {
@@ -439,6 +455,7 @@
       "accurate": 71,
       "inaccurate_but_recovered": 43,
       "silent_inaccurate": 38,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 0.008258583690865762,
       "config": "thresh +2%",
       "params": {
@@ -465,6 +482,7 @@
       "accurate": 0,
       "inaccurate_but_recovered": 114,
       "silent_inaccurate": 106,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 0.05765341090922571,
       "config": "thresh +10%",
       "params": {
@@ -491,6 +509,7 @@
       "accurate": 62,
       "inaccurate_but_recovered": 52,
       "silent_inaccurate": 48,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 0.008607371213492114,
       "config": "offset +2%",
       "params": {
@@ -517,6 +536,7 @@
       "accurate": 3,
       "inaccurate_but_recovered": 111,
       "silent_inaccurate": 104,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 0.057530304573373964,
       "config": "offset +10%",
       "params": {
@@ -543,6 +563,7 @@
       "accurate": 106,
       "inaccurate_but_recovered": 5,
       "silent_inaccurate": 5,
+      "silent_inaccurate_no_rail": 5,
       "median_peak_err_frac_on_ok": 0.005931384612110033,
       "config": "inl 1%",
       "params": {
@@ -569,6 +590,7 @@
       "accurate": 40,
       "inaccurate_but_recovered": 71,
       "silent_inaccurate": 64,
+      "silent_inaccurate_no_rail": 64,
       "median_peak_err_frac_on_ok": 0.011862769224220646,
       "config": "inl 2%",
       "params": {
@@ -595,6 +617,7 @@
       "accurate": 15,
       "inaccurate_but_recovered": 95,
       "silent_inaccurate": 84,
+      "silent_inaccurate_no_rail": 84,
       "median_peak_err_frac_on_ok": 0.02961536881739245,
       "config": "inl 5%",
       "params": {
@@ -621,6 +644,7 @@
       "accurate": 113,
       "inaccurate_but_recovered": 0,
       "silent_inaccurate": 0,
+      "silent_inaccurate_no_rail": 0,
       "median_peak_err_frac_on_ok": 0.003418027894371572,
       "config": "combo-mild",
       "params": {
@@ -647,6 +671,7 @@
       "accurate": 40,
       "inaccurate_but_recovered": 72,
       "silent_inaccurate": 65,
+      "silent_inaccurate_no_rail": 3,
       "median_peak_err_frac_on_ok": 0.011608621052863147,
       "config": "combo-bad",
       "params": {

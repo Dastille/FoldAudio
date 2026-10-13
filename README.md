@@ -1,4 +1,24 @@
-# FoldCrypt
+# FoldAudio: modulo folding instead of hard clipping, for audio and vibration acquisition
+
+> **📄 Technical report (v1.0, 2026-10-13):** [**Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration**](docs/foldaudio-whitepaper.md)
+
+When a microphone or an IEPE accelerometer chain is overdriven, the converter clips and the peaks are lost, often with no flag. This repository simulates a different overload behaviour: values beyond ±λ **fold** (modulo wrap) back into range, and are then **unwrapped** in software. Recovery is exact while the slew rate stays below λ·f<sub>s</sub>. The absolute level is recovered blindly for AC-coupled signals. Each capture gets a self-diagnosed status (`UNRECOVERABLE` / `BOUNDED_ACCURACY` / `RECOVERED` / `IN_RANGE`), so failures are reported, not silent. Two configurations share one implementation: **FoldAudio** (audio, 48 kHz) and **ShockDAQ** (IEPE vibration/shock, 51.2 kHz).
+
+**Status:** every result is from synthetic signals in software. There is no hardware folding front end, and no measured data. See §8 *Limitations* in the report.
+
+Quick start:
+
+```bash
+pip install -e ".[dev]" && python -m pytest -q
+python -m foldcrypt audio-demo          # audio: fold vs hard clip
+python -m foldcrypt shockdaq-demo       # vibration: fold vs clip + capture status
+python -m foldcrypt shockdaq-failmap    # where recovery fails, and whether it is flagged
+python -m foldcrypt shockdaq-calibrate  # one-tone fold-step gain + INL calibration
+```
+
+---
+
+## Development notes
 
 **Plain-language first.** Company licensing bet + public math proof. **Not** Sigil, **not** Regenamatron, **not** production crypto, **not** wet-lab DNA, **not** a claim about a specific OEM ADC chip.
 
@@ -53,7 +73,7 @@ Artifacts → `artifacts/shockdaq/` (`.npy` + listening WAVs + `metrics.json`).
 | **WrapCancel / modulo / Itoh** | Engine (archived symbol-detect toys still in tree) |
 | **Recovery shares** | Parked — Sigil constellation already covers seed/backup |
 
-**Whitepaper:** [`docs/foldaudio-whitepaper.md`](docs/foldaudio-whitepaper.md) (v0.1).
+**Technical report:** [`docs/foldaudio-whitepaper.md`](docs/foldaudio-whitepaper.md) (v1.0, 2026-10-13; covers audio and vibration).
 
 **Repo:** https://github.com/Dastille/FoldAudio
 

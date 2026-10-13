@@ -29,6 +29,8 @@
 
 - **RAIL in demo** (2026-10-13 weekday slice) — `shockdaq-demo` now reports rail-clipped samples per capture (`RAIL` column = `blind_level.rail_hits`, the same `rail_mask` the sweep uses; re-exported by `failmap`). Ideal-fold cases read `no`. New case `gearbox_fold_long` (gearbox through a +1 % long fold step via `failmap.nonideal_fold`, synthetic): RAIL = 92, UNREC = no, blind SNR 42 dB (clip 13 dB), peak error 0.10 V of 12.8 V. Firmware status sketch `ShockDAQResult.capture_status`: UNRECOVERABLE (UNREC) > BOUNDED_ACCURACY (RAIL) > RECOVERED > IN_RANGE; also in `metrics.json`. Demo's silent check now counts a degraded case as flagged if UNREC or RAIL fires, and fails if RAIL lights on an ideal front end. 72 tests.
 
+- **Technical report v1.0** (2026-10-13) — `docs/foldaudio-whitepaper.md` rewritten as a formal report covering audio + vibration; all numbers re-run. Corrections: slip check alone catches 157/166 five-seed failures (edge 166/166, combined 166/166); `harsh_kick` failure is not caught by slip/edge (isolated-impulse blind spot).
+
 ## Next slices (weekday-sized, soft freeze)
 
 1. ~~**Listen / plot fail cases**~~ — done 2026-10-07 (`failmap.py`, slew rule + self-flags).
