@@ -22,6 +22,27 @@ ASSUMPTIONS (named — keep honest):
 6. Spectral bias: simple RMS energy in a high-frequency / transient band
    (fraction of Nyquist) vs original — honest, not a full ISO vibration metric.
 7. CPU-only synthetic demo. No Parrot / GPU. Not Sigil / Regen / ChaosLog.
+8. RAIL column (2026-10-13): count of folded samples sitting at the ADC rails
+   (blind_level.rail_hits). An ideal fold never lands there; a fold step that is
+   slightly LONG (gain g>0), or a wrap-threshold / offset error, pushes samples
+   past the rail where they clip. Demo case gearbox_fold_long uses g=+1 % via
+   failmap.nonideal_fold (synthetic front-end error, not a measured part).
+
+FIRMWARE FLAG SKETCH (per capture, blind — uses only the folded samples and the
+blind recovery, never the original; see capture_status()):
+
+    if UNREC (slip or edge):  status = "UNRECOVERABLE"     # don't trust the
+        # unwrap at all; fall back to the clipped value / mark the record bad.
+    elif RAIL (rail_hits>0):  status = "BOUNDED_ACCURACY"  # overload peak:
+        # the unwrap is fine (no slip), but some folded samples were clipped at
+        # the ADC rail, so peaks near them carry a small bounded error (≈ g of
+        # peak, e·λ, o·λ). Report the peak, tagged "bounded accuracy".
+    elif overload (|x|>λ):    status = "RECOVERED"         # folded + unwrapped
+    else:                     status = "IN_RANGE"
+
+RAIL ≠ UNREC: UNREC means the unwrap itself may have slipped (whole-record level
+can be off by 2λ); RAIL means the unwrap held but some peak samples were clipped
+at the rail — a visible, bounded accuracy limit, not a silent unwrap failure.
 
 Reuse: foldcrypt.foldaudio.hard_clip, fold_capture, recover_itoh, snr_db,
 max_sample_jump, write_wav.
@@ -35,7 +56,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .blind_level import edge_flag, recover_blind, slip_flag
+from .blind_level import edge_flag, rail_hits, recover_blind, slip_flag
 from .foldaudio import (
     fold_capture,
     hard_clip,
@@ -215,6 +236,13 @@ class ShockDAQResult:
     blind_matches_oracle: bool = False
     slip_flag: bool = False
     edge_flag: bool = False
+    rail_hits: int = 0
+    front_end: str = "ideal"
+
+    @property
+    def rail_clipped(self) -> bool:
+        """RAIL: some folded samples sit at the ADC rail → overload peak, bounded accuracy."""
+        return self.rail_hits > 0
 
     @property
     def overload_unrecoverable(self) -> bool:
@@ -226,6 +254,15 @@ class ShockDAQResult:
         """
         return self.slip_flag or self.edge_flag
 
+    @property
+    def capture_status(self) -> str:
+        """Firmware flag sketch (module docstring): UNREC > RAIL > overload > in range."""
+        if self.overload_unrecoverable:
+            return "UNRECOVERABLE"
+        if self.rail_clipped:
+            return "BOUNDED_ACCURACY"
+        return "RECOVERED" if self.overload_would_have_flagged else "IN_RANGE"
+
 
 def run_case(
     name: str,
@@ -233,8 +270,16 @@ def run_case(
     sr: int,
     lam: float,
     out_dir: Path,
+    *,
+    fold_fn=None,
+    front_end: str = "ideal",
 ) -> ShockDAQResult:
-    """Hard-clip vs fold vs recover for one synthetic vibration case."""
+    """Hard-clip vs fold vs recover for one synthetic vibration case.
+
+    fold_fn(x, lam) → folded capture; default = ideal fold_capture. Pass e.g.
+    ``lambda x, lam: failmap.nonideal_fold(x, lam, NonIdeal(gain_err=0.01))`` to
+    model a front-end error; `front_end` is just the label stored on the row.
+    """
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     x = np.asarray(x, dtype=float)
@@ -244,7 +289,7 @@ def run_case(
 
     # Soft-sat without flag ≡ hard clip for v0 math.
     clipped = hard_clip(x, lam)
-    folded = fold_capture(x, lam)
+    folded = fold_capture(x, lam) if fold_fn is None else np.asarray(fold_fn(x, lam), dtype=float)
     recovered = recover_itoh(folded, lam, anchor=x)
     blind, _k = recover_blind(folded, lam)
 
@@ -288,6 +333,8 @@ def run_case(
         blind_matches_oracle=bool(np.allclose(blind, recovered, atol=1e-9)),
         slip_flag=slip_flag(blind, lam),
         edge_flag=edge_flag(folded, lam),
+        rail_hits=rail_hits(folded, lam),
+        front_end=front_end,
     )
 
 
@@ -303,7 +350,7 @@ def format_shockdaq_table(rows: list[ShockDAQResult]) -> str:
         f"{'pkErrC':>7} {'pkErrF':>7} "
         f"{'SNR_c':>7} {'SNR_f':>7} {'gain':>7} "
         f"{'biasC':>7} {'biasF':>7} "
-        f"{'OLflg':>5} {'Itoh':>4} {'SNR_bl':>7} {'bl=or':>5} {'UNREC':>6}"
+        f"{'OLflg':>5} {'Itoh':>4} {'SNR_bl':>7} {'bl=or':>5} {'UNREC':>9} {'RAIL':>4}"
     )
     lines = [hdr, "-" * len(hdr)]
     for r in rows:
@@ -315,7 +362,7 @@ def format_shockdaq_table(rows: list[ShockDAQResult]) -> str:
             f"{'yes' if r.overload_would_have_flagged else 'no':>5} "
             f"{'yes' if r.itoh_ok else 'NO':>4} "
             f"{r.snr_blind_db:7.2f} {'yes' if r.blind_matches_oracle else 'NO':>5} "
-            f"{_unrec_tag(r):>6}"
+            f"{_unrec_tag(r):>9} {(str(r.rail_hits) if r.rail_clipped else 'no'):>4}"
         )
     return "\n".join(lines)
 
@@ -331,16 +378,26 @@ def run_shockdaq_demo(
     artifacts = Path(out_dir) if out_dir else root / "artifacts" / "shockdaq"
     artifacts.mkdir(parents=True, exist_ok=True)
 
+    # Lazy import: failmap imports this module at load time.
+    from .failmap import NonIdeal, nonideal_fold
+
+    long_step = NonIdeal("gain +1.0%", gain_err=0.01)
+    gearbox = gen_gearbox_startup(sr=sr, lam=lam)
+    # name → (signal, fold_fn, front-end label)
     cases = {
-        "gearbox_startup": gen_gearbox_startup(sr=sr, lam=lam),
-        "impact_transient": gen_impact_transient(sr=sr, lam=lam),
+        "gearbox_startup": (gearbox, None, "ideal"),
+        "impact_transient": (gen_impact_transient(sr=sr, lam=lam), None, "ideal"),
         # Deliberately past the slew limit (max|Δx| > λ): fold can't recover
         # this one — the point is that firmware SAYS so instead of going silent.
-        "impact_too_fast": gen_impact_transient(sr=sr, lam=lam, peak_amp=60.0),
+        "impact_too_fast": (gen_impact_transient(sr=sr, lam=lam, peak_amp=60.0), None, "ideal"),
+        # Same gearbox through a fold step 1 % LONG (g=+0.01, synthetic): the
+        # unwrap holds, but samples just past each wrap clip at the ADC rail →
+        # RAIL lights up ("overload peak, bounded accuracy"), UNREC stays off.
+        "gearbox_fold_long": (gearbox, lambda v, l: nonideal_fold(v, l, long_step), long_step.name),
     }
     rows: list[ShockDAQResult] = []
-    for name, x in cases.items():
-        rows.append(run_case(name, x, sr, lam, artifacts))
+    for name, (x, fn, fe) in cases.items():
+        rows.append(run_case(name, x, sr, lam, artifacts, fold_fn=fn, front_end=fe))
 
     report = {
         "product": "ShockDAQ v0",
@@ -352,6 +409,7 @@ def run_shockdaq_demo(
             "Synthetic numpy generators only — not real field IEPE captures.",
             "Itoh + 2λ offset search vs original (demo oracle); blind column uses AC-coupling zero-mean prior, no original.",
             "overload_unrecoverable = blind slip OR edge self-check (failmap.py rule); impact_too_fast is a deliberate past-limit case.",
+            "rail_hits = folded samples at the ADC rails (blind_level.rail_mask); >0 → RAIL / 'bounded accuracy'. gearbox_fold_long models a +1 % long fold step (synthetic front-end error, not a measured part).",
             "spectral_bias = relative RMS in HF band (0.15–0.45 Nyquist); not ISO vibration metrics.",
         ],
         "cases": [
@@ -375,6 +433,10 @@ def run_shockdaq_demo(
                 "slip_flag": r.slip_flag,
                 "edge_flag": r.edge_flag,
                 "overload_unrecoverable": r.overload_unrecoverable,
+                "front_end": r.front_end,
+                "rail_hits": r.rail_hits,
+                "rail_clipped": r.rail_clipped,
+                "capture_status": r.capture_status,
             }
             for r in rows
         ],

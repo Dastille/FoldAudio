@@ -94,6 +94,11 @@ def rail_mask(y_folded: np.ndarray, lam: float, *, bits: int | None = None) -> n
     return np.abs(np.asarray(y_folded, dtype=float)) >= lam - tol
 
 
+def rail_hits(y_folded: np.ndarray, lam: float, *, bits: int | None = None) -> int:
+    """Count of rail-clipped folded samples (rail_mask). > 0 → RAIL flag in shockdaq-demo."""
+    return int(np.count_nonzero(rail_mask(y_folded, lam, bits=bits)))
+
+
 def naive_k0(y_folded: np.ndarray, lam: float) -> np.ndarray:
     """What v0 did with no anchor: trust folded[0] as the true level (k=0)."""
     return itoh_unwrap(np.asarray(y_folded, dtype=float), lam)

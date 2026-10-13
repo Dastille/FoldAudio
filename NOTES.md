@@ -27,6 +27,8 @@
 
 - **Front-end calibration** (2026-10-12 weekday slice) — `shockdaq-calibrate` / `calibrate.py`: 159.2 Hz test tone at 4λ, one least-squares fit gives fold-step gain ĝ (worst |ĝ−g| 3e-4 at 60 dB; misses at 40 dB) + INL bow (k=1..3; without INL terms a 5 % bow leaks into ĝ as +4.7 %). `recover_blind(fold_gain=)` + `inl_inverse`. Gain −1 %, INL 2 %/5 % → 114/114 accurate; invisible >1 %-off cells 304 → 0 across all rows. Limit: g>0 and threshold/offset errors push samples past the ADC rail (clipped, unfixable) — visible as `rail_hits`. Design rule: trim fold step short, never long. Rejected: blind g from the burst (~4 % bias), rail interpolation (worse). 69 tests.
 
+- **RAIL in demo** (2026-10-13 weekday slice) — `shockdaq-demo` now reports rail-clipped samples per capture (`RAIL` column = `blind_level.rail_hits`, the same `rail_mask` the sweep uses; re-exported by `failmap`). Ideal-fold cases read `no`. New case `gearbox_fold_long` (gearbox through a +1 % long fold step via `failmap.nonideal_fold`, synthetic): RAIL = 92, UNREC = no, blind SNR 42 dB (clip 13 dB), peak error 0.10 V of 12.8 V. Firmware status sketch `ShockDAQResult.capture_status`: UNRECOVERABLE (UNREC) > BOUNDED_ACCURACY (RAIL) > RECOVERED > IN_RANGE; also in `metrics.json`. Demo's silent check now counts a degraded case as flagged if UNREC or RAIL fires, and fails if RAIL lights on an ideal front end. 72 tests.
+
 ## Next slices (weekday-sized, soft freeze)
 
 1. ~~**Listen / plot fail cases**~~ — done 2026-10-07 (`failmap.py`, slew rule + self-flags).
@@ -37,7 +39,7 @@
 5. ~~**Quantization in the fail map**~~ — done 2026-10-09 (`--quant`, `run_quant_sweep`).
 6. ~~**Sensor noise + non-ideal ADC in the sweep**~~ — done 2026-10-11 (`--nonideal`); OEM one-pager refreshed.
 7. ~~**Fold-step calibration**~~ — done 2026-10-12 (`shockdaq-calibrate`; gain + INL; rail_hits flag the rest).
-7b. **Next (light):** wire a `RAIL` column into `shockdaq-demo` / firmware flag sketch ("overload peak, bounded accuracy") so rail-clipped samples are reported, not just counted in the sweep.
+7b. ~~**RAIL column in `shockdaq-demo`**~~ — done 2026-10-13 (`blind_level.rail_hits`; `gearbox_fold_long` case; firmware status sketch).
 8. **Next (light):** noise-aware slew rule (margin = k·σ) fitted properly; real-time flag logic sketch (fall back to clipped value when UNREC).
 9. **Still #3:** real IEPE/WAV capture if supplied — the only thing that turns "synthetic" into evidence. Refresh the FoldAudio whitepaper with the fail-map numbers once #3 or an OEM reply lands.
 

@@ -207,3 +207,12 @@ Still 0 silent unwrap failures and 0 slip false alarms in every row.
   rail-clipped samples (made fast bursts worse).
 - Still synthetic; λ = 5 V is an assumption, not an OEM part.
 
+**Reported per capture (2026-10-13).** `shockdaq-demo` now has a `RAIL`
+column (`blind_level.rail_hits`, the same rail check the sweep counts). Ideal
+fold cases read `no`; `gearbox_fold_long` (same gearbox through a fold step
++1 % long, synthetic) reads 92 rail-clipped samples, `UNREC` = `no`, blind SNR
+42 dB (vs 13 dB for the silent clip), peak error 0.10 V of 12.8 V. Firmware
+sketch: UNREC set → "unrecoverable" (unwrap may have slipped; fall back to the
+clipped value); else RAIL set → "overload peak, bounded accuracy" (unwrap held,
+some peak samples clipped at the rail); else overload → "recovered".
+

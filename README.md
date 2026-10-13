@@ -32,8 +32,11 @@ Artifacts → `artifacts/shockdaq/` (`.npy` + listening WAVs + `metrics.json`).
 | gearbox_startup | 12.82 | 7.82 | ~0 | 13.35 | ~∞ (120) | **+106.7** | yes | yes |
 | impact_transient | 8.27 | 3.27 | ~0 | 19.35 | ~∞ (120) | **+100.6** | yes | yes |
 | impact_too_fast *(past slew limit, on purpose)* | 53.47 | 48.47 | 303 | 2.22 | −31.3 | −33.5 | yes | **NO** |
+| gearbox_fold_long *(fold step +1 % long, synthetic)* | 12.82 | 7.82 | 0.10 | 13.35 | 42.0 | +28.7 | yes | yes |
 
 `UNREC` column (2026-10-08): blind self-check, no original. The two good cases read `no`; `impact_too_fast` reads `SLIP+EDGE`, so the firmware knows not to trust that record (and should fall back to the clipped value + overload flag).
+
+`RAIL` column (2026-10-13): number of folded samples sitting at the ADC rail. Ideal-fold cases read `no`; `gearbox_fold_long` (fold step 1 % too long) reads `92` while `UNREC` stays `no` — the unwrap held, but some samples just past each wrap were clipped, so firmware reports those overload peaks as **bounded accuracy** (≈ 0.1 V on a 12.8 V peak here), not as an unwrap failure. Firmware status per capture: `UNRECOVERABLE` (UNREC) > `BOUNDED_ACCURACY` (RAIL) > `RECOVERED` > `IN_RANGE`.
 
 ---
 

@@ -188,12 +188,17 @@ def cmd_shockdaq_demo(args: argparse.Namespace) -> int:
     wins = sum(1 for r in rows if r.snr_gain_db > 5.0 and r.peak_error_fold < r.peak_error_clip)
     print(f"  cases_fold_beats_clip(>5dB+better_peak)={wins}/{len(rows)}")
     bad = [r for r in rows if r.snr_blind_db < 60.0]
-    silent = [r.name for r in bad if not r.overload_unrecoverable]
+    # A sub-60 dB case is "silent" only if neither UNREC nor RAIL reports it.
+    silent = [r.name for r in bad if not (r.overload_unrecoverable or r.rail_clipped)]
     false_alarm = [r.name for r in rows if r.snr_blind_db >= 60.0 and r.slip_flag]
+    rail_on_ideal = [r.name for r in rows if r.front_end == "ideal" and r.rail_clipped]
     print(f"  UNREC = blind self-check (no original): SLIP = unwrap slip, EDGE = step within 10% of λ")
-    print(f"  unrecoverable_cases={len(bad)} flagged={len(bad) - len(silent)} silent={silent or 'none'} "
-          f"slip_false_alarms={false_alarm or 'none'}")
-    ok = wins >= 1 and not silent and not false_alarm
+    print("  RAIL  = # folded samples clipped at the ADC rail → overload peak, bounded accuracy "
+          "(unwrap held; not an unwrap failure like UNREC)")
+    print(f"  degraded_cases={len(bad)} flagged={len(bad) - len(silent)} silent={silent or 'none'} "
+          f"slip_false_alarms={false_alarm or 'none'} rail_on_ideal_front_end={rail_on_ideal or 'none'}")
+    print("  status: " + "  ".join(f"{r.name}={r.capture_status}" for r in rows))
+    ok = wins >= 1 and not silent and not false_alarm and not rail_on_ideal
     print(f"  shockdaq_demo={'OK' if ok else 'WEAK'}")
     return 0 if ok else 1
 

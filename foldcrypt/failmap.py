@@ -40,7 +40,9 @@ from pathlib import Path
 
 import numpy as np
 
-from .blind_level import EDGE_FRAC, edge_flag, inl_inverse, rail_mask, recover_blind, slip_flag  # noqa: F401 (re-export)
+from .blind_level import (  # noqa: F401 (re-export)
+    EDGE_FRAC, edge_flag, inl_inverse, rail_hits, rail_mask, recover_blind, slip_flag,
+)
 from .foldaudio import fold_capture, max_sample_jump, snr_db
 from .modulo import quantize_folded
 from .shockdaq import DEFAULT_LAM_V, DEFAULT_SR
@@ -316,7 +318,7 @@ def eval_nonideal_cell(
         recovered_ok=ok, err_peak_V=err, peak_err_frac=frac,
         accurate=bool(ok and frac <= NONIDEAL_OK_BAR_FRAC),
         slip_flag=slip_flag(rec, lam), edge_flag=edge_flag(y, lam),
-        rail_hits=int(np.count_nonzero(rail_mask(y, lam, bits=ni.bits))),
+        rail_hits=rail_hits(y, lam, bits=ni.bits),
     )
 
 

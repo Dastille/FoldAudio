@@ -59,6 +59,7 @@ All numbers below are **synthetic** ringing-impact bursts (peak 6–40 V, ring 0
 - **Synthetic only** — not yet proven on a real IEPE capture or named DAQ card.
 - **Blind level prior (2026-10-06)** — no original needed. Uses IEPE AC coupling (zero-mean / quietest-window baseline). Fixes captures that start mid-overload (naive k=0 gives −14 to −24 dB; blind gives ~120 dB). Fails honestly if the signal is DC-shifted by ≳ λ (not AC-coupled).
 - **Past the slew limit fold is WORSE than clip** (impact_too_fast: −31 dB vs +2 dB), but it is never silent: the demo's `UNREC` column (blind slip/edge self-check, 2026-10-08) flags it. Firmware rule: when UNREC is set, report overload and fall back to the clipped value.
+- **RAIL ≠ UNREC (2026-10-13).** If the fold step is mis-trimmed long (or threshold/offset errors), some folded samples clip at the ADC rail. The capture shows it: the demo's `RAIL` column counts them (synthetic +1 % long step: 92 samples, unwrap still fine, peak error 0.10 V of 12.8 V). Firmware tags those overload peaks **"bounded accuracy"** instead of "recovered" — still not silent.
 - **Itoh slew limit** — consecutive samples must usually jump by less than λ; pathological single-sample glitches fail (same class as FoldAudio `harsh_kick`).
 - **Spectral bias** is a toy HF RMS ratio, not order tracking / ISO 10816 acceptance math.
 - FoldAudio remains the **public math proof**; ShockDAQ is the **company licensing bet**.
