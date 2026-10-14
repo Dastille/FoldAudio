@@ -1,4 +1,4 @@
-"""CLI: python -m foldcrypt shockdaq-demo | shockdaq-failmap | audio-demo | shares-demo | demo | ser | defect-demo | block-demo"""
+"""CLI: python -m foldcrypt shockdaq-demo | shockdaq-failmap | shockdaq-real | audio-demo | shares-demo | demo | ser | defect-demo | block-demo"""
 
 from __future__ import annotations
 
@@ -282,6 +282,35 @@ def cmd_audio_demo(args: argparse.Namespace) -> int:
     return 0 if wins >= 2 else 1
 
 
+def cmd_shockdaq_real(args: argparse.Namespace) -> int:
+    """Fold + blind unwrap + self-checks on real CWRU bearing-fault recordings."""
+    from pathlib import Path
+
+    from . import realdata as rd
+
+    sweep = rd.run_real_sweep(args.cache, download=not args.offline)
+    print("ShockDAQ on real bearing-fault recordings (CWRU Bearing Data Center, drive-end accel, g)")
+    print("  Fold rail λ = ratio × record peak, applied in software; blind recovery; original used only to score.")
+    print()
+    print(rd.format_records(sweep["records"]))
+    print()
+    if args.cells:
+        print(rd.format_cells(sweep["cells"]))
+        print()
+    s = sweep["summary"]
+    print(f"  cells={s['cells']}  rule max|Δx|<λ correct={s['rule_correct']}/{s['cells']}  "
+          f"recovered={s['recovered']}  failed={s['failed']} (flagged {s['failed_flagged']})")
+    print(f"  silent_fail={s['silent_fail']}  slip_false_alarm={s['slip_false_alarm']}  "
+          f"edge_conservative={s['edge_conservative']}")
+    root = Path(__file__).resolve().parents[1]
+    out = root / "artifacts" / "realdata" / "metrics.json"
+    rd.write_report(sweep, out)
+    print(f"  wrote {out.relative_to(root)}")
+    ok = s["silent_fail"] == 0 and s["slip_false_alarm"] == 0 and s["rule_correct"] == s["cells"]
+    print(f"  shockdaq_real={'OK' if ok else 'FAIL'}")
+    return 0 if ok else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="foldcrypt", description="FoldCrypt — ShockDAQ company bet + FoldAudio proof + WrapCancel archive")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -341,6 +370,12 @@ def main(argv: list[str] | None = None) -> int:
     ca.add_argument("--cal-snr", type=float, default=60.0, dest="cal_snr",
                     help="SNR (dB) of the injected calibration tone (default 60)")
     ca.set_defaults(func=cmd_shockdaq_calibrate)
+
+    rl = sub.add_parser("shockdaq-real", help="ShockDAQ: run fold recovery on real CWRU bearing-fault recordings")
+    rl.add_argument("--cache", default=None, help="download cache (default ~/.cache/foldcrypt/cwru)")
+    rl.add_argument("--offline", action="store_true", help="use cached files only; never download")
+    rl.add_argument("--cells", action="store_true", help="print every (record, λ) cell")
+    rl.set_defaults(func=cmd_shockdaq_real)
 
     au = sub.add_parser("audio-demo", help="FoldAudio: fold vs hard-clip SNR on synthetic WAVs")
     au.add_argument("--lam", type=float, default=DEFAULT_LAM, help="fold threshold λ")

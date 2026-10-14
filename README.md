@@ -14,7 +14,10 @@ python -m foldcrypt audio-demo          # audio: fold vs hard clip
 python -m foldcrypt shockdaq-demo       # vibration: fold vs clip + capture status
 python -m foldcrypt shockdaq-failmap    # where recovery fails, and whether it is flagged
 python -m foldcrypt shockdaq-calibrate  # one-tone fold-step gain + INL calibration
+python -m foldcrypt shockdaq-real       # measured CWRU bearing-fault records (needs .[real] = SciPy)
 ```
+
+**Measured data (2026-10-14):** on 13 public CWRU bearing-fault accelerometer records with software-applied overload, the slew rule predicted 120/120 cells and every failure was flagged (0 silent). Fold buys 7.5–9.8 dB of range at 48 kHz and nothing at 12 kHz. See [`docs/shockdaq-realdata.md`](docs/shockdaq-realdata.md).
 
 ---
 
@@ -42,6 +45,8 @@ python -m pytest -q
 ```
 
 Artifacts → `artifacts/shockdaq/` (`.npy` + listening WAVs + `metrics.json`).
+
+**Measured records:** [`docs/shockdaq-realdata.md`](docs/shockdaq-realdata.md) — CWRU bearing faults; 120/120 rule, 0 silent; 48 kHz works, 12 kHz does not.
 
 **Fail map:** [`docs/shockdaq-failmap.md`](docs/shockdaq-failmap.md) — fold recovers iff max slew < λ × sample rate (280/280 sweep cells); every failure flagged itself blind (0 silent).
 

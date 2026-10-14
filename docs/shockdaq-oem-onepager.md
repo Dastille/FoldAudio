@@ -56,7 +56,7 @@ All numbers below are **synthetic** ringing-impact bursts (peak 6–40 V, ring 0
 
 ## Honest limits
 
-- **Synthetic only** — not yet proven on a real IEPE capture or named DAQ card.
+- **Measured records, software overload (2026-10-14).** On 13 public CWRU bearing-fault accelerometer records, with the rail set below the record peak in software, the slew rule predicted 120/120 cells and every failure was flagged (0 silent). Fold gave 7.5–9.8 dB of extra range at 48 kHz and **none at 12 kHz** (impacts step by more than their peak per sample). Clipping at half the peak cut kurtosis 20.8 → 15.9 on the worst outer-race record; fold kept it exact. Detail: [`shockdaq-realdata.md`](shockdaq-realdata.md). Still no overload captured on real folding hardware or a named DAQ card.
 - **Blind level prior (2026-10-06)** — no original needed. Uses IEPE AC coupling (zero-mean / quietest-window baseline). Fixes captures that start mid-overload (naive k=0 gives −14 to −24 dB; blind gives ~120 dB). Fails honestly if the signal is DC-shifted by ≳ λ (not AC-coupled).
 - **Past the slew limit fold is WORSE than clip** (impact_too_fast: −31 dB vs +2 dB), but it is never silent: the demo's `UNREC` column (blind slip/edge self-check, 2026-10-08) flags it. Firmware rule: when UNREC is set, report overload and fall back to the clipped value.
 - **RAIL ≠ UNREC (2026-10-13).** If the fold step is mis-trimmed long (or threshold/offset errors), some folded samples clip at the ADC rail. The capture shows it: the demo's `RAIL` column counts them (synthetic +1 % long step: 92 samples, unwrap still fine, peak error 0.10 V of 12.8 V). Firmware tags those overload peaks **"bounded accuracy"** instead of "recovered" — still not silent.

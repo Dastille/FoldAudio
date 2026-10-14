@@ -1,11 +1,13 @@
 # Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration
 
-**Technical report, version 1.0**
-**Date:** 2026-10-13
+**Technical report, version 1.1**
+**Date:** 2026-10-14
 **Author:** Ashlynn (GitHub: [Dastille](https://github.com/Dastille))
 **Repository:** <https://github.com/Dastille/FoldAudio> (MIT License)
-**Evidence class:** numerical simulation only. Every result in this report comes from synthetic signals processed in software. No hardware folding front end was built or measured for this work.
+**Evidence class:** numerical simulation, plus software folding of public measured accelerometer recordings (Section 6.6). No hardware folding front end was built or measured for this work.
 
+> **Revision note (v1.1, 2026-10-14).** Adds Section 6.6: the fold, blind-unwrap and self-check chain applied to 13 measured bearing-fault accelerometer records from the CWRU Bearing Data Center. Limitations 1 and 6, Sections 9.2 and 10, and the conclusion are updated accordingly. No v1.0 result changed.
+>
 > **Revision note (v1.0, 2026-10-13).** This version replaces the working draft v0.1 of 2026-10-02 ("FoldAudio: Intentional Modulo Fold Instead of Hard Clip"). Changes: (i) scope widened from audio to two applications, audio recording and IEPE vibration/shock instrumentation; (ii) blind absolute-level recovery added, so the oracle original used in v0.1 is no longer needed for AC-coupled signals; (iii) new sections on recovery conditions, blind failure detection, a 280-cell failure map, ADC quantization, non-ideal front-end sweeps, one-tone front-end calibration, and a per-capture status word; (iv) introduction and related work rewritten against published instrumentation and unlimited-sensing literature; (v) all numbers re-run from the repository on 2026-10-13. Two corrections to earlier repository notes are recorded in Section 6.3 and Section 4.6.
 
 ---
@@ -14,7 +16,7 @@
 
 When a signal exceeds the input range of an acquisition chain, conventional converters saturate. The samples above the rail are lost, and the loss often goes unflagged. This report evaluates a different overload behaviour: a centred modulo (fold) nonlinearity with threshold $\lambda$, applied before quantization in place of hard clipping. Recovery uses first-order difference unwrapping. The input is recovered exactly, up to one global multiple of $2\lambda$, whenever $\max_n \lvert x[n]-x[n-1]\rvert < \lambda$, that is, whenever the slew rate stays below $\lambda f_s$. For AC-coupled signals such as IEPE accelerometer outputs, the remaining offset is fixed blindly from a zero-mean or quiet-baseline prior, with no reference signal. We pair the reconstruction with three blind diagnostics (baseline slip, near-threshold step, rail contact), which combine into a four-level capture status.
 
-On synthetic audio at 48 kHz ($\lambda = 0.45$ full scale), fold-and-unwrap reconstructs three test signals to the 120 dB metric ceiling, against 3.3–4.2 dB for hard clipping. A deliberately impulsive fourth signal fails, and does so without tripping the diagnostics. On synthetic vibration records at 51.2 kHz ($\lambda = 5$ V), a 280-cell sweep of ringing impacts shows that the slew rule predicts the outcome in 280 of 280 cells. All 166 failures are flagged blindly, with no silent failures and no slip false alarms. ADC resolution from 4 to 24 bits does not move this boundary. Additive noise and front-end errors (fold-step gain, threshold, offset, INL) do not produce silent unwrap failures. They do, however, introduce a bounded, unflagged peak error. A one-tone (159.2 Hz) calibration removes the part of that error that the capture cannot otherwise reveal. The calibration study also gives a design rule: trim the fold step short, never long. Limitations are stated in Section 8. The main ones are that all evidence is synthetic, and that folding at the digitizer cannot repair saturation that has already occurred inside a sensor's internal amplifier.
+On synthetic audio at 48 kHz ($\lambda = 0.45$ full scale), fold-and-unwrap reconstructs three test signals to the 120 dB metric ceiling, against 3.3–4.2 dB for hard clipping. A deliberately impulsive fourth signal fails, and does so without tripping the diagnostics. On synthetic vibration records at 51.2 kHz ($\lambda = 5$ V), a 280-cell sweep of ringing impacts shows that the slew rule predicts the outcome in 280 of 280 cells. All 166 failures are flagged blindly, with no silent failures and no slip false alarms. ADC resolution from 4 to 24 bits does not move this boundary. Additive noise and front-end errors (fold-step gain, threshold, offset, INL) do not produce silent unwrap failures. They do, however, introduce a bounded, unflagged peak error. A one-tone (159.2 Hz) calibration removes the part of that error that the capture cannot otherwise reveal. The calibration study also gives a design rule: trim the fold step short, never long. On 13 measured bearing-fault accelerometer records (CWRU Bearing Data Center), with overload emulated in software by lowering $\lambda$ below the record peak, the slew rule again predicts all 120 cells, and all 94 failures are flagged with no silent failures. At 48 kHz, fold recovers exactly with $\lambda$ at 0.33–0.5 of peak (7.5–9.8 dB of extra range) and preserves kurtosis and crest factor, which clipping depresses. At 12 kHz the per-sample step of these impacts exceeds their peak, so no overload is recoverable. Limitations are stated in Section 8. The main ones are that no folding hardware was built, that the measured-data study applies the fold in software to records acquired within range, and that folding at the digitizer cannot repair saturation that has already occurred inside a sensor's internal amplifier.
 
 ---
 
@@ -283,13 +285,13 @@ A single damped ringing burst (Section 5.2 envelope, 0.5 s record, impact at 40 
 
 ### 5.5 Software
 
-Python 3 with NumPy only, CPU-only, deterministic seeds. The test suite (72 tests) passes on the commit that accompanies this report.
+Python 3 with NumPy, CPU-only, deterministic seeds. SciPy is used only to read the MATLAB files of Section 6.6. The test suite (78 tests) passes on the commit that accompanies this report.
 
 ---
 
 ## 6. Results
 
-All values below were regenerated on 2026-10-13 with the commands in Section 10.
+All values below were regenerated on 2026-10-13 (Section 6.6 on 2026-10-14) with the commands in Section 10.
 
 ### 6.1 Audio
 
@@ -425,6 +427,36 @@ Findings:
 
 For a peak error of 1 % or less, each of $g$, $e$, $o$ and $a$ must be held to roughly 0.5–1 %. Gain and INL errors are partly invisible to blind diagnostics (Section 4.5), which motivates the calibration in Section 7.
 
+### 6.6 Measured bearing-fault recordings
+
+To test the recovery condition and the blind diagnostics on measured waveforms, the chain was applied to drive-end accelerometer records (units g, 0 hp load, 1796–1797 rpm) from the Case Western Reserve University Bearing Data Center [17], a standard benchmark for rolling-element bearing diagnostics [18]. Seven records are sampled at 48 kHz (normal baseline 97; inner-race, ball and outer-race faults of 0.007 in, records 109, 122, 135, and of 0.021 in, records 213, 226, 238), and six at 12 kHz (records 105, 118, 130, 209, 222, 234, same fault types and sizes). Each 48 kHz record is also evaluated after 4:1 subsampling without an anti-alias filter, to isolate the effect of sample rate on the same physical event. The CWRU acquisition did not overload. Overload is emulated by setting $\lambda = r\cdot\max\lvert x\rvert$ with $r \in \{0.8, 0.6, 0.5, 0.4, 0.33, 0.25\}$, applying an ideal fold, and recovering blindly with the zero-mean prior. A cell is recovered when $\max\lvert\tilde{x}-x\rvert \le 10^{-6}\max\lvert x\rvert$.
+
+**Table 10.** Outcome totals on measured records (120 cells: 20 record variants × 6 thresholds).
+
+| Quantity | Value |
+|---|---|
+| slew rule $\max\lvert\Delta x\rvert < \lambda$ predicts outcome | 120 / 120 |
+| recovered exactly | 26 (all at 48 kHz; 26 / 42 cells) |
+| failed | 94 (78 / 78 cells at 12 kHz) |
+| failures flagged (slip or edge) | 94 / 94 |
+| silent failures | 0 |
+| slip false alarms | 0 |
+| edge check set on a recovered cell (conservative) | 3 |
+
+**Table 11.** 48 kHz records. Extra range is $20\log_{10}(\max\lvert x\rvert / \max\lvert\Delta x\rvert)$, the largest overload the first-order condition permits. Clipped indicators are at $r = 0.5$; fold-recovered indicators equal the true values wherever recovery succeeds.
+
+| Record | Condition | $\max\lvert\Delta x\rvert$ / peak | Extra range | Lowest $r$ recovered | Clip SNR ($r$=0.5) | Kurtosis true / clipped | Crest factor true / clipped |
+|---|---|---|---|---|---|---|---|
+| 97 | normal | 0.42 | 7.5 dB | 0.5 | 23.2 dB | 2.8 / 2.5 | 4.2 / 2.2 |
+| 109 | inner race 0.007 in | 0.38 | 8.3 dB | 0.4 | 19.5 dB | 6.0 / 4.7 | 6.1 / 3.2 |
+| 122 | ball 0.007 in | 0.35 | 9.0 dB | 0.4 | 24.6 dB | 3.1 / 2.8 | 4.9 / 2.5 |
+| 135 | outer race 0.007 in | 0.40 | 7.9 dB | 0.5 | 15.8 dB | 6.7 / 4.9 | 5.2 / 2.8 |
+| 213 | inner race 0.021 in | 0.37 | 8.7 dB | 0.4 | 21.0 dB | 4.2 / 3.4 | 5.3 / 2.7 |
+| 226 | ball 0.021 in | 0.32 | 9.8 dB | 0.33 | 29.7 dB | 3.2 / 3.0 | 5.6 / 2.8 |
+| 238 | outer race 0.021 in | 0.40 | 7.9 dB | 0.5 | 19.6 dB | 20.8 / 15.9 | 11.5 / 6.0 |
+
+Three observations follow. First, the recovery condition and the blind diagnostics, developed on synthetic signals, hold on measured impact waveforms with their real noise and quantization: every failure was flagged and no recovered record raised a slip alarm. Second, the usable range extension is modest and set by the sample rate. At 48 kHz the largest per-sample step is 0.32–0.42 of the peak, which permits 7.5–9.8 dB of extra range. At 12 kHz, recorded natively or subsampled, the largest step is 1.03–1.61 times the peak. Recovery requires $\lambda > \max\lvert\Delta x\rvert$ and overload requires $\lambda < \max\lvert x\rvert$, so no overload of these waveforms can be recovered at that rate. Bearing impacts excite structural resonances in the kHz range, which is why the step is large relative to the peak. Third, clipping biases exactly the time-domain indicators used for fault detection: at $r = 0.5$, kurtosis on the 0.021 in outer-race record falls from 20.8 to 15.9 and crest factor from 11.5 to 6.0, whereas recovered records reproduce both exactly. Details and per-cell data are in `docs/shockdaq-realdata.md` and `artifacts/realdata/metrics.json`.
+
 ---
 
 ## 7. Front-end calibration
@@ -488,12 +520,12 @@ Calibration fully corrects negative gain errors (fold step short) and INL. It ca
 
 ## 8. Limitations
 
-1. **All results are synthetic.** Every number in this report comes from software models driven by synthetic signals. No measured audio or accelerometer data has been processed.
+1. **Evidence is synthetic or software-folded.** Sections 6.1–6.5 and 7 use synthetic signals. Section 6.6 uses measured accelerometer records, but those records were acquired within range and the overload is applied in software. No measured audio has been processed, and no measured data was passed through the non-ideal front-end model.
 2. **No hardware folding front end was built or tested in this work.** The fold is applied in software to simulated sample values. Hardware modulo ADCs have been demonstrated by others [8], [9], [6]. Their analog non-idealities, such as reset transients, comparator metastability, finite reset time, and anti-alias filter interaction, are represented here only by the simplified model of Section 3.7.
 3. **Folding at the digitizer cannot repair clipping inside the sensor.** If an IEPE accelerometer's internal amplifier saturates (out-of-range input or resonance excitation, [1], [2]), the signal is already clipped before it reaches the DAQ. A folding digitizer will record the clipped waveform faithfully. Only a fold inside the sensor's own amplifier (Section 9.1) could address that case.
 4. **$\lambda = 5$ V is an assumption.** It approximates the ±5 V swing typical of ICP accelerometers [1]. It is not the specification of any particular sensor, signal conditioner or DAQ. Many DAQ inputs accept ±10 V [4], [5].
 5. **High-end DAQs already reduce digitizer-side clipping.** Single-range wide-dynamic-range inputs, for example HBK Dyn-X with a 10 V peak range and a noise floor below −160 dB in narrowband analysis [5], largely remove the need for range selection on laboratory systems. The case for folding is strongest where such inputs are too costly, too power-hungry, or not available (Section 9).
-6. **Slew-rate limit.** First-order unwrapping needs $\max\lvert\Delta x\rvert < \lambda$. Sharp high-frequency ringing, impulsive glitches, and signals near the sensor's resonance can violate this. Outside the limit, fold reconstruction is worse than clipping, and the fallback must be the clipped value.
+6. **Slew-rate limit.** First-order unwrapping needs $\max\lvert\Delta x\rvert < \lambda$. Sharp high-frequency ringing, impulsive glitches, and signals near the sensor's resonance can violate this. Outside the limit, fold reconstruction is worse than clipping, and the fallback must be the clipped value. On the measured bearing records of Section 6.6, the limit permits no recoverable overload at 12 kHz and 7.5–9.8 dB of extra range at 48 kHz.
 7. **Diagnostic blind spot.** Isolated single-sample excursions larger than $\lambda$ that return to baseline are not detected by the slip or edge checks (Section 4.6). The zero-silent-failure result applies to the ringing-transient class in the failure map.
 8. **AC-coupling prior.** Blind level recovery assumes a near-zero mean, or a quiet baseline, within $\lambda$ of zero. DC-coupled measurements with offsets comparable to $\lambda$ need a different level reference.
 9. **Limited signal set.** The audio set has four signals and the vibration set has four cases plus one burst family. There are no listening tests, no perceptual metrics, and no standard vibration metrics (e.g. shock response spectra or ISO severity measures).
@@ -510,7 +542,7 @@ Saturation inside the sensor (Limitation 3) is the one failure mode a digitizer-
 
 ### 9.2 Low-cost condition-monitoring nodes
 
-Wireless or embedded condition-monitoring nodes typically pair one sensor channel with a single fixed-range ADC and a microcontroller. They have neither a second conversion path nor an operator to set ranges. Machine run-up, coast-down and impacts are the events most likely to exceed a range chosen for steady-state vibration. Unwrapping costs one subtraction, one rounding and one accumulation per sample. The blind checks need two windowed means and a running maximum. Both fit in the firmware budget of such nodes. The slew limit must be checked against the expected spectrum. A node sampling at 25.6 kHz with $\lambda$ = 5 V has a slew limit of 128,000 V/s.
+Wireless or embedded condition-monitoring nodes typically pair one sensor channel with a single fixed-range ADC and a microcontroller. They have neither a second conversion path nor an operator to set ranges. Machine run-up, coast-down and impacts are the events most likely to exceed a range chosen for steady-state vibration. Unwrapping costs one subtraction, one rounding and one accumulation per sample. The blind checks need two windowed means and a running maximum. Both fit in the firmware budget of such nodes. The slew limit must be checked against the expected spectrum. A node sampling at 25.6 kHz with $\lambda$ = 5 V has a slew limit of 128,000 V/s. The measured bearing records of Section 6.6 show that this check is decisive: their impacts were recoverable at 48 kHz but not at 12 kHz. Nodes sampling between 10 and 25.6 kHz should not assume fold recovery on impact-rich signals; they still gain the status word, which reports the overload instead of passing a silently clipped record.
 
 ### 9.3 DAQ front-end firmware
 
@@ -536,15 +568,16 @@ All results in this report are produced by the repository at the commit that int
 git clone https://github.com/Dastille/FoldAudio
 cd FoldAudio
 python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+pip install -e ".[dev,real]"
 
-python -m pytest -q                               # 72 tests
+python -m pytest -q                               # 78 tests
 python -m foldcrypt audio-demo                    # Table 1   -> artifacts/foldaudio/metrics.json  (FoldAudio)
 python -m foldcrypt shockdaq-demo                 # Table 2   -> artifacts/shockdaq/metrics.json   (ShockDAQ)
 python -m foldcrypt shockdaq-failmap              # Tables 3-4 (seed 7) -> failmap.json, failmap.svg
 python -m foldcrypt shockdaq-failmap --quant      # Table 5   -> quantmap.json
 python -m foldcrypt shockdaq-failmap --nonideal   # Table 6   -> nonidealmap.json (~25 s)
 python -m foldcrypt shockdaq-calibrate            # Tables 8-9 -> calibration.json (~25 s)
+python -m foldcrypt shockdaq-real --cells         # Tables 10-11 -> artifacts/realdata/metrics.json (downloads ~45 MB of CWRU data, SHA-256 checked)
 ```
 
 (The Python package directory is named `foldcrypt` for historical reasons.)
@@ -573,13 +606,13 @@ PY
 
 Table 7 and the derated-rule counts in Section 6.5 come from the per-cell records returned by `foldcrypt.failmap.run_nonideal_sweep()` (fields `err_peak_V`, `peak_err_frac`, `predicted_ok`, `derated_ok`, `recovered_ok`, `rail_hits`).
 
-Source modules: `modulo.py` (fold, quantizer), `unfold_detect.py` (first-order unwrap), `foldaudio.py` (audio signals and metrics), `shockdaq.py` (vibration cases and status word), `blind_level.py` (blind level, slip/edge/rail checks, INL inverse), `failmap.py` (grid, quantization and non-ideal sweeps), `calibrate.py` (one-tone calibration). Environment: Python 3, NumPy, CPU only. All random generators are seeded.
+Source modules: `modulo.py` (fold, quantizer), `unfold_detect.py` (first-order unwrap), `foldaudio.py` (audio signals and metrics), `shockdaq.py` (vibration cases and status word), `blind_level.py` (blind level, slip/edge/rail checks, INL inverse), `failmap.py` (grid, quantization and non-ideal sweeps), `calibrate.py` (one-tone calibration), `realdata.py` (CWRU download, checksum and measured-record sweep). Environment: Python 3, NumPy (SciPy for Section 6.6), CPU only. All random generators are seeded.
 
 ---
 
 ## 11. Conclusion
 
-In simulation, replacing hard clipping with a modulo fold turns an irreversible, often unflagged loss into an invertible encoding that is valid under one condition: the sample-to-sample change must stay below the fold threshold, equivalently a slew rate below $\lambda f_s$. Inside that condition, first-order unwrapping with a blind AC-coupling prior reconstructs the overload exactly, for synthetic audio and vibration signals alike. Outside it, reconstruction is worse than clipping. For the ringing-transient class studied, however, every failure was flagged blindly, with no false alarms. The flagging held across ADC resolutions of 4–24 bits, across sensor noise, and across fold-step, threshold, offset and INL errors. The front-end errors introduce one effect that blind checks cannot see: a bounded peak error proportional to the wrap count. A one-tone calibration removes it whenever the fold step is trimmed short. The remaining limitations are significant: no hardware, no measured data, no protection against saturation inside the sensor, and a diagnostic blind spot for isolated impulses. The next required step is a measurement on a physical folding front end with real accelerometer and microphone signals.
+In simulation, replacing hard clipping with a modulo fold turns an irreversible, often unflagged loss into an invertible encoding that is valid under one condition: the sample-to-sample change must stay below the fold threshold, equivalently a slew rate below $\lambda f_s$. Inside that condition, first-order unwrapping with a blind AC-coupling prior reconstructs the overload exactly, for synthetic audio and vibration signals alike. Outside it, reconstruction is worse than clipping. For the ringing-transient class studied, however, every failure was flagged blindly, with no false alarms. The flagging held across ADC resolutions of 4–24 bits, across sensor noise, and across fold-step, threshold, offset and INL errors. The front-end errors introduce one effect that blind checks cannot see: a bounded peak error proportional to the wrap count. A one-tone calibration removes it whenever the fold step is trimmed short. On measured bearing-fault records with software-applied overload, the same condition predicted every outcome and every failure was flagged, but the condition also bounds the benefit: about 8–10 dB of extra range at 48 kHz, and none at 12 kHz. The remaining limitations are significant: no hardware, no measured overload event, no protection against saturation inside the sensor, and a diagnostic blind spot for isolated impulses. The next required step is a measurement on a physical folding front end with real accelerometer and microphone signals, sampled at 48 kHz or faster for impact-rich machinery.
 
 ---
 
@@ -603,6 +636,8 @@ URLs were accessed on 2026-10-13.
 14. K. Itoh, "Analysis of the phase unwrapping algorithm," *Applied Optics*, vol. 21, no. 14, p. 2470, 1982.
 15. W. Kester, "ADC Architectures VI: Folding ADCs," Analog Devices tutorial MT-025, 2009.
 16. Zaxcom, "NeverClip Explained." <https://zaxcom.com/learn/what-is-neverclip/>
+17. Case Western Reserve University Bearing Data Center, seeded-fault test data (records 97, 105, 109, 118, 122, 130, 135, 209, 213, 222, 226, 234, 238). <https://engineering.case.edu/bearingdatacenter> (accessed 2026-10-14)
+18. W. A. Smith and R. B. Randall, "Rolling element bearing diagnostics using the Case Western Reserve University data: A benchmark study," *Mechanical Systems and Signal Processing*, vol. 64–65, pp. 100–131, 2015.
 
 ---
 
@@ -626,3 +661,4 @@ URLs were accessed on 2026-10-13.
 |---|---|---|
 | 0.1 | 2026-10-02 | Working draft: audio-only, oracle level selection, four-signal SNR table. |
 | 1.0 | 2026-10-13 | Retitled and rewritten as a technical report. Added vibration application, blind level recovery, recovery-condition analysis, blind diagnostics and capture status, 280-cell failure map, quantization and non-ideal front-end sweeps, one-tone calibration, limitations and integration guidance. All figures re-run. Corrected slip-check coverage (157/166, not 166/166) and documented the impulsive-signal diagnostic blind spot. |
+| 1.1 | 2026-10-14 | Added Section 6.6 (Tables 10–11): measured CWRU bearing-fault records with software-applied overload; 120/120 rule agreement, 0 silent failures; sample-rate finding (48 kHz recoverable, 12 kHz not). Updated abstract, Limitations 1 and 6, Section 9.2, reproducibility, conclusion and references. |

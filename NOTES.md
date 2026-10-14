@@ -31,6 +31,8 @@
 
 - **Technical report v1.0** (2026-10-13) — `docs/foldaudio-whitepaper.md` rewritten as a formal report covering audio + vibration; all numbers re-run. Corrections: slip check alone catches 157/166 five-seed failures (edge 166/166, combined 166/166); `harsh_kick` failure is not caught by slip/edge (isolated-impulse blind spot).
 
+- **Measured CWRU bearing records** (2026-10-14 weekday slice) — `shockdaq-real` / `realdata.py`: 13 public CWRU drive-end records (7 at 48 kHz, 6 at 12 kHz) + 48→12k subsampled copies, rail λ = 0.8…0.25 × peak applied in software, blind recovery. Rule 120/120, 26 exact, 94 failed all flagged, 0 silent, 0 slip false alarms, 3 edge-conservative. 48 kHz: max step 0.32–0.42 × peak → 7.5–9.8 dB extra range, kurtosis/crest kept exact (clip: 20.8→15.9 kurtosis on 238). 12 kHz: step 1.03–1.61 × peak → **no** recoverable overload. Files fetched + SHA-256 checked, not redistributed; SciPy optional extra `[real]`. Whitepaper v1.1 §6.6, one-pager + README updated. 78 tests.
+
 ## Next slices (weekday-sized, soft freeze)
 
 1. ~~**Listen / plot fail cases**~~ — done 2026-10-07 (`failmap.py`, slew rule + self-flags).
@@ -42,6 +44,7 @@
 6. ~~**Sensor noise + non-ideal ADC in the sweep**~~ — done 2026-10-11 (`--nonideal`); OEM one-pager refreshed.
 7. ~~**Fold-step calibration**~~ — done 2026-10-12 (`shockdaq-calibrate`; gain + INL; rail_hits flag the rest).
 7b. ~~**RAIL column in `shockdaq-demo`**~~ — done 2026-10-13 (`blind_level.rail_hits`; `gearbox_fold_long` case; firmware status sketch).
+7c. ~~**Real public vibration data**~~ — done 2026-10-14 (CWRU, `shockdaq-real`). Follow-ups: non-ideal front end on CWRU records (light); a second dataset with higher rate or real overload (e.g. Paderborn 64 kHz) (medium).
 8. **Next (light):** noise-aware slew rule (margin = k·σ) fitted properly; real-time flag logic sketch (fall back to clipped value when UNREC).
 9. **Still #3:** real IEPE/WAV capture if supplied — the only thing that turns "synthetic" into evidence. Refresh the FoldAudio whitepaper with the fail-map numbers once #3 or an OEM reply lands.
 
