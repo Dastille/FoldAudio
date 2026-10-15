@@ -198,7 +198,15 @@ def cmd_shockdaq_demo(args: argparse.Namespace) -> int:
     print(f"  degraded_cases={len(bad)} flagged={len(bad) - len(silent)} silent={silent or 'none'} "
           f"slip_false_alarms={false_alarm or 'none'} rail_on_ideal_front_end={rail_on_ideal or 'none'}")
     print("  status: " + "  ".join(f"{r.name}={r.capture_status}" for r in rows))
-    ok = wins >= 1 and not silent and not false_alarm and not rail_on_ideal
+    # recover_or_clip (firmware sketch, blind): what would actually be emitted.
+    print("  firmware out (recover_or_clip): " + "  ".join(
+        f"{r.name}=" + (f"FALLBACK folded/clip view, {r.fw_untrusted} samples untrusted, peak ≥ λ, SNR {r.snr_fw_db:.1f} dB"
+                        if r.fw_fallback else f"{r.fw_status} SNR {r.snr_fw_db:.1f} dB")
+        for r in rows))
+    fw_mismatch = [r.name for r in rows if r.fw_status != r.capture_status]
+    if fw_mismatch:
+        print(f"  fw_status_mismatch={fw_mismatch}")
+    ok = wins >= 1 and not silent and not false_alarm and not rail_on_ideal and not fw_mismatch
     print(f"  shockdaq_demo={'OK' if ok else 'WEAK'}")
     return 0 if ok else 1
 

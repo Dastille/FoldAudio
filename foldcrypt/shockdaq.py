@@ -40,6 +40,12 @@ blind recovery, never the original; see capture_status()):
     elif overload (|x|>λ):    status = "RECOVERED"         # folded + unwrapped
     else:                     status = "IN_RANGE"
 
+recover_or_clip() (2026-10-15, NOTES #8) is that sketch as a callable: blind
+recovery in, (waveform, status, untrusted-sample mask, peak) out. On UNREC it
+does NOT emit the unwrap; it falls back to the raw folded ADC samples, which
+equal the true signal wherever |x| < λ, marks the overload event(s) untrusted
+and reports the peak as "≥ λ" — exactly what a clipping ADC can honestly say.
+
 RAIL ≠ UNREC: UNREC means the unwrap itself may have slipped (whole-record level
 can be off by 2λ); RAIL means the unwrap held but some peak samples were clipped
 at the rail — a visible, bounded accuracy limit, not a silent unwrap failure.
@@ -56,7 +62,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .blind_level import edge_flag, rail_hits, recover_blind, slip_flag
+from .blind_level import edge_flag, rail_hits, rail_mask, recover_blind, slip_flag
 from .foldaudio import (
     fold_capture,
     hard_clip,
@@ -238,6 +244,10 @@ class ShockDAQResult:
     edge_flag: bool = False
     rail_hits: int = 0
     front_end: str = "ideal"
+    fw_status: str = ""          # recover_or_clip(folded).status (blind; 2026-10-15)
+    fw_fallback: bool = False    # recover_or_clip discarded the unwrap (UNREC → folded/clip view)
+    fw_untrusted: int = 0        # samples recover_or_clip marked untrusted
+    snr_fw_db: float = 0.0       # SNR of recover_or_clip's output vs the original
 
     @property
     def rail_clipped(self) -> bool:
@@ -262,6 +272,124 @@ class ShockDAQResult:
         if self.rail_clipped:
             return "BOUNDED_ACCURACY"
         return "RECOVERED" if self.overload_would_have_flagged else "IN_RANGE"
+
+
+# ---------------------------------------------------------------------------
+# Real-time flag logic sketch (NOTES #8, 2026-10-15): UNREC → fall back to clip
+# ---------------------------------------------------------------------------
+
+CAPTURE_STATUSES = ("UNRECOVERABLE", "BOUNDED_ACCURACY", "RECOVERED", "IN_RANGE")
+
+
+def overload_event_mask(
+    y_folded: np.ndarray,
+    lam: float,
+    *,
+    step_frac: float = 0.5,
+    gap: int = 1024,
+    pad: int = 32,
+) -> np.ndarray:
+    """Blind mask of overload event(s) in a folded capture — no original needed.
+
+    A step is suspicious if it is an Itoh wrap (|Δy| > λ) or its wrapped size is
+    ≥ step_frac·λ. Suspicious steps closer than `gap` samples merge into one
+    event; each event is padded by `pad` samples. Outside the mask the folded
+    sample is not adjacent to any wrap or big step.
+
+    Measured 2026-10-15 (λ = 5 V, 51.2 kHz): the mask covered every |x| ≥ λ
+    sample of the 168 ring-burst cells (56 × seeds 7–9) and the 3 shockdaq-demo
+    signals, masking a median 4 % of the record (gearbox 8.6 %). Blind spot:
+    an isolated single-sample impulse whose folded step happens to look small
+    (FoldAudio harsh_kick class) — the same limit slip/edge already have.
+    """
+    y = np.asarray(y_folded, dtype=float)
+    m = np.zeros(len(y), dtype=bool)
+    if len(y) < 2:
+        return m
+    d = np.diff(y)
+    dw = d - 2.0 * lam * np.round(d / (2.0 * lam))
+    idx = np.flatnonzero((np.abs(d) > lam) | (np.abs(dw) >= step_frac * lam))
+    if not len(idx):
+        return m
+    brk = np.flatnonzero(np.diff(idx) > gap)
+    starts = np.r_[idx[0], idx[brk + 1]]
+    ends = np.r_[idx[brk], idx[-1]]
+    for a, b in zip(starts, ends):
+        m[max(a - pad, 0): b + 2 + pad] = True
+    return m
+
+
+@dataclass
+class CaptureOutput:
+    """What firmware would hand downstream for one capture (recover_or_clip)."""
+    signal: np.ndarray          # waveform to use (recovered, or folded fallback)
+    status: str                 # one of CAPTURE_STATUSES
+    fallback: bool              # True → unwrap discarded, signal = folded ADC samples
+    untrusted: np.ndarray       # bool mask: samples whose value is NOT the true input
+    peak_V: float               # reported peak |x|
+    peak_is_lower_bound: bool   # True → "peak ≥ peak_V" (saturated, like a clip)
+    slip_flag: bool
+    edge_flag: bool
+    rail_hits: int
+    k: int                      # blind 2λ level offset used by recover_blind
+
+    @property
+    def n_untrusted(self) -> int:
+        return int(np.count_nonzero(self.untrusted))
+
+
+def recover_or_clip(
+    y_folded: np.ndarray,
+    lam: float,
+    *,
+    prior: str = "quiet_window",
+    fold_gain: float = 0.0,
+    bits: int | None = None,
+) -> CaptureOutput:
+    """Firmware flag logic: blind recover, and if UNREC fall back to the clipped view.
+
+    1. recover_blind (no original); slip/edge self-checks; rail_hits.
+    2. UNRECOVERABLE (slip or edge): DISCARD the unwrap. Output the raw folded
+       samples y — exact wherever |x| < λ (an ideal fold is the identity there),
+       bounded in [−λ, λ) inside the event — with overload_event_mask marking
+       the event untrusted and the peak reported as "≥ λ". That is the honest
+       content of a clipped capture: in-range samples exact, overload saturated.
+       (Rejected: clipping the naive unwrap at ±λ. After a slip the unwrap's
+       baseline sits 2λ off, so clip(unwrap) parks the whole tail at the rail —
+       measured 2026-10-15: −11 to −16 dB SNR vs a true hard clip on seven
+       failing captures, vs −0.9…+1.9 dB for the folded samples, whose
+       baseline is exact.)
+    3. BOUNDED_ACCURACY (rail_hits > 0): recovered waveform; rail-clipped
+       samples marked untrusted (bounded error, see module docstring).
+    4. RECOVERED if the unwrap applied any wrap, else IN_RANGE (blind: no
+       knowledge of the original).
+
+    Same priority order as ShockDAQResult.capture_status; `bits` only widens the
+    rail tolerance by one LSB (blind_level.rail_mask).
+    """
+    y = np.asarray(y_folded, dtype=float)
+    rec, k = recover_blind(y, lam, prior=prior, fold_gain=fold_gain)
+    slip = slip_flag(rec, lam)
+    edge = edge_flag(y, lam)
+    rmask = rail_mask(y, lam, bits=bits)
+    nrail = int(np.count_nonzero(rmask))
+    if slip or edge:
+        return CaptureOutput(
+            signal=y.copy(), status="UNRECOVERABLE", fallback=True,
+            untrusted=overload_event_mask(y, lam),
+            peak_V=float(lam), peak_is_lower_bound=True,
+            slip_flag=slip, edge_flag=edge, rail_hits=nrail, k=k,
+        )
+    wrapped = bool(np.any(np.abs(rec - y) > 1e-9 * lam))
+    if nrail:
+        status = "BOUNDED_ACCURACY"
+    else:
+        status = "RECOVERED" if wrapped else "IN_RANGE"
+    return CaptureOutput(
+        signal=rec, status=status, fallback=False, untrusted=rmask,
+        peak_V=float(np.max(np.abs(rec))) if len(rec) else 0.0, peak_is_lower_bound=False,
+        slip_flag=slip, edge_flag=edge, rail_hits=nrail, k=k,
+    )
 
 
 def run_case(
@@ -292,6 +420,7 @@ def run_case(
     folded = fold_capture(x, lam) if fold_fn is None else np.asarray(fold_fn(x, lam), dtype=float)
     recovered = recover_itoh(folded, lam, anchor=x)
     blind, _k = recover_blind(folded, lam)
+    fw = recover_or_clip(folded, lam, prior="zero_mean")  # same prior as the blind column
 
     pe_c = peak_abs_error(x, clipped)
     pe_f = peak_abs_error(x, recovered)
@@ -335,6 +464,10 @@ def run_case(
         edge_flag=edge_flag(folded, lam),
         rail_hits=rail_hits(folded, lam),
         front_end=front_end,
+        fw_status=fw.status,
+        fw_fallback=fw.fallback,
+        fw_untrusted=fw.n_untrusted,
+        snr_fw_db=snr_db(x, fw.signal),
     )
 
 
@@ -410,6 +543,7 @@ def run_shockdaq_demo(
             "Itoh + 2λ offset search vs original (demo oracle); blind column uses AC-coupling zero-mean prior, no original.",
             "overload_unrecoverable = blind slip OR edge self-check (failmap.py rule); impact_too_fast is a deliberate past-limit case.",
             "rail_hits = folded samples at the ADC rails (blind_level.rail_mask); >0 → RAIL / 'bounded accuracy'. gearbox_fold_long models a +1 % long fold step (synthetic front-end error, not a measured part).",
+            "fw_* = recover_or_clip (blind firmware sketch): on UNREC the unwrap is discarded and the raw folded samples are output (exact where |x|<λ), event samples marked untrusted, peak reported as ≥ λ.",
             "spectral_bias = relative RMS in HF band (0.15–0.45 Nyquist); not ISO vibration metrics.",
         ],
         "cases": [
@@ -437,6 +571,10 @@ def run_shockdaq_demo(
                 "rail_hits": r.rail_hits,
                 "rail_clipped": r.rail_clipped,
                 "capture_status": r.capture_status,
+                "fw_status": r.fw_status,
+                "fw_fallback": r.fw_fallback,
+                "fw_untrusted_samples": r.fw_untrusted,
+                "snr_fw_db": r.snr_fw_db,
             }
             for r in rows
         ],

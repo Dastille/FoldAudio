@@ -9,6 +9,7 @@
     "Itoh + 2\u03bb offset search vs original (demo oracle); blind column uses AC-coupling zero-mean prior, no original.",
     "overload_unrecoverable = blind slip OR edge self-check (failmap.py rule); impact_too_fast is a deliberate past-limit case.",
     "rail_hits = folded samples at the ADC rails (blind_level.rail_mask); >0 \u2192 RAIL / 'bounded accuracy'. gearbox_fold_long models a +1 % long fold step (synthetic front-end error, not a measured part).",
+    "fw_* = recover_or_clip (blind firmware sketch): on UNREC the unwrap is discarded and the raw folded samples are output (exact where |x|<\u03bb), event samples marked untrusted, peak reported as \u2265 \u03bb.",
     "spectral_bias = relative RMS in HF band (0.15\u20130.45 Nyquist); not ISO vibration metrics."
   ],
   "cases": [
@@ -35,7 +36,11 @@
       "front_end": "ideal",
       "rail_hits": 0,
       "rail_clipped": false,
-      "capture_status": "RECOVERED"
+      "capture_status": "RECOVERED",
+      "fw_status": "RECOVERED",
+      "fw_fallback": false,
+      "fw_untrusted_samples": 0,
+      "snr_fw_db": 120.0
     },
     {
       "name": "impact_transient",
@@ -60,7 +65,11 @@
       "front_end": "ideal",
       "rail_hits": 0,
       "rail_clipped": false,
-      "capture_status": "RECOVERED"
+      "capture_status": "RECOVERED",
+      "fw_status": "RECOVERED",
+      "fw_fallback": false,
+      "fw_untrusted_samples": 0,
+      "snr_fw_db": 120.0
     },
     {
       "name": "impact_too_fast",
@@ -85,7 +94,11 @@
       "front_end": "ideal",
       "rail_hits": 0,
       "rail_clipped": false,
-      "capture_status": "UNRECOVERABLE"
+      "capture_status": "UNRECOVERABLE",
+      "fw_status": "UNRECOVERABLE",
+      "fw_fallback": true,
+      "fw_untrusted_samples": 3385,
+      "snr_fw_db": -0.10594020922207492
     },
     {
       "name": "gearbox_fold_long",
@@ -110,7 +123,11 @@
       "front_end": "gain +1.0%",
       "rail_hits": 92,
       "rail_clipped": true,
-      "capture_status": "BOUNDED_ACCURACY"
+      "capture_status": "BOUNDED_ACCURACY",
+      "fw_status": "BOUNDED_ACCURACY",
+      "fw_fallback": false,
+      "fw_untrusted_samples": 92,
+      "snr_fw_db": 42.000651889759155
     }
   ]
 }

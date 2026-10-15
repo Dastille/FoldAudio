@@ -33,6 +33,8 @@
 
 - **Measured CWRU bearing records** (2026-10-14 weekday slice) — `shockdaq-real` / `realdata.py`: 13 public CWRU drive-end records (7 at 48 kHz, 6 at 12 kHz) + 48→12k subsampled copies, rail λ = 0.8…0.25 × peak applied in software, blind recovery. Rule 120/120, 26 exact, 94 failed all flagged, 0 silent, 0 slip false alarms, 3 edge-conservative. 48 kHz: max step 0.32–0.42 × peak → 7.5–9.8 dB extra range, kurtosis/crest kept exact (clip: 20.8→15.9 kurtosis on 238). 12 kHz: step 1.03–1.61 × peak → **no** recoverable overload. Files fetched + SHA-256 checked, not redistributed; SciPy optional extra `[real]`. Whitepaper v1.1 §6.6, one-pager + README updated. 78 tests.
 
+- **Noise-aware slew rule + UNREC fallback** (2026-10-15 weekday slice, NOTES #8) — `failmap.noise_aware_slew_ok` / `slew_threshold`: spec-sheet rule max|Δx_signal| < λ − k·σ, **k = 5** fitted on the 9 noise rows × 5 seeds (2,520 cells; smallest 0.25-grid k with 0 false-ok = 4.75, rounded up). False-ok 119 → 0, agree 2401 → 2435, cost 85 conservative cells all at ≤ 30 dB; ideal/60/40 dB rows unchanged 280/280. Seeds 7–9 alone fit k = 4 → 4 false-ok on held-out 10–11 (hence all-seed fit + round-up). INL rows keep 3–4 false-ok cells (needs derate, not noise margin; all flagged). New table columns `n-aware`, `falseOK c→n`; additive JSON fields; `fit_noise_k`, `noise_configs`. `shockdaq.recover_or_clip` + `overload_event_mask`: on UNREC discard the unwrap, emit the folded samples (exact where |x| < λ), mask the event untrusted, peak "≥ λ". impact_too_fast: SNR −0.1 dB vs slipped unwrap −29.7 dB, 3,385 samples untrusted. Rejected clip(unwrap) (−11…−16 dB vs true clip after a slip). Mask covered every |x| ≥ λ sample in 168 burst cells. `shockdaq-demo` prints `firmware out`, metrics.json `fw_*`. Whitepaper v1.2 (brief §3.6 + §4.4). 87 tests.
+
 ## Next slices (weekday-sized, soft freeze)
 
 1. ~~**Listen / plot fail cases**~~ — done 2026-10-07 (`failmap.py`, slew rule + self-flags).
@@ -45,7 +47,9 @@
 7. ~~**Fold-step calibration**~~ — done 2026-10-12 (`shockdaq-calibrate`; gain + INL; rail_hits flag the rest).
 7b. ~~**RAIL column in `shockdaq-demo`**~~ — done 2026-10-13 (`blind_level.rail_hits`; `gearbox_fold_long` case; firmware status sketch).
 7c. ~~**Real public vibration data**~~ — done 2026-10-14 (CWRU, `shockdaq-real`). Follow-ups: non-ideal front end on CWRU records (light); a second dataset with higher rate or real overload (e.g. Paderborn 64 kHz) (medium).
-8. **Next (light):** noise-aware slew rule (margin = k·σ) fitted properly; real-time flag logic sketch (fall back to clipped value when UNREC).
+8. ~~**Noise-aware slew rule + UNREC fallback**~~ — done 2026-10-15 (`noise_aware_slew_ok`, k = 5; `recover_or_clip`).
+8b. **Next (light):** combined spec rule λ·(1 − 2|g| − |e| − |o| − π·a) − k·σ — check it clears the residual INL/combo false-ok cells without over-derating; blind σ estimate from the quiet window so firmware can apply λ − kσ live (no new data).
+8c. **Light follow-up to 7c:** non-ideal front end + `recover_or_clip` on the CWRU records (does the fallback mask cover every overloaded sample on measured data?).
 9. **Still #3:** real IEPE/WAV capture if supplied — the only thing that turns "synthetic" into evidence. Refresh the FoldAudio whitepaper with the fail-map numbers once #3 or an OEM reply lands.
 
 ## Do not do

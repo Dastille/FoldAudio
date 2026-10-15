@@ -140,3 +140,70 @@ def test_demo_rows_include_rail_case(tmp_path):
     import json
     meta = json.loads((tmp_path / "metrics.json").read_text())
     assert {c["name"]: c["capture_status"] for c in meta["cases"]}["gearbox_fold_long"] == "BOUNDED_ACCURACY"
+
+
+# --- recover_or_clip: real-time flag logic (2026-10-15, NOTES #8) -----------
+
+from foldcrypt.blind_level import recover_blind  # noqa: E402
+from foldcrypt.failmap import NonIdeal, nonideal_fold, ring_burst  # noqa: E402
+from foldcrypt.shockdaq import CAPTURE_STATUSES, overload_event_mask, recover_or_clip  # noqa: E402
+
+
+def test_recover_or_clip_falls_back_on_past_slew_case():
+    lam, sr = DEFAULT_LAM_V, 51200
+    x = gen_impact_transient(sr=sr, lam=lam, peak_amp=60.0)   # impact_too_fast
+    assert max_sample_jump(x) > lam
+    y = fold_capture(x, lam)
+    out = recover_or_clip(y, lam)
+    assert out.status == "UNRECOVERABLE" and out.fallback
+    assert out.slip_flag or out.edge_flag
+    # No silently bad unwrap: the emitted signal is the bounded folded capture...
+    assert np.max(np.abs(out.signal)) <= lam
+    assert np.array_equal(out.signal, y)
+    # ...exact wherever it is not marked untrusted, and every overloaded sample is marked.
+    trusted = ~out.untrusted
+    assert np.allclose(out.signal[trusted], x[trusted])
+    assert not np.any((np.abs(x) >= lam) & trusted)
+    assert out.peak_is_lower_bound and out.peak_V == lam
+    # Far closer to the truth than the slipped unwrap it replaced.
+    bad, _ = recover_blind(y, lam, prior="quiet_window")
+    assert snr_db(x, out.signal) > snr_db(x, bad) + 20.0
+
+
+def test_recover_or_clip_recovers_good_cases_and_in_range():
+    lam, sr = DEFAULT_LAM_V, 51200
+    for x in (gen_impact_transient(sr=sr, lam=lam), gen_gearbox_startup(sr=sr, lam=lam)):
+        out = recover_or_clip(fold_capture(x, lam), lam)
+        assert out.status == "RECOVERED" and not out.fallback
+        assert snr_db(x, out.signal) > 100.0 and out.n_untrusted == 0
+        assert not out.peak_is_lower_bound and abs(out.peak_V - np.max(np.abs(x))) < 1e-6
+    quiet = 0.3 * gen_impact_transient(sr=sr, lam=lam)        # never reaches λ
+    assert np.max(np.abs(quiet)) < lam
+    out = recover_or_clip(fold_capture(quiet, lam), lam)
+    assert out.status == "IN_RANGE" and np.allclose(out.signal, quiet)
+
+
+def test_recover_or_clip_bounded_accuracy_on_long_fold_step():
+    lam, sr = DEFAULT_LAM_V, 51200
+    x = gen_gearbox_startup(sr=sr, lam=lam)
+    y = nonideal_fold(x, lam, NonIdeal(gain_err=0.01))
+    out = recover_or_clip(y, lam)
+    assert out.status == "BOUNDED_ACCURACY" and not out.fallback
+    assert out.rail_hits > 0 and out.n_untrusted == out.rail_hits
+    assert out.status in CAPTURE_STATUSES
+
+
+def test_recover_or_clip_falls_back_on_failmap_failures():
+    lam, sr = DEFAULT_LAM_V, 51200
+    for amp, f in ((10.0, 6000.0), (40.0, 2000.0), (8.0, 8000.0)):
+        x = ring_burst(sr, amp=amp, f_ring=f, lam=lam)
+        out = recover_or_clip(fold_capture(x, lam), lam)
+        assert out.fallback and out.status == "UNRECOVERABLE"
+        assert not np.any((np.abs(x) >= lam) & ~out.untrusted)
+        assert np.max(np.abs(out.signal)) <= lam                     # bounded like a clip, no 2λk drift
+        assert abs(np.mean(out.signal[-2000:])) < 0.1 * lam          # baseline not parked at a rail
+
+
+def test_overload_event_mask_empty_on_in_range_capture():
+    x = 0.3 * gen_impact_transient(sr=51200, lam=DEFAULT_LAM_V)
+    assert not overload_event_mask(fold_capture(x, DEFAULT_LAM_V), DEFAULT_LAM_V).any()

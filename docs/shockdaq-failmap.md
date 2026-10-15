@@ -216,3 +216,81 @@ sketch: UNREC set → "unrecoverable" (unwrap may have slipped; fall back to the
 clipped value); else RAIL set → "overload peak, bounded accuracy" (unwrap held,
 some peak samples clipped at the rail); else overload → "recovered".
 
+
+## Noise-aware slew rule + UNREC fallback (2026-10-15 weekday slice, NOTES #8)
+
+### A. Noise-aware slew rule
+
+`failmap.noise_aware_slew_ok(max_dx, lam, sigma, k=NOISE_K)` /
+`failmap.slew_threshold(lam, sigma, k)`:
+
+> **recovers iff max|Δx_signal| < λ − k·σ**, with k = 5 and the margin clamped to [0, λ]
+
+Here max|Δx_signal| is the signal's own (noiseless, spec-sheet) per-sample step
+and σ is the front-end noise RMS. The plain rule applied to the noisy samples
+is already exact (280/280 at every SNR). This rule is for the situation a
+datasheet or test plan is actually in: you know the signal's slew and the
+noise floor, not the realised noisy samples. Do not apply it to an
+already-noisy max|Δx|, because that counts the noise twice.
+
+**Fit.** The fit set is the 9 noise rows of `--nonideal` (ideal, then 60 → 0 dB
+SNR) × 56 cells × seeds 7–11 = 2,520 cells. σ is taken per cell. k was scanned
+from 0 to 8 in steps of 0.25 (`failmap.fit_noise_k`, which reuses the swept
+cells at no extra cost). The criterion: no "rule says ok but the unwrap
+slipped" cell (false-ok, the dangerous miss), at the smallest k that achieves it.
+
+| k | agree / 2520 | false-ok | false-no |
+|---|---|---|---|
+| 0 (plain spec-sheet rule) | 2401 | **119** | 0 |
+| 3 (max agreement) | 2481 | 12 | 27 |
+| 4 | 2472 | 4 | 44 |
+| 4.75 (smallest with 0 false-ok) | 2439 | 0 | 81 |
+| **5 (chosen)** | **2435** | **0** | 85 |
+
+Cross-check: fitting on seeds 7–9 alone gives k = 4, but that k still leaves 4
+false-ok cells on held-out seeds 10–11. k = 4.75 is 0/0 on both halves, and 5
+rounds it up for margin. The 85 conservative cells are all at SNR ≤ 30 dB
+(30 dB: 1, 20 dB: 8, 15 dB: 15, 10 dB: 25, 5 dB: 13, 0 dB: 23). The ideal,
+60 dB and 40 dB rows are unchanged at 280/280. Rough physics: white noise adds
+a per-step term of std √2·σ, so k = 5 is about 3.5 step-σ at the steepest step.
+
+The sweep table now has an `n-aware` column (agreement) and a `falseOK c→n`
+column (false-ok count, clean rule → noise-aware rule). JSON rows gain
+`noise_aware_rule_agrees`, `noise_aware_false_ok` and `clean_rule_false_ok`;
+`NonIdealCell` gains `noise_aware_ok`; sweep dicts gain `noise_k`. All of these
+are additive. The rule covers noise only. INL rows keep 3–4 false-ok cells
+(inl 1 %: 3, 2 %: 3, 5 %: 4; combo-mild 1, combo-bad 2 → 1), the same cells the
+plain rule misses. They need the derated rule λ(1 − 2|g| − |e| − |o| − π·a), and
+all of them are still flagged by slip/edge (0 silent).
+
+### B. Real-time flag logic: `shockdaq.recover_or_clip`
+
+`recover_or_clip(y_folded, lam)` turns the firmware status sketch into code:
+blind recover → slip/edge/rail checks → a `CaptureOutput` with `signal`,
+`status` (UNRECOVERABLE / BOUNDED_ACCURACY / RECOVERED / IN_RANGE), `fallback`,
+an `untrusted` sample mask, and `peak_V` plus `peak_is_lower_bound`.
+
+- **UNRECOVERABLE (slip or edge):** the unwrap is **discarded**. Output = the raw
+  folded ADC samples. They equal the true input wherever |x| < λ, and are
+  bounded in [−λ, λ) inside the event. `overload_event_mask` marks the event
+  untrusted and the peak is reported as **≥ λ**. That is the honest content of a
+  clipped capture with an overload flag. On `impact_too_fast` it emits 3,385
+  untrusted samples (4.4 %), with SNR −0.1 dB vs the original instead of the
+  slipped unwrap's −29.7 dB and its 300 V phantom peak.
+- Rejected: clipping the unwrap at ±λ. After a slip its baseline sits 2λ off,
+  so the clipped tail parks at the rail. On seven failing captures it scored
+  −11 to −16 dB SNR vs a true hard clip, against −0.9 to +1.9 dB for the folded
+  samples.
+- `overload_event_mask` (wraps or wrapped steps ≥ 0.5λ, merged within 1,024
+  samples, ±32 padding) covered every |x| ≥ λ sample in 168 burst cells
+  (56 × seeds 7–9) and the 3 demo signals. Median masked fraction 4 %, gearbox
+  8.6 %. Blind spot: isolated single-sample impulses (the `harsh_kick` class),
+  as for slip/edge.
+- BOUNDED_ACCURACY: recovered waveform, rail-clipped samples marked untrusted.
+  RECOVERED / IN_RANGE is decided blind (did the unwrap apply any wrap?).
+- `shockdaq-demo` prints a `firmware out` line and writes `fw_status`,
+  `fw_fallback`, `fw_untrusted_samples` and `snr_fw_db` to `metrics.json`. The
+  demo fails if `fw_status` disagrees with `capture_status` (it agrees on all 4
+  cases).
+
+Synthetic only; λ = 5 V is still an assumption, not an OEM part.

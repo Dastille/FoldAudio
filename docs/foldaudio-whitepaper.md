@@ -1,11 +1,13 @@
 # Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration
 
-**Technical report, version 1.1**
-**Date:** 2026-10-14
+**Technical report, version 1.2**
+**Date:** 2026-10-15
 **Author:** Ashlynn (GitHub: [Dastille](https://github.com/Dastille))
 **Repository:** <https://github.com/Dastille/FoldAudio> (MIT License)
 **Evidence class:** numerical simulation, plus software folding of public measured accelerometer recordings (Section 6.6). No hardware folding front end was built or measured for this work.
 
+> **Revision note (v1.2, 2026-10-15).** Section 4.4 now states a fitted noise margin for the slew specification ($k = 5$). Section 3.6 specifies the `UNRECOVERABLE` fallback output. No earlier result changed.
+>
 > **Revision note (v1.1, 2026-10-14).** Adds Section 6.6: the fold, blind-unwrap and self-check chain applied to 13 measured bearing-fault accelerometer records from the CWRU Bearing Data Center. Limitations 1 and 6, Sections 9.2 and 10, and the conclusion are updated accordingly. No v1.0 result changed.
 >
 > **Revision note (v1.0, 2026-10-13).** This version replaces the working draft v0.1 of 2026-10-02 ("FoldAudio: Intentional Modulo Fold Instead of Hard Clip"). Changes: (i) scope widened from audio to two applications, audio recording and IEPE vibration/shock instrumentation; (ii) blind absolute-level recovery added, so the oracle original used in v0.1 is no longer needed for AC-coupled signals; (iii) new sections on recovery conditions, blind failure detection, a 280-cell failure map, ADC quantization, non-ideal front-end sweeps, one-tone front-end calibration, and a per-capture status word; (iv) introduction and related work rewritten against published instrumentation and unlimited-sensing literature; (v) all numbers re-run from the repository on 2026-10-13. Two corrections to earlier repository notes are recorded in Section 6.3 and Section 4.6.
@@ -165,10 +167,12 @@ The checks combine into one status per capture, in priority order:
 
 | Status | Condition | Interpretation | Recommended handling |
 |---|---|---|---|
-| `UNRECOVERABLE` | slip **or** edge check set | unwrap may have slipped; level may be wrong by multiples of $2\lambda$ | do not use the reconstruction; fall back to the clipped value and report an overload |
+| `UNRECOVERABLE` | slip **or** edge check set | unwrap may have slipped; level may be wrong by multiples of $2\lambda$ | do not use the reconstruction; fall back to the clipped value and report an overload (see below) |
 | `BOUNDED_ACCURACY` | rail count > 0 (and not `UNRECOVERABLE`) | unwrap held, but some overload samples were clipped at the converter rail | use the reconstruction; tag overload peaks with a bounded-accuracy qualifier |
 | `RECOVERED` | input exceeded $\lambda$, no flag | overload reconstructed | use the reconstruction; record that an overload occurred |
 | `IN_RANGE` | input never exceeded $\lambda$ | conventional linear capture | normal handling |
+
+**Fallback output for `UNRECOVERABLE`.** The reference implementation (`shockdaq.recover_or_clip`) discards the reconstruction and emits the folded samples $y$. Wherever $\lvert x \rvert < \lambda$ these equal the input exactly. Inside an overload event they are bounded in $[-\lambda, \lambda)$. A blind event mask marks those samples as untrusted, and the peak is reported as a lower bound, $\ge \lambda$. This carries the same information as a clipped capture with an overload flag. Clipping the reconstruction at $\pm\lambda$ was rejected: after a slip the reconstructed baseline is offset by $2\lambda$, so the clipped tail sits at the rail. On seven failing captures (six bursts and the past-limit impact case), clipping the reconstruction gave −11 to −16 dB SNR relative to a true hard clip, against −0.9 to +1.9 dB for the folded samples. The event mask covered every $\lvert x \rvert \ge \lambda$ sample in 168 burst cells. It shares the isolated-impulse blind spot of Section 4.6.
 
 ### 3.7 Non-ideal front-end model
 
@@ -224,6 +228,8 @@ With an $N$-bit quantizer, each folded sample carries an error of at most $\Delt
 ### 4.4 Noise
 
 Noise added before the fold increases sample-to-sample differences. The recovery condition still applies exactly, but it applies to the noisy input the fold actually sees, not to the noiseless signal on a specification sheet. In practice, the slew specification must be derated by a margin of several noise standard deviations (Section 6.5). Recovery introduces no error beyond the noise itself.
+
+A fitted form of this margin is $\max \lvert \Delta x_{\mathrm{signal}} \rvert < \lambda - k\sigma$, where $\sigma$ is the front-end noise RMS and the margin is clamped to $[0, \lambda]$. The fit used the nine noise rows of the non-ideal sweep (ideal, then 60 to 0 dB SNR; 56 cells × 5 seeds, 2,520 cells). The smallest $k$ on a 0.25 grid with no case of "predicted recoverable but slipped" is 4.75, rounded up to $k = 5$. Against the noiseless specification rule ($k = 0$), false "recoverable" predictions fall from 119 to 0 and agreement rises from 2,401 to 2,435 of 2,520. The cost is 85 conservative predictions, all at SNR ≤ 30 dB; rows at 40 dB and above are unchanged. A fit on three seeds alone gave $k = 4$, which still left 4 false predictions on the two held-out seeds. The margin covers noise only. The residual INL-driven misses of Section 6.5 (3–4 cells per INL row) still need the derated rule.
 
 ### 4.5 Front-end errors
 
@@ -662,3 +668,4 @@ URLs were accessed on 2026-10-13.
 | 0.1 | 2026-10-02 | Working draft: audio-only, oracle level selection, four-signal SNR table. |
 | 1.0 | 2026-10-13 | Retitled and rewritten as a technical report. Added vibration application, blind level recovery, recovery-condition analysis, blind diagnostics and capture status, 280-cell failure map, quantization and non-ideal front-end sweeps, one-tone calibration, limitations and integration guidance. All figures re-run. Corrected slip-check coverage (157/166, not 166/166) and documented the impulsive-signal diagnostic blind spot. |
 | 1.1 | 2026-10-14 | Added Section 6.6 (Tables 10–11): measured CWRU bearing-fault records with software-applied overload; 120/120 rule agreement, 0 silent failures; sample-rate finding (48 kHz recoverable, 12 kHz not). Updated abstract, Limitations 1 and 6, Section 9.2, reproducibility, conclusion and references. |
+| 1.2 | 2026-10-15 | Section 4.4: fitted noise margin $\lambda - k\sigma$, $k = 5$ (false "recoverable" 119 → 0 of 2,520 noise cells). Section 3.6: `UNRECOVERABLE` fallback output (folded samples plus untrusted mask; peak reported as $\ge \lambda$). |

@@ -122,3 +122,44 @@ def test_gain_mismatch_is_accuracy_limit_not_unwrap_failure():
     ok = [c for c in cells if c.recovered_ok]
     assert ok and any(not c.accurate for c in ok)  # >1 % of peak off ...
     assert not any(c.silent_fail for c in cells)    # ... but no silent unwrap failure
+
+
+# --- noise-aware slew rule (2026-10-15, NOTES #8) ---------------------------
+
+
+def test_slew_threshold_margin_and_clamp():
+    assert fm.slew_threshold(LAM, 0.0) == LAM
+    assert np.isclose(fm.slew_threshold(LAM, 0.1, k=5.0), LAM - 0.5)
+    assert fm.slew_threshold(LAM, 10.0, k=5.0) == 0.0          # budget used up, never negative
+    assert fm.slew_threshold(LAM, -1.0, k=5.0) == LAM          # nonsense σ cannot widen the limit
+    # σ = 0 reduces to the plain rule
+    assert fm.noise_aware_slew_ok(4.99, LAM, 0.0) and not fm.noise_aware_slew_ok(5.0, LAM, 0.0)
+    assert not fm.noise_aware_slew_ok(4.6, LAM, 0.1, k=5.0)
+    assert not fm.noise_aware_slew_ok(0.0, LAM, 10.0)          # threshold 0 → nothing passes
+
+
+def test_noise_aware_rule_removes_false_ok_on_noisy_rows():
+    cfgs = [fm.NonIdeal("noise 5 dB", noise_snr_db=5.0), fm.NonIdeal("noise 0 dB", noise_snr_db=0.0)]
+    sweep = fm.run_nonideal_sweep(cfgs, seeds=(7, 8))
+    for r in sweep["rows"]:
+        assert r["clean_rule_false_ok"] > 0           # spec-sheet rule is optimistic under noise
+        assert r["noise_aware_false_ok"] == 0         # k·σ margin removes every dangerous miss
+        assert r["noise_aware_rule_agrees"] > r["clean_rule_agrees"]
+        assert r["fails_silent"] == 0
+    assert sweep["noise_k"] == fm.NOISE_K
+    assert "n-aware" in fm.format_nonideal_sweep(sweep)
+
+
+def test_noise_aware_rule_costs_nothing_at_high_snr():
+    cfgs = [fm.NonIdeal("ideal"), fm.NonIdeal("noise 60 dB", noise_snr_db=60.0)]
+    sweep = fm.run_nonideal_sweep(cfgs, seeds=(7,))
+    for r in sweep["rows"]:
+        assert r["noise_aware_rule_agrees"] == r["cells"] == r["clean_rule_agrees"]
+
+
+def test_fit_noise_k_finds_safe_k_at_or_below_default():
+    cells = fm.run_nonideal_sweep([fm.NonIdeal("noise 0 dB", noise_snr_db=0.0)], seeds=(7,))["cells"]
+    fit = fm.fit_noise_k(cells)
+    assert fit["rows"][0]["k"] == 0.0 and fit["rows"][0]["false_ok"] > 0
+    assert fit["k_min_safe"] is not None and fit["k_min_safe"] <= fm.NOISE_K
+    assert [c.name for c in fm.noise_configs()][:2] == ["ideal", "noise 60 dB"]
