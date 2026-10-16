@@ -35,6 +35,8 @@
 
 - **Noise-aware slew rule + UNREC fallback** (2026-10-15 weekday slice, NOTES #8) — `failmap.noise_aware_slew_ok` / `slew_threshold`: spec-sheet rule max|Δx_signal| < λ − k·σ, **k = 5** fitted on the 9 noise rows × 5 seeds (2,520 cells; smallest 0.25-grid k with 0 false-ok = 4.75, rounded up). False-ok 119 → 0, agree 2401 → 2435, cost 85 conservative cells all at ≤ 30 dB; ideal/60/40 dB rows unchanged 280/280. Seeds 7–9 alone fit k = 4 → 4 false-ok on held-out 10–11 (hence all-seed fit + round-up). INL rows keep 3–4 false-ok cells (needs derate, not noise margin; all flagged). New table columns `n-aware`, `falseOK c→n`; additive JSON fields; `fit_noise_k`, `noise_configs`. `shockdaq.recover_or_clip` + `overload_event_mask`: on UNREC discard the unwrap, emit the folded samples (exact where |x| < λ), mask the event untrusted, peak "≥ λ". impact_too_fast: SNR −0.1 dB vs slipped unwrap −29.7 dB, 3,385 samples untrusted. Rejected clip(unwrap) (−11…−16 dB vs true clip after a slip). Mask covered every |x| ≥ λ sample in 168 burst cells. `shockdaq-demo` prints `firmware out`, metrics.json `fw_*`. Whitepaper v1.2 (brief §3.6 + §4.4). 87 tests.
 
+- **Combined derate + noise rule + blind σ** (2026-10-16 weekday slice, NOTES #8b) — `failmap.combined_slew_ok` / `combined_slew_threshold`: max|Δx_signal| < λ·D − k·σ with D = max(0, 1 − 2|g| − |e| − |o| − π·|a|), threshold clamped ≥ 0 (same clean-slew convention as noise-aware). On INL+combo rows (1,400 cells, 5 seeds): noise-aware false-ok **12 → 0**, over-derate false-no **0 → 19** (inl 1 %: 0; 2 %: 1; 5 %: 14; combo-mild/bad: 2 each); ideal/60/40 dB unchanged 280/280. `blind_level.estimate_noise_sigma` / `quietest_window_std`: quiet-window sample std of the folded capture; tracks injected σ within ~5 % max rel. error on synthetic quiet+noise and folded mid-overload. Table columns `combined`, `falseOK n→c`; additive JSON. Whitepaper v1.3 (brief §4.4/§4.5 note). 94 tests.
+
 ## Next slices (weekday-sized, soft freeze)
 
 1. ~~**Listen / plot fail cases**~~ — done 2026-10-07 (`failmap.py`, slew rule + self-flags).
@@ -48,8 +50,8 @@
 7b. ~~**RAIL column in `shockdaq-demo`**~~ — done 2026-10-13 (`blind_level.rail_hits`; `gearbox_fold_long` case; firmware status sketch).
 7c. ~~**Real public vibration data**~~ — done 2026-10-14 (CWRU, `shockdaq-real`). Follow-ups: non-ideal front end on CWRU records (light); a second dataset with higher rate or real overload (e.g. Paderborn 64 kHz) (medium).
 8. ~~**Noise-aware slew rule + UNREC fallback**~~ — done 2026-10-15 (`noise_aware_slew_ok`, k = 5; `recover_or_clip`).
-8b. **Next (light):** combined spec rule λ·(1 − 2|g| − |e| − |o| − π·a) − k·σ — check it clears the residual INL/combo false-ok cells without over-derating; blind σ estimate from the quiet window so firmware can apply λ − kσ live (no new data).
-8c. **Light follow-up to 7c:** non-ideal front end + `recover_or_clip` on the CWRU records (does the fallback mask cover every overloaded sample on measured data?).
+8b. ~~**Combined derate + noise rule + blind σ**~~ — done 2026-10-16 (`combined_slew_ok`; INL/combo false-ok 12 → 0, false-no +19; `estimate_noise_sigma`).
+8c. **Next (light):** non-ideal front end + `recover_or_clip` on the CWRU records (does the fallback mask cover every overloaded sample on measured data?).
 9. **Still #3:** real IEPE/WAV capture if supplied — the only thing that turns "synthetic" into evidence. Refresh the FoldAudio whitepaper with the fail-map numbers once #3 or an OEM reply lands.
 
 ## Do not do

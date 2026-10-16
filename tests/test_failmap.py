@@ -163,3 +163,78 @@ def test_fit_noise_k_finds_safe_k_at_or_below_default():
     assert fit["rows"][0]["k"] == 0.0 and fit["rows"][0]["false_ok"] > 0
     assert fit["k_min_safe"] is not None and fit["k_min_safe"] <= fm.NOISE_K
     assert [c.name for c in fm.noise_configs()][:2] == ["ideal", "noise 60 dB"]
+
+
+# --- combined derate + noise-aware slew rule (2026-10-16, NOTES #8b) --------
+
+
+def test_combined_slew_threshold_edges():
+    # σ = 0 → derate-only (D = 1 − π·0.05 ≈ 0.843)
+    d = 1.0 - np.pi * 0.05
+    assert np.isclose(fm.combined_slew_threshold(LAM, 0.0, inl=0.05), LAM * d)
+    # no front-end errors → noise-aware threshold
+    assert np.isclose(fm.combined_slew_threshold(LAM, 0.1, k=5.0), LAM - 0.5)
+    assert np.isclose(
+        fm.combined_slew_threshold(LAM, 0.1, k=5.0),
+        fm.slew_threshold(LAM, 0.1, k=5.0),
+    )
+    # both: derate then subtract kσ
+    assert np.isclose(
+        fm.combined_slew_threshold(LAM, 0.1, inl=0.05, k=5.0),
+        LAM * d - 0.5,
+    )
+    # derate clamps at 0 (huge INL) → threshold 0
+    assert fm.combined_slew_threshold(LAM, 0.0, inl=1.0) == 0.0
+    # noise eats the remaining budget → threshold 0, never negative
+    assert fm.combined_slew_threshold(LAM, 10.0, k=5.0) == 0.0
+    assert fm.combined_slew_threshold(LAM, 10.0, inl=0.05, k=5.0) == 0.0
+    # nonsense σ cannot widen the limit
+    assert fm.combined_slew_threshold(LAM, -1.0) == LAM
+
+
+def test_combined_slew_ok_matches_component_rules():
+    # σ = 0, no errors → plain clean rule
+    assert fm.combined_slew_ok(4.99, LAM, 0.0) and not fm.combined_slew_ok(5.0, LAM, 0.0)
+    # derate=1 → identical to noise_aware
+    assert fm.combined_slew_ok(4.4, LAM, 0.1, k=5.0) == fm.noise_aware_slew_ok(4.4, LAM, 0.1, k=5.0)
+    assert fm.combined_slew_ok(4.6, LAM, 0.1, k=5.0) == fm.noise_aware_slew_ok(4.6, LAM, 0.1, k=5.0)
+    # σ = 0 → derate-only on clean slew
+    d = 1.0 - np.pi * 0.05
+    assert fm.combined_slew_ok(LAM * d - 0.01, LAM, 0.0, inl=0.05)
+    assert not fm.combined_slew_ok(LAM * d + 0.01, LAM, 0.0, inl=0.05)
+    # threshold 0 → nothing passes
+    assert not fm.combined_slew_ok(0.0, LAM, 10.0)
+    assert not fm.combined_slew_ok(0.0, LAM, 0.0, inl=1.0)
+
+
+def test_combined_rule_clears_inl_false_ok():
+    """Residual INL false-ok that noise-aware leaves must go to 0 under combined."""
+    cfgs = [
+        fm.NonIdeal("inl 1%", inl=0.01),
+        fm.NonIdeal("inl 2%", inl=0.02),
+        fm.NonIdeal("inl 5%", inl=0.05),
+        fm.NonIdeal("combo-mild", noise_snr_db=60, gain_err=0.001, thresh_err=0.005,
+                    offset=0.005, inl=0.002, bits=16),
+        fm.NonIdeal("combo-bad", noise_snr_db=40, gain_err=0.005, thresh_err=0.01,
+                    offset=0.01, inl=0.01, bits=12),
+    ]
+    # Two seeds keep this light; the weekday falsify uses all five.
+    sweep = fm.run_nonideal_sweep(cfgs, seeds=(7, 8))
+    total_naware_fok = sum(r["noise_aware_false_ok"] for r in sweep["rows"])
+    total_comb_fok = sum(r["combined_false_ok"] for r in sweep["rows"])
+    assert total_comb_fok == 0
+    # Combined should not invent silent fails
+    assert all(r["fails_silent"] == 0 for r in sweep["rows"])
+    assert "combined" in fm.format_nonideal_sweep(sweep)
+    # Document the before count for the report (noise-aware may already be 0 on
+    # a short seed set; the helper still has to report 0 combined false-ok).
+    assert total_naware_fok >= total_comb_fok
+
+
+def test_combined_rule_no_overderate_on_ideal_high_snr():
+    cfgs = [fm.NonIdeal("ideal"), fm.NonIdeal("noise 60 dB", noise_snr_db=60.0)]
+    sweep = fm.run_nonideal_sweep(cfgs, seeds=(7,))
+    for r in sweep["rows"]:
+        assert r["combined_rule_agrees"] == r["cells"] == r["noise_aware_rule_agrees"]
+        assert r["combined_false_ok"] == 0
+        assert r["combined_false_no"] == 0

@@ -31,6 +31,11 @@ Noise-aware slew rule (NOTES #8, 2026-10-15): noise_aware_slew_ok — spec-sheet
 rule with a k·σ margin, max|Δx_signal| < λ − k·σ, k = NOISE_K fitted on the
 noise rows of the non-ideal sweep (docs/shockdaq-failmap.md).
 
+Combined derate + noise rule (NOTES #8b, 2026-10-16): combined_slew_ok —
+max|Δx_signal| < λ·(1 − 2|g| − |e| − |o| − π·|a|) − k·σ (derate clamped ≥ 0,
+threshold clamped ≥ 0). Clears residual INL/combo false-ok that noise margin
+alone leaves; blind σ from blind_level.estimate_noise_sigma (quiet window).
+
 ASSUMPTIONS (named): synthetic ringing burst (same shape family as
 shockdaq.gen_impact_transient: fundamental + 0.4× at 2.1 f, noise 1.5 % λ);
 quantization only in run_quant_sweep (default grid is ideal); λ is a demo rail, not an OEM part. CPU only, numpy only.
@@ -45,7 +50,8 @@ from pathlib import Path
 import numpy as np
 
 from .blind_level import (  # noqa: F401 (re-export)
-    EDGE_FRAC, edge_flag, inl_inverse, rail_hits, rail_mask, recover_blind, slip_flag,
+    EDGE_FRAC, edge_flag, estimate_noise_sigma, inl_inverse, rail_hits, rail_mask,
+    recover_blind, slip_flag,
 )
 from .foldaudio import fold_capture, max_sample_jump, snr_db
 from .modulo import quantize_folded
@@ -97,6 +103,84 @@ def noise_aware_slew_ok(max_dx: float, lam: float, sigma: float, *, k: float = N
     σ = 0 reduces to the plain rule max_dx < λ.
     """
     return bool(max_dx < slew_threshold(lam, sigma, k=k))
+
+
+# ---------------------------------------------------------------------------
+# Combined derate + noise-aware slew rule (NOTES #8b, 2026-10-16 weekday slice)
+# ---------------------------------------------------------------------------
+#
+# Noise margin alone (NOTES #8) clears noisy-row false-ok but leaves 3–4 cells
+# per INL row (and a few combo cells) where the unwrap slips because the fold
+# non-ideality narrowed the effective slew budget. The derated rule of §4.5
+# accounts for g/e/o/INL but ignores σ. Combined:
+#
+#     recovers  iff  max|Δx_signal| < λ·D − k·σ
+#     D = max(0, 1 − 2|g| − |e| − |o| − π·|a|)
+#     threshold clamped to ≥ 0
+#
+# max_dx is the noiseless / spec-sheet slew (same convention as
+# noise_aware_slew_ok). σ = 0 → derate-only; no front-end errors (D = 1) →
+# noise-aware; both apply together. Blind σ for live firmware:
+# blind_level.estimate_noise_sigma on the quiet window of the folded capture.
+
+
+def combined_slew_threshold(
+    lam: float,
+    sigma: float,
+    *,
+    gain_err: float = 0.0,
+    thresh_err: float = 0.0,
+    offset: float = 0.0,
+    inl: float = 0.0,
+    k: float = NOISE_K,
+) -> float:
+    """Allowed per-sample signal step under front-end errors and noise.
+
+    λ · max(0, 1 − 2|g| − |e| − |o| − π·|a|) − k·σ, clamped to ≥ 0.
+    A threshold of 0 means the derate and/or noise has used up the slew budget.
+    """
+    if lam <= 0:
+        raise ValueError("lam must be positive")
+    derate = (
+        1.0
+        - 2.0 * abs(float(gain_err))
+        - abs(float(thresh_err))
+        - abs(float(offset))
+        - np.pi * abs(float(inl))
+    )
+    derate = max(0.0, derate)
+    return max(0.0, lam * derate - max(float(k) * float(sigma), 0.0))
+
+
+def combined_slew_ok(
+    max_dx: float,
+    lam: float,
+    sigma: float,
+    *,
+    gain_err: float = 0.0,
+    thresh_err: float = 0.0,
+    offset: float = 0.0,
+    inl: float = 0.0,
+    k: float = NOISE_K,
+) -> bool:
+    """Combined derate + noise-aware slew rule (NOTES #8b).
+
+    max_dx = max |Δ| of the SIGNAL (noiseless / spec-sheet slew); sigma =
+    front-end noise rms (V). σ = 0 reduces to the derated rule on the clean
+    slew; zero front-end errors reduce to noise_aware_slew_ok.
+    """
+    return bool(
+        max_dx
+        < combined_slew_threshold(
+            lam,
+            sigma,
+            gain_err=gain_err,
+            thresh_err=thresh_err,
+            offset=offset,
+            inl=inl,
+            k=k,
+        )
+    )
 DEFAULT_AMPS = (6.0, 8.0, 10.0, 14.0, 20.0, 30.0, 40.0)
 DEFAULT_FREQS = (500.0, 1000.0, 2000.0, 3000.0, 4000.0, 6000.0, 8000.0, 12000.0)
 
@@ -312,6 +396,7 @@ class NonIdealCell:
     edge_flag: bool
     rail_hits: int = 0         # folded samples sitting at the ADC rails (clipped; visible in the capture)
     noise_aware_ok: bool = True  # noise_aware_slew_ok(max_dx_clean, λ, σ): spec-sheet rule with k·σ margin
+    combined_ok: bool = True     # combined_slew_ok(max_dx_clean, λ, σ, g/e/o/inl): derate + k·σ (NOTES #8b)
 
     @property
     def silent_fail(self) -> bool:
@@ -372,6 +457,11 @@ def eval_nonideal_cell(
         slip_flag=slip_flag(rec, lam), edge_flag=edge_flag(y, lam),
         rail_hits=rail_hits(y, lam, bits=ni.bits),
         noise_aware_ok=noise_aware_slew_ok(dx_clean, lam, sigma, k=noise_k),
+        combined_ok=combined_slew_ok(
+            dx_clean, lam, sigma,
+            gain_err=ni.gain_err, thresh_err=ni.thresh_err,
+            offset=ni.offset, inl=ni.inl, k=noise_k,
+        ),
     )
 
 
@@ -405,6 +495,10 @@ def summarize_nonideal(cells: list[NonIdealCell]) -> dict:
         # false_ok = rule said "recovers" but the unwrap slipped (the dangerous miss).
         "noise_aware_rule_agrees": sum(c.noise_aware_ok == c.recovered_ok for c in cells),
         "noise_aware_false_ok": sum(c.noise_aware_ok and not c.recovered_ok for c in cells),
+        "noise_aware_false_no": sum((not c.noise_aware_ok) and c.recovered_ok for c in cells),
+        "combined_rule_agrees": sum(c.combined_ok == c.recovered_ok for c in cells),
+        "combined_false_ok": sum(c.combined_ok and not c.recovered_ok for c in cells),
+        "combined_false_no": sum((not c.combined_ok) and c.recovered_ok for c in cells),
         "clean_rule_false_ok": sum(c.clean_rule_ok and not c.recovered_ok for c in cells),
         "fails_flagged": sum(c.slip_flag or c.edge_flag for c in fails),
         "fails_silent": sum(c.silent_fail for c in cells),
@@ -485,7 +579,7 @@ def noise_configs() -> list[NonIdeal]:
 
 def format_nonideal_sweep(sweep: dict) -> str:
     hdr = ("config            ok  fail  rule  clean  derated  flagged  SILENT  slipFA  edge-on-ok  "
-           "accurate  off>1%pk-unflagged  n-aware  falseOK c→n")
+           "accurate  off>1%pk-unflagged  n-aware  combined  falseOK n→c")
     lines = [hdr, "-" * len(hdr)]
     for r in sweep["rows"]:
         lines.append(f"{r['config']:<16} {r['recovered_ok']:>4} {r['failed']:>5} {r['rule_agrees']:>5} "
@@ -493,12 +587,15 @@ def format_nonideal_sweep(sweep: dict) -> str:
                      f"{r['fails_silent']:>7} {r['slip_false_alarms_on_ok']:>7} {r['edge_warnings_on_ok']:>11} "
                      f"{r['accurate']:>9} {r['silent_inaccurate']:>12} "
                      f"{r.get('noise_aware_rule_agrees', '-'):>15} "
-                     f"{str(r.get('clean_rule_false_ok', '-')) + '→' + str(r.get('noise_aware_false_ok', '-')):>12}")
+                     f"{r.get('combined_rule_agrees', '-'):>9} "
+                     f"{str(r.get('noise_aware_false_ok', '-')) + '→' + str(r.get('combined_false_ok', '-')):>12}")
     n = sweep["rows"][0]["cells"]
     lines.append(f"{n} cells per row ({len(sweep['seeds'])} seed(s)). rule = slew rule on the noisy input; "
                  "clean = rule on noiseless burst; derated = rule with λ shrunk by fold errors.")
     lines.append(f"n-aware = spec-sheet rule with noise margin, max|Δx_clean| < λ − k·σ (k = {sweep.get('noise_k', NOISE_K):g}); "
-                 "falseOK c→n = cells the rule called ok that slipped, clean rule → noise-aware rule.")
+                 f"combined = derate + noise margin, max|Δx_clean| < λ·D − k·σ "
+                 f"(D = max(0, 1−2|g|−|e|−|o|−π·|a|)); "
+                 "falseOK n→c = cells the rule called ok that slipped, noise-aware → combined.")
     lines.append("ok = no unwrap slip (max error < λ); accurate = ok AND max error ≤ 1 % of peak; "
                  "off>1%pk-unflagged = recovered (no slip) but >1 % of peak off and unflagged (an accuracy limit, not an unwrap failure).")
     return "\n".join(lines)

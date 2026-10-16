@@ -259,9 +259,9 @@ column (false-ok count, clean rule → noise-aware rule). JSON rows gain
 `noise_aware_rule_agrees`, `noise_aware_false_ok` and `clean_rule_false_ok`;
 `NonIdealCell` gains `noise_aware_ok`; sweep dicts gain `noise_k`. All of these
 are additive. The rule covers noise only. INL rows keep 3–4 false-ok cells
-(inl 1 %: 3, 2 %: 3, 5 %: 4; combo-mild 1, combo-bad 2 → 1), the same cells the
-plain rule misses. They need the derated rule λ(1 − 2|g| − |e| − |o| − π·a), and
-all of them are still flagged by slip/edge (0 silent).
+(inl 1 %: 3, 2 %: 3, 5 %: 4; combo-mild 1, combo-bad 1), the same cells the
+plain rule misses. They need the combined derate+noise rule below; all of them
+are still flagged by slip/edge (0 silent).
 
 ### B. Real-time flag logic: `shockdaq.recover_or_clip`
 
@@ -294,3 +294,43 @@ an `untrusted` sample mask, and `peak_V` plus `peak_is_lower_bound`.
   cases).
 
 Synthetic only; λ = 5 V is still an assumption, not an OEM part.
+
+
+## Combined derate + noise rule + blind σ (2026-10-16 weekday slice, NOTES #8b)
+
+`failmap.combined_slew_ok(max_dx, lam, sigma, *, gain_err, thresh_err, offset, inl, k=NOISE_K)` /
+`failmap.combined_slew_threshold(...)`:
+
+> **recovers iff max|Δx_signal| < λ·D − k·σ**, with
+> D = max(0, 1 − 2|g| − |e| − |o| − π·|a|) and the threshold clamped to ≥ 0
+
+Same clean-slew convention as the noise-aware rule. σ = 0 → derate-only; no
+front-end errors (D = 1) → noise-aware; both apply together.
+
+**Falsify (INL + combo rows, 1,400 cells, seeds 7–11).**
+
+| config | n-aware false-ok | combined false-ok | n-aware false-no | combined false-no |
+|---|---|---|---|---|
+| inl 1 % | 3 | **0** | 0 | 0 |
+| inl 2 % | 3 | **0** | 0 | 1 |
+| inl 5 % | 4 | **0** | 0 | 14 |
+| combo-mild | 1 | **0** | 0 | 2 |
+| combo-bad | 1 | **0** | 0 | 2 |
+| **total** | **12** | **0** | **0** | **19** |
+
+Ideal / 60 dB / 40 dB rows stay 280/280 under combined (0 false-ok, 0 false-no).
+Noise-only rows match the noise-aware counts exactly (derate factor D = 1).
+Over-derate cost is concentrated on the 5 % INL row; mild INL clears its three
+false-ok cells with no extra false-no.
+
+**Blind σ.** `blind_level.estimate_noise_sigma(y, win=2048)` =
+`quietest_window_std`: sample std of the minimum-variance window of the
+*folded* capture (quiet samples do not wrap). On synthetic quiet-baseline +
+white noise, and on folded mid-overload records, the estimate tracks the
+injected σ within about 5 % max relative error (median ≈ 3.6 %). Re-exported
+by `failmap`. Firmware can apply λ − kσ_hat live without an oracle σ.
+
+Sweep table: `combined` agreement column and `falseOK n→c` (noise-aware →
+combined). JSON rows gain `combined_rule_agrees`, `combined_false_ok`,
+`combined_false_no`, `noise_aware_false_no`; `NonIdealCell` gains `combined_ok`.
+Additive. Synthetic only; λ = 5 V remains an assumption.

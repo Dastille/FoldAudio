@@ -14,6 +14,9 @@ Prior used here (named ASSUMPTIONS — keep honest):
 3. Fails honestly if the record is one long DC-shifted event (|mean| ≳ λ) or the
    quietest window itself is offset by ≥ λ — that's reported, not hidden.
 4. Pure numpy, CPU only. Itoh still needs max |Δx| < λ (unchanged limit).
+5. Blind noise RMS (NOTES #8b): estimate_noise_sigma takes the quietest-window
+   sample std of the folded (or recovered) capture so firmware can apply
+   λ − kσ without an oracle σ.
 """
 
 from __future__ import annotations
@@ -30,10 +33,29 @@ def _offset_for_level(level: float, lam: float) -> int:
 
 def quietest_window_mean(y: np.ndarray, win: int) -> float:
     """Mean of the minimum-variance length-`win` window (cumsum, O(n))."""
+    return _quietest_window_stats(y, win)[0]
+
+
+def quietest_window_std(y: np.ndarray, win: int) -> float:
+    """Sample standard deviation of the minimum-variance length-`win` window."""
+    return _quietest_window_stats(y, win)[1]
+
+
+def _quietest_window_stats(y: np.ndarray, win: int) -> tuple[float, float]:
+    """(mean, std) of the minimum-variance length-`win` window (cumsum, O(n)).
+
+    std uses the population form sqrt(E[y²] − mean²) over the window — the
+    natural RMS of a near-zero AC-coupled baseline, and the quantity firmware
+    needs for a λ − kσ margin. Deterministic; ties break on the earliest window.
+    """
     y = np.asarray(y, dtype=float)
     n = len(y)
+    if n == 0:
+        return 0.0, 0.0
     if n <= win:
-        return float(np.mean(y))
+        mean = float(np.mean(y))
+        var = float(np.mean(y * y) - mean * mean)
+        return mean, float(np.sqrt(max(var, 0.0)))
     c1 = np.concatenate(([0.0], np.cumsum(y)))
     c2 = np.concatenate(([0.0], np.cumsum(y * y)))
     s1 = c1[win:] - c1[:-win]
@@ -41,7 +63,19 @@ def quietest_window_mean(y: np.ndarray, win: int) -> float:
     mean = s1 / win
     var = s2 / win - mean**2
     i = int(np.argmin(var))
-    return float(mean[i])
+    return float(mean[i]), float(np.sqrt(max(float(var[i]), 0.0)))
+
+
+def estimate_noise_sigma(y: np.ndarray, *, win: int = 2048) -> float:
+    """Blind front-end noise RMS from the quietest window of a capture.
+
+    Prefer the *folded* capture: quiet baseline samples do not wrap, so the
+    window sits near the AC-coupled zero inside (−λ, λ) and its std estimates σ
+    without an oracle. Recovered baseline works too when the unwrap held.
+    Deterministic. On a synthetic quiet baseline + white noise the estimate
+    tracks the injected σ (see tests). Firmware use: apply λ − k·σ_hat live.
+    """
+    return quietest_window_std(y, win)
 
 
 def recover_blind(

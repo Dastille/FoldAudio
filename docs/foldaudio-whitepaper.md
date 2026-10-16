@@ -1,11 +1,13 @@
 # Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration
 
-**Technical report, version 1.2**
-**Date:** 2026-10-15
+**Technical report, version 1.3**
+**Date:** 2026-10-16
 **Author:** Ashlynn (GitHub: [Dastille](https://github.com/Dastille))
 **Repository:** <https://github.com/Dastille/FoldAudio> (MIT License)
 **Evidence class:** numerical simulation, plus software folding of public measured accelerometer recordings (Section 6.6). No hardware folding front end was built or measured for this work.
 
+> **Revision note (v1.3, 2026-10-16).** Sections 4.4–4.5 add the combined derate-plus-noise slew specification and a blind quiet-window noise estimate. No earlier result changed.
+>
 > **Revision note (v1.2, 2026-10-15).** Section 4.4 now states a fitted noise margin for the slew specification ($k = 5$). Section 3.6 specifies the `UNRECOVERABLE` fallback output. No earlier result changed.
 >
 > **Revision note (v1.1, 2026-10-14).** Adds Section 6.6: the fold, blind-unwrap and self-check chain applied to 13 measured bearing-fault accelerometer records from the CWRU Bearing Data Center. Limitations 1 and 6, Sections 9.2 and 10, and the conclusion are updated accordingly. No v1.0 result changed.
@@ -229,7 +231,7 @@ With an $N$-bit quantizer, each folded sample carries an error of at most $\Delt
 
 Noise added before the fold increases sample-to-sample differences. The recovery condition still applies exactly, but it applies to the noisy input the fold actually sees, not to the noiseless signal on a specification sheet. In practice, the slew specification must be derated by a margin of several noise standard deviations (Section 6.5). Recovery introduces no error beyond the noise itself.
 
-A fitted form of this margin is $\max \lvert \Delta x_{\mathrm{signal}} \rvert < \lambda - k\sigma$, where $\sigma$ is the front-end noise RMS and the margin is clamped to $[0, \lambda]$. The fit used the nine noise rows of the non-ideal sweep (ideal, then 60 to 0 dB SNR; 56 cells × 5 seeds, 2,520 cells). The smallest $k$ on a 0.25 grid with no case of "predicted recoverable but slipped" is 4.75, rounded up to $k = 5$. Against the noiseless specification rule ($k = 0$), false "recoverable" predictions fall from 119 to 0 and agreement rises from 2,401 to 2,435 of 2,520. The cost is 85 conservative predictions, all at SNR ≤ 30 dB; rows at 40 dB and above are unchanged. A fit on three seeds alone gave $k = 4$, which still left 4 false predictions on the two held-out seeds. The margin covers noise only. The residual INL-driven misses of Section 6.5 (3–4 cells per INL row) still need the derated rule.
+A fitted form of this margin is $\max \lvert \Delta x_{\mathrm{signal}} \rvert < \lambda - k\sigma$, where $\sigma$ is the front-end noise RMS and the margin is clamped to $[0, \lambda]$. The fit used the nine noise rows of the non-ideal sweep (ideal, then 60 to 0 dB SNR; 56 cells × 5 seeds, 2,520 cells). The smallest $k$ on a 0.25 grid with no case of "predicted recoverable but slipped" is 4.75, rounded up to $k = 5$. Against the noiseless specification rule ($k = 0$), false "recoverable" predictions fall from 119 to 0 and agreement rises from 2,401 to 2,435 of 2,520. The cost is 85 conservative predictions, all at SNR ≤ 30 dB; rows at 40 dB and above are unchanged. A fit on three seeds alone gave $k = 4$, which still left 4 false predictions on the two held-out seeds. The margin covers noise only. The residual INL-driven misses of Section 6.5 (3–4 cells per INL row) still need the derated rule; the combined form in Section 4.5 clears them.
 
 ### 4.5 Front-end errors
 
@@ -244,6 +246,16 @@ A derated slew condition that accounts for all four is
 $$
 \max_n \lvert x[n] - x[n-1] \rvert \;<\; \lambda \big(1 - 2\lvert g \rvert - \lvert e \rvert - \lvert o \rvert - \pi a\big).
 $$
+
+Combining that derate with the noise margin of Section 4.4 gives the single specification used when both are present:
+
+$$
+\max_n \lvert \Delta x_{\mathrm{signal}} \rvert \;<\; \lambda D - k\sigma,
+\qquad
+D = \max\big(0,\, 1 - 2\lvert g \rvert - \lvert e \rvert - \lvert o \rvert - \pi\lvert a \rvert\big),
+$$
+
+with the right-hand side clamped at zero. On the INL and combined rows of the non-ideal sweep (1,400 cells, five seeds), this combined rule removes the 12 residual false-"recoverable" predictions that the noise margin alone left, at a cost of 19 additional conservative cells (14 of them on the 5 % INL row). Ideal and ≥ 40 dB rows are unchanged. For live firmware, $\sigma$ need not be known a priori: the sample standard deviation of the quietest window of the folded capture estimates it (within about 5 % relative error on synthetic quiet-baseline-plus-noise records).
 
 The gain-error staircase returns to zero whenever the signal returns to baseline ($m = 0$). The slip check therefore cannot detect it, and neither can the edge check. This accuracy error is invisible to blind diagnostics and must be removed by calibration (Section 7).
 
@@ -669,3 +681,4 @@ URLs were accessed on 2026-10-13.
 | 1.0 | 2026-10-13 | Retitled and rewritten as a technical report. Added vibration application, blind level recovery, recovery-condition analysis, blind diagnostics and capture status, 280-cell failure map, quantization and non-ideal front-end sweeps, one-tone calibration, limitations and integration guidance. All figures re-run. Corrected slip-check coverage (157/166, not 166/166) and documented the impulsive-signal diagnostic blind spot. |
 | 1.1 | 2026-10-14 | Added Section 6.6 (Tables 10–11): measured CWRU bearing-fault records with software-applied overload; 120/120 rule agreement, 0 silent failures; sample-rate finding (48 kHz recoverable, 12 kHz not). Updated abstract, Limitations 1 and 6, Section 9.2, reproducibility, conclusion and references. |
 | 1.2 | 2026-10-15 | Section 4.4: fitted noise margin $\lambda - k\sigma$, $k = 5$ (false "recoverable" 119 → 0 of 2,520 noise cells). Section 3.6: `UNRECOVERABLE` fallback output (folded samples plus untrusted mask; peak reported as $\ge \lambda$). |
+| 1.3 | 2026-10-16 | Sections 4.4–4.5: combined derate + noise slew rule (INL/combo false "recoverable" 12 → 0 of 1,400 cells; +19 conservative); blind quiet-window $\sigma$ estimate for live $\lambda - k\sigma$. |
