@@ -24,9 +24,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
 
+      # Upgrade pip + setuptools so pip-audit does not flag the runner image's
+      # preinstalled copies (setuptools 79 on the 3.11 image: PYSEC-2026-3447).
       - name: Install package with dev + real (SciPy) extras
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip setuptools
           python -m pip install -e ".[dev,real]"
 
       - name: Ruff lint
