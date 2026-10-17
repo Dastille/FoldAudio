@@ -6,8 +6,11 @@ import numpy as np
 import pytest
 
 from foldcrypt.blind_level import (
-    estimate_noise_sigma, naive_k0, quietest_window_mean,
-    quietest_window_std, recover_blind,
+    estimate_noise_sigma,
+    naive_k0,
+    quietest_window_mean,
+    quietest_window_std,
+    recover_blind,
 )
 from foldcrypt.foldaudio import fold_capture, snr_db
 from foldcrypt.shockdaq import DEFAULT_LAM_V, gen_gearbox_startup, gen_impact_transient
@@ -17,7 +20,7 @@ LAM = DEFAULT_LAM_V
 
 def _start_at_peak(x):
     """Record that begins mid-overload (pre-trigger missed): folded[0] is wrapped."""
-    return x[int(np.argmax(np.abs(x))):]
+    return x[int(np.argmax(np.abs(x))) :]
 
 
 @pytest.mark.parametrize("gen", [gen_gearbox_startup, gen_impact_transient])

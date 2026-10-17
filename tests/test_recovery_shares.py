@@ -13,7 +13,6 @@ from foldcrypt.recovery_shares import (
     split_secret,
 )
 
-
 PASS = "correct horse battery"
 SECRET = b"seed-demo-32bytes-not-prod!!!!!!!!"[:32]  # 32 bytes
 

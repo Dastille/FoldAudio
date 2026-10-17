@@ -50,8 +50,14 @@ from pathlib import Path
 import numpy as np
 
 from .blind_level import (  # noqa: F401 (re-export)
-    EDGE_FRAC, edge_flag, estimate_noise_sigma, inl_inverse, rail_hits, rail_mask,
-    recover_blind, slip_flag,
+    EDGE_FRAC,
+    edge_flag,
+    estimate_noise_sigma,
+    inl_inverse,
+    rail_hits,
+    rail_mask,
+    recover_blind,
+    slip_flag,
 )
 from .foldaudio import fold_capture, max_sample_jump, snr_db
 from .modulo import quantize_folded
@@ -94,7 +100,9 @@ def slew_threshold(lam: float, sigma: float, *, k: float = NOISE_K) -> float:
     return lam - margin
 
 
-def noise_aware_slew_ok(max_dx: float, lam: float, sigma: float, *, k: float = NOISE_K) -> bool:
+def noise_aware_slew_ok(
+    max_dx: float, lam: float, sigma: float, *, k: float = NOISE_K
+) -> bool:
     """Noise-aware slew rule: max_dx < λ − k·σ (slew_threshold).
 
     max_dx = max |Δ| of the SIGNAL (noiseless / spec-sheet slew, volts per
@@ -181,6 +189,8 @@ def combined_slew_ok(
             k=k,
         )
     )
+
+
 DEFAULT_AMPS = (6.0, 8.0, 10.0, 14.0, 20.0, 30.0, 40.0)
 DEFAULT_FREQS = (500.0, 1000.0, 2000.0, 3000.0, 4000.0, 6000.0, 8000.0, 12000.0)
 
@@ -279,7 +289,11 @@ def run_failmap(
     bits: int | None = None,
     seed: int = 7,
 ) -> list[FailCell]:
-    return [eval_cell(a, f, lam=lam, sr=sr, bits=bits, seed=seed) for a in amps for f in freqs]
+    return [
+        eval_cell(a, f, lam=lam, sr=sr, bits=bits, seed=seed)
+        for a in amps
+        for f in freqs
+    ]
 
 
 DEFAULT_BITS = (4, 6, 8, 12, 16, 24)
@@ -306,7 +320,9 @@ def run_quant_sweep(
         s["bits"] = bits
         s["step_V"] = step
         s["tight_rule_agrees"] = (
-            None if step is None else sum((c.max_dx_V < lam - step) == c.recovered_ok for c in cells)
+            None
+            if step is None
+            else sum((c.max_dx_V < lam - step) == c.recovered_ok for c in cells)
         )
         rows.append(s)
     return {"lam_V": lam, "sr": sr, "seed": seed, "rows": rows}
@@ -318,12 +334,18 @@ def format_quant_sweep(sweep: dict) -> str:
     for r in sweep["rows"]:
         b = "ideal" if r["bits"] is None else f"{r['bits']:>5}"
         st = "     -" if r["step_V"] is None else f"{r['step_V']:>7.4f}"
-        tight = "   -" if r["tight_rule_agrees"] is None else f"{r['tight_rule_agrees']:>4}"
-        lines.append(f"{b:>5} {st:>8} {r['recovered_ok']:>3} {r['failed']:>5} {r['rule_agrees_with_outcome']:>5} "
-                     f"{tight:>6} {r['fails_flagged']:>8} {r['fails_silent']:>7} {r['slip_false_alarms_on_ok']:>7} "
-                     f"{r['edge_warnings_on_ok']:>11}")
+        tight = (
+            "   -" if r["tight_rule_agrees"] is None else f"{r['tight_rule_agrees']:>4}"
+        )
+        lines.append(
+            f"{b:>5} {st:>8} {r['recovered_ok']:>3} {r['failed']:>5} {r['rule_agrees_with_outcome']:>5} "
+            f"{tight:>6} {r['fails_flagged']:>8} {r['fails_silent']:>7} {r['slip_false_alarms_on_ok']:>7} "
+            f"{r['edge_warnings_on_ok']:>11}"
+        )
     n = sweep["rows"][0]["cells"]
-    lines.append(f"{n} cells per row. rule = plain slew rule matches outcome; tight = worst-case rule (λ−step) matches.")
+    lines.append(
+        f"{n} cells per row. rule = plain slew rule matches outcome; tight = worst-case rule (λ−step) matches."
+    )
     return "\n".join(lines)
 
 
@@ -383,20 +405,28 @@ class NonIdealCell:
     f_ring_Hz: float
     seed: int
     sigma_V: float
-    max_dx_V: float            # max |Δ| of the (noisy) input the fold actually saw
-    max_dx_clean_V: float      # same, before noise was added
-    predicted_ok: bool         # plain slew rule on the noisy input: max_dx < λ
-    clean_rule_ok: bool        # slew rule on the noiseless burst (what a spec sheet would say)
-    derated_ok: bool           # max_dx < λ(1 − 2|g| − |e| − |o| − π·inl): rule derated for fold errors
-    recovered_ok: bool         # no unwrap slip: max|rec − truth| < λ
-    err_peak_V: float          # max |rec − truth|
-    peak_err_frac: float       # err_peak / true peak
-    accurate: bool             # recovered_ok and peak_err_frac <= 1 %
+    max_dx_V: float  # max |Δ| of the (noisy) input the fold actually saw
+    max_dx_clean_V: float  # same, before noise was added
+    predicted_ok: bool  # plain slew rule on the noisy input: max_dx < λ
+    clean_rule_ok: (
+        bool  # slew rule on the noiseless burst (what a spec sheet would say)
+    )
+    derated_ok: (
+        bool  # max_dx < λ(1 − 2|g| − |e| − |o| − π·inl): rule derated for fold errors
+    )
+    recovered_ok: bool  # no unwrap slip: max|rec − truth| < λ
+    err_peak_V: float  # max |rec − truth|
+    peak_err_frac: float  # err_peak / true peak
+    accurate: bool  # recovered_ok and peak_err_frac <= 1 %
     slip_flag: bool
     edge_flag: bool
-    rail_hits: int = 0         # folded samples sitting at the ADC rails (clipped; visible in the capture)
-    noise_aware_ok: bool = True  # noise_aware_slew_ok(max_dx_clean, λ, σ): spec-sheet rule with k·σ margin
-    combined_ok: bool = True     # combined_slew_ok(max_dx_clean, λ, σ, g/e/o/inl): derate + k·σ (NOTES #8b)
+    rail_hits: int = (
+        0  # folded samples sitting at the ADC rails (clipped; visible in the capture)
+    )
+    noise_aware_ok: bool = (
+        True  # noise_aware_slew_ok(max_dx_clean, λ, σ): spec-sheet rule with k·σ margin
+    )
+    combined_ok: bool = True  # combined_slew_ok(max_dx_clean, λ, σ, g/e/o/inl): derate + k·σ (NOTES #8b)
 
     @property
     def silent_fail(self) -> bool:
@@ -405,7 +435,11 @@ class NonIdealCell:
     @property
     def silent_inaccurate(self) -> bool:
         """Recovered with no slip but off by > 1 % of peak, and nothing flagged."""
-        return self.recovered_ok and not self.accurate and not (self.slip_flag or self.edge_flag)
+        return (
+            self.recovered_ok
+            and not self.accurate
+            and not (self.slip_flag or self.edge_flag)
+        )
 
     @property
     def silent_inaccurate_no_rail(self) -> bool:
@@ -444,23 +478,43 @@ def eval_nonideal_cell(
     # too, so it is not fold-attributable (IEPE is AC-coupled anyway).
     err = float(np.max(np.abs(rec - (x + ni.offset * lam))))
     peak = float(np.max(np.abs(x)))
-    derate = 1.0 - 2.0 * abs(ni.gain_err) - abs(ni.thresh_err) - abs(ni.offset) - np.pi * abs(ni.inl)
+    derate = (
+        1.0
+        - 2.0 * abs(ni.gain_err)
+        - abs(ni.thresh_err)
+        - abs(ni.offset)
+        - np.pi * abs(ni.inl)
+    )
     ok = bool(err < lam)
     frac = err / peak if peak > 0 else 0.0
     return NonIdealCell(
-        config=ni.name, amp_V=amp, f_ring_Hz=f_ring, seed=seed, sigma_V=sigma,
-        max_dx_V=dx, max_dx_clean_V=dx_clean,
-        predicted_ok=bool(dx < lam), clean_rule_ok=bool(dx_clean < lam),
+        config=ni.name,
+        amp_V=amp,
+        f_ring_Hz=f_ring,
+        seed=seed,
+        sigma_V=sigma,
+        max_dx_V=dx,
+        max_dx_clean_V=dx_clean,
+        predicted_ok=bool(dx < lam),
+        clean_rule_ok=bool(dx_clean < lam),
         derated_ok=bool(dx < lam * derate),
-        recovered_ok=ok, err_peak_V=err, peak_err_frac=frac,
+        recovered_ok=ok,
+        err_peak_V=err,
+        peak_err_frac=frac,
         accurate=bool(ok and frac <= NONIDEAL_OK_BAR_FRAC),
-        slip_flag=slip_flag(rec, lam), edge_flag=edge_flag(y, lam),
+        slip_flag=slip_flag(rec, lam),
+        edge_flag=edge_flag(y, lam),
         rail_hits=rail_hits(y, lam, bits=ni.bits),
         noise_aware_ok=noise_aware_slew_ok(dx_clean, lam, sigma, k=noise_k),
         combined_ok=combined_slew_ok(
-            dx_clean, lam, sigma,
-            gain_err=ni.gain_err, thresh_err=ni.thresh_err,
-            offset=ni.offset, inl=ni.inl, k=noise_k,
+            dx_clean,
+            lam,
+            sigma,
+            gain_err=ni.gain_err,
+            thresh_err=ni.thresh_err,
+            offset=ni.offset,
+            inl=ni.inl,
+            k=noise_k,
         ),
     )
 
@@ -468,14 +522,38 @@ def eval_nonideal_cell(
 def default_nonideal_configs() -> list[NonIdeal]:
     """One-factor-at-a-time sweeps plus two combined rows."""
     cfgs = [NonIdeal("ideal")]
-    cfgs += [NonIdeal(f"noise {s:g} dB", noise_snr_db=s) for s in (60, 40, 30, 20, 15, 10, 5, 0)]
-    cfgs += [NonIdeal(f"gain {g:+.1%}", gain_err=g) for g in (-0.05, -0.01, 0.001, 0.01, 0.05)]
-    cfgs += [NonIdeal(f"thresh {e:+.0%}", thresh_err=e) for e in (-0.10, -0.02, 0.02, 0.10)]
+    cfgs += [
+        NonIdeal(f"noise {s:g} dB", noise_snr_db=s)
+        for s in (60, 40, 30, 20, 15, 10, 5, 0)
+    ]
+    cfgs += [
+        NonIdeal(f"gain {g:+.1%}", gain_err=g)
+        for g in (-0.05, -0.01, 0.001, 0.01, 0.05)
+    ]
+    cfgs += [
+        NonIdeal(f"thresh {e:+.0%}", thresh_err=e) for e in (-0.10, -0.02, 0.02, 0.10)
+    ]
     cfgs += [NonIdeal(f"offset {o:+.0%}", offset=o) for o in (0.02, 0.10)]
     cfgs += [NonIdeal(f"inl {a:.0%}", inl=a) for a in (0.01, 0.02, 0.05)]
     cfgs += [
-        NonIdeal("combo-mild", noise_snr_db=60, gain_err=0.001, thresh_err=0.005, offset=0.005, inl=0.002, bits=16),
-        NonIdeal("combo-bad", noise_snr_db=40, gain_err=0.005, thresh_err=0.01, offset=0.01, inl=0.01, bits=12),
+        NonIdeal(
+            "combo-mild",
+            noise_snr_db=60,
+            gain_err=0.001,
+            thresh_err=0.005,
+            offset=0.005,
+            inl=0.002,
+            bits=16,
+        ),
+        NonIdeal(
+            "combo-bad",
+            noise_snr_db=40,
+            gain_err=0.005,
+            thresh_err=0.01,
+            offset=0.01,
+            inl=0.01,
+            bits=12,
+        ),
     ]
     return cfgs
 
@@ -493,22 +571,36 @@ def summarize_nonideal(cells: list[NonIdealCell]) -> dict:
         "derated_rule_agrees": sum(c.derated_ok == c.recovered_ok for c in cells),
         # 2026-10-15 (additive): spec-sheet rule with k·σ margin vs plain spec-sheet rule.
         # false_ok = rule said "recovers" but the unwrap slipped (the dangerous miss).
-        "noise_aware_rule_agrees": sum(c.noise_aware_ok == c.recovered_ok for c in cells),
-        "noise_aware_false_ok": sum(c.noise_aware_ok and not c.recovered_ok for c in cells),
-        "noise_aware_false_no": sum((not c.noise_aware_ok) and c.recovered_ok for c in cells),
+        "noise_aware_rule_agrees": sum(
+            c.noise_aware_ok == c.recovered_ok for c in cells
+        ),
+        "noise_aware_false_ok": sum(
+            c.noise_aware_ok and not c.recovered_ok for c in cells
+        ),
+        "noise_aware_false_no": sum(
+            (not c.noise_aware_ok) and c.recovered_ok for c in cells
+        ),
         "combined_rule_agrees": sum(c.combined_ok == c.recovered_ok for c in cells),
         "combined_false_ok": sum(c.combined_ok and not c.recovered_ok for c in cells),
         "combined_false_no": sum((not c.combined_ok) and c.recovered_ok for c in cells),
-        "clean_rule_false_ok": sum(c.clean_rule_ok and not c.recovered_ok for c in cells),
+        "clean_rule_false_ok": sum(
+            c.clean_rule_ok and not c.recovered_ok for c in cells
+        ),
         "fails_flagged": sum(c.slip_flag or c.edge_flag for c in fails),
         "fails_silent": sum(c.silent_fail for c in cells),
         "slip_false_alarms_on_ok": sum(c.slip_flag for c in ok_cells),
         "edge_warnings_on_ok": sum(c.edge_flag for c in ok_cells),
         "accurate": sum(c.accurate for c in cells),
-        "inaccurate_but_recovered": sum(c.recovered_ok and not c.accurate for c in cells),
+        "inaccurate_but_recovered": sum(
+            c.recovered_ok and not c.accurate for c in cells
+        ),
         "silent_inaccurate": sum(c.silent_inaccurate for c in cells),
         "silent_inaccurate_no_rail": sum(c.silent_inaccurate_no_rail for c in cells),
-        "median_peak_err_frac_on_ok": float(np.median([c.peak_err_frac for c in ok_cells])) if ok_cells else None,
+        "median_peak_err_frac_on_ok": float(
+            np.median([c.peak_err_frac for c in ok_cells])
+        )
+        if ok_cells
+        else None,
     }
 
 
@@ -539,19 +631,41 @@ def run_nonideal_sweep(
     rows, all_cells = [], []
     for ni in configs:
         gc = float(gain_cal.get(ni.name, 0.0))
-        cells = [eval_nonideal_cell(a, f, ni, lam=lam, sr=sr, seed=sd, gain_cal=gc,
-                                     inl_cal=tuple(inl_cal.get(ni.name, ())), noise_k=noise_k)
-                 for sd in seeds for a in amps for f in freqs]
+        cells = [
+            eval_nonideal_cell(
+                a,
+                f,
+                ni,
+                lam=lam,
+                sr=sr,
+                seed=sd,
+                gain_cal=gc,
+                inl_cal=tuple(inl_cal.get(ni.name, ())),
+                noise_k=noise_k,
+            )
+            for sd in seeds
+            for a in amps
+            for f in freqs
+        ]
         s = summarize_nonideal(cells)
         s["config"] = ni.name
         s["params"] = {k: v for k, v in asdict(ni).items() if k != "name"}
         s["median_sigma_V"] = float(np.median([c.sigma_V for c in cells]))
         rows.append(s)
         all_cells.extend(cells)
-    return {"lam_V": lam, "sr": sr, "seeds": list(seeds), "noise_k": noise_k, "rows": rows, "cells": all_cells}
+    return {
+        "lam_V": lam,
+        "sr": sr,
+        "seeds": list(seeds),
+        "noise_k": noise_k,
+        "rows": rows,
+        "cells": all_cells,
+    }
 
 
-def fit_noise_k(cells: list[NonIdealCell], ks=None, *, lam: float = DEFAULT_LAM_V) -> dict:
+def fit_noise_k(
+    cells: list[NonIdealCell], ks=None, *, lam: float = DEFAULT_LAM_V
+) -> dict:
     """Cheap k scan for the noise-aware rule on already-evaluated cells (no re-run).
 
     Returns one row per k (agrees / false_ok / false_no) plus `k_min_safe` =
@@ -561,43 +675,64 @@ def fit_noise_k(cells: list[NonIdealCell], ks=None, *, lam: float = DEFAULT_LAM_
     ks = np.arange(0.0, 8.01, 0.25) if ks is None else np.asarray(ks, dtype=float)
     rows = []
     for k in ks:
-        pred = [noise_aware_slew_ok(c.max_dx_clean_V, lam, c.sigma_V, k=float(k)) for c in cells]
-        rows.append({
-            "k": float(k),
-            "agrees": sum(p == c.recovered_ok for p, c in zip(pred, cells)),
-            "false_ok": sum(p and not c.recovered_ok for p, c in zip(pred, cells)),
-            "false_no": sum((not p) and c.recovered_ok for p, c in zip(pred, cells)),
-        })
+        pred = [
+            noise_aware_slew_ok(c.max_dx_clean_V, lam, c.sigma_V, k=float(k))
+            for c in cells
+        ]
+        rows.append(
+            {
+                "k": float(k),
+                "agrees": sum(p == c.recovered_ok for p, c in zip(pred, cells)),
+                "false_ok": sum(p and not c.recovered_ok for p, c in zip(pred, cells)),
+                "false_no": sum(
+                    (not p) and c.recovered_ok for p, c in zip(pred, cells)
+                ),
+            }
+        )
     safe = [r["k"] for r in rows if r["false_ok"] == 0]
     return {"cells": len(cells), "rows": rows, "k_min_safe": safe[0] if safe else None}
 
 
 def noise_configs() -> list[NonIdeal]:
     """The ideal + noise-only rows of default_nonideal_configs (the NOISE_K fit set)."""
-    return [c for c in default_nonideal_configs() if c.name == "ideal" or c.name.startswith("noise")]
+    return [
+        c
+        for c in default_nonideal_configs()
+        if c.name == "ideal" or c.name.startswith("noise")
+    ]
 
 
 def format_nonideal_sweep(sweep: dict) -> str:
-    hdr = ("config            ok  fail  rule  clean  derated  flagged  SILENT  slipFA  edge-on-ok  "
-           "accurate  off>1%pk-unflagged  n-aware  combined  falseOK n→c")
+    hdr = (
+        "config            ok  fail  rule  clean  derated  flagged  SILENT  slipFA  edge-on-ok  "
+        "accurate  off>1%pk-unflagged  n-aware  combined  falseOK n→c"
+    )
     lines = [hdr, "-" * len(hdr)]
     for r in sweep["rows"]:
-        lines.append(f"{r['config']:<16} {r['recovered_ok']:>4} {r['failed']:>5} {r['rule_agrees']:>5} "
-                     f"{r['clean_rule_agrees']:>6} {r['derated_rule_agrees']:>8} {r['fails_flagged']:>8} "
-                     f"{r['fails_silent']:>7} {r['slip_false_alarms_on_ok']:>7} {r['edge_warnings_on_ok']:>11} "
-                     f"{r['accurate']:>9} {r['silent_inaccurate']:>12} "
-                     f"{r.get('noise_aware_rule_agrees', '-'):>15} "
-                     f"{r.get('combined_rule_agrees', '-'):>9} "
-                     f"{str(r.get('noise_aware_false_ok', '-')) + '→' + str(r.get('combined_false_ok', '-')):>12}")
+        lines.append(
+            f"{r['config']:<16} {r['recovered_ok']:>4} {r['failed']:>5} {r['rule_agrees']:>5} "
+            f"{r['clean_rule_agrees']:>6} {r['derated_rule_agrees']:>8} {r['fails_flagged']:>8} "
+            f"{r['fails_silent']:>7} {r['slip_false_alarms_on_ok']:>7} {r['edge_warnings_on_ok']:>11} "
+            f"{r['accurate']:>9} {r['silent_inaccurate']:>12} "
+            f"{r.get('noise_aware_rule_agrees', '-'):>15} "
+            f"{r.get('combined_rule_agrees', '-'):>9} "
+            f"{str(r.get('noise_aware_false_ok', '-')) + '→' + str(r.get('combined_false_ok', '-')):>12}"
+        )
     n = sweep["rows"][0]["cells"]
-    lines.append(f"{n} cells per row ({len(sweep['seeds'])} seed(s)). rule = slew rule on the noisy input; "
-                 "clean = rule on noiseless burst; derated = rule with λ shrunk by fold errors.")
-    lines.append(f"n-aware = spec-sheet rule with noise margin, max|Δx_clean| < λ − k·σ (k = {sweep.get('noise_k', NOISE_K):g}); "
-                 f"combined = derate + noise margin, max|Δx_clean| < λ·D − k·σ "
-                 f"(D = max(0, 1−2|g|−|e|−|o|−π·|a|)); "
-                 "falseOK n→c = cells the rule called ok that slipped, noise-aware → combined.")
-    lines.append("ok = no unwrap slip (max error < λ); accurate = ok AND max error ≤ 1 % of peak; "
-                 "off>1%pk-unflagged = recovered (no slip) but >1 % of peak off and unflagged (an accuracy limit, not an unwrap failure).")
+    lines.append(
+        f"{n} cells per row ({len(sweep['seeds'])} seed(s)). rule = slew rule on the noisy input; "
+        "clean = rule on noiseless burst; derated = rule with λ shrunk by fold errors."
+    )
+    lines.append(
+        f"n-aware = spec-sheet rule with noise margin, max|Δx_clean| < λ − k·σ (k = {sweep.get('noise_k', NOISE_K):g}); "
+        f"combined = derate + noise margin, max|Δx_clean| < λ·D − k·σ "
+        f"(D = max(0, 1−2|g|−|e|−|o|−π·|a|)); "
+        "falseOK n→c = cells the rule called ok that slipped, noise-aware → combined."
+    )
+    lines.append(
+        "ok = no unwrap slip (max error < λ); accurate = ok AND max error ≤ 1 % of peak; "
+        "off>1%pk-unflagged = recovered (no slip) but >1 % of peak off and unflagged (an accuracy limit, not an unwrap failure)."
+    )
     return "\n".join(lines)
 
 
@@ -639,8 +774,10 @@ def format_failmap(cells: list[FailCell]) -> str:
                 tag = "ok~"
             row.append(f"{tag:>6}")
         lines.append(f"{a:>16.0f} " + " ".join(row))
-    lines.append("ok = recovered blind (SNR≥60 dB); ok~ = recovered but edge warning; "
-                 "F! = failed and flagged; FS = failed silently")
+    lines.append(
+        "ok = recovered blind (SNR≥60 dB); ok~ = recovered but edge warning; "
+        "F! = failed and flagged; FS = failed silently"
+    )
     return "\n".join(lines)
 
 
@@ -652,34 +789,58 @@ def write_svg(cells: list[FailCell], path: Path, *, lam: float, sr: int) -> None
     cw, ch, ox, oy = 70, 40, 90, 50
     w, h = ox + cw * len(freqs) + 20, oy + ch * len(amps) + 90
     col = {"ok": "#3a9d5d", "ok~": "#9fd27a", "F!": "#e0a030", "FS": "#c0392b"}
-    out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" font-family="sans-serif" font-size="11">',
-           f'<text x="{ox}" y="20" font-size="13" font-weight="bold">ShockDAQ fold fail map — λ={lam:g} V, sr={sr} Hz, blind recovery</text>']
+    out = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" font-family="sans-serif" font-size="11">',
+        f'<text x="{ox}" y="20" font-size="13" font-weight="bold">ShockDAQ fold fail map — λ={lam:g} V, sr={sr} Hz, blind recovery</text>',
+    ]
     for i, a in enumerate(reversed(amps)):
         y0 = oy + i * ch
-        out.append(f'<text x="{ox-8}" y="{y0+ch/2+4}" text-anchor="end">{a:g} V</text>')
+        out.append(
+            f'<text x="{ox - 8}" y="{y0 + ch / 2 + 4}" text-anchor="end">{a:g} V</text>'
+        )
         for j, f in enumerate(freqs):
             c = by[(a, f)]
             tag = "ok" if c.recovered_ok else ("FS" if c.silent_fail else "F!")
             if c.recovered_ok and c.edge_flag:
                 tag = "ok~"
             x0 = ox + j * cw
-            out.append(f'<rect x="{x0}" y="{y0}" width="{cw-2}" height="{ch-2}" fill="{col[tag]}"/>')
-            out.append(f'<text x="{x0+cw/2-1}" y="{y0+ch/2+4}" text-anchor="middle" fill="#fff">{c.snr_blind_db:.0f} dB</text>')
+            out.append(
+                f'<rect x="{x0}" y="{y0}" width="{cw - 2}" height="{ch - 2}" fill="{col[tag]}"/>'
+            )
+            out.append(
+                f'<text x="{x0 + cw / 2 - 1}" y="{y0 + ch / 2 + 4}" text-anchor="middle" fill="#fff">{c.snr_blind_db:.0f} dB</text>'
+            )
     for j, f in enumerate(freqs):
-        out.append(f'<text x="{ox+j*cw+cw/2}" y="{oy+ch*len(amps)+14}" text-anchor="middle">{int(f)} Hz</text>')
+        out.append(
+            f'<text x="{ox + j * cw + cw / 2}" y="{oy + ch * len(amps) + 14}" text-anchor="middle">{int(f)} Hz</text>'
+        )
     ly = oy + ch * len(amps) + 36
-    for k, (tag, label) in enumerate([("ok", "recovered"), ("ok~", "recovered, edge warning"),
-                                       ("F!", "failed, flagged"), ("FS", "failed SILENTLY")]):
-        out.append(f'<rect x="{ox+k*150}" y="{ly}" width="12" height="12" fill="{col[tag]}"/>')
-        out.append(f'<text x="{ox+k*150+16}" y="{ly+10}">{label}</text>')
-    out.append(f'<text x="{ox}" y="{ly+32}">Rule: max slew &lt; λ·sr = {lam*sr:,.0f} V/s (pure sine: peak·Hz &lt; {lam*sr/(2*np.pi):,.0f}). '
-               'Burst has a 0.4× harmonic at 2.1 f, so its limit is ~1.8× tighter.</text>')
+    for k, (tag, label) in enumerate(
+        [
+            ("ok", "recovered"),
+            ("ok~", "recovered, edge warning"),
+            ("F!", "failed, flagged"),
+            ("FS", "failed SILENTLY"),
+        ]
+    ):
+        out.append(
+            f'<rect x="{ox + k * 150}" y="{ly}" width="12" height="12" fill="{col[tag]}"/>'
+        )
+        out.append(f'<text x="{ox + k * 150 + 16}" y="{ly + 10}">{label}</text>')
+    out.append(
+        f'<text x="{ox}" y="{ly + 32}">Rule: max slew &lt; λ·sr = {lam * sr:,.0f} V/s (pure sine: peak·Hz &lt; {lam * sr / (2 * np.pi):,.0f}). '
+        "Burst has a 0.4× harmonic at 2.1 f, so its limit is ~1.8× tighter.</text>"
+    )
     out.append("</svg>")
     path.write_text("\n".join(out) + "\n")
 
 
-def run_failmap_report(out_dir: Path | str | None = None, *, lam: float = DEFAULT_LAM_V,
-                       sr: int = DEFAULT_SR) -> tuple[list[FailCell], dict]:
+def run_failmap_report(
+    out_dir: Path | str | None = None,
+    *,
+    lam: float = DEFAULT_LAM_V,
+    sr: int = DEFAULT_SR,
+) -> tuple[list[FailCell], dict]:
     root = Path(__file__).resolve().parents[1]
     out = Path(out_dir) if out_dir else root / "artifacts" / "shockdaq"
     out.mkdir(parents=True, exist_ok=True)

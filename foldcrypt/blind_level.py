@@ -122,7 +122,9 @@ def inl_inverse(y_folded: np.ndarray, lam: float, coefs) -> np.ndarray:
     return out
 
 
-def rail_mask(y_folded: np.ndarray, lam: float, *, bits: int | None = None) -> np.ndarray:
+def rail_mask(
+    y_folded: np.ndarray, lam: float, *, bits: int | None = None
+) -> np.ndarray:
     """Samples sitting at the ADC rails (value clipped; true folded value lies beyond)."""
     tol = lam * 1e-9 + (lam / 2 ** (bits - 1) if bits else 0.0)
     return np.abs(np.asarray(y_folded, dtype=float)) >= lam - tol
@@ -146,7 +148,9 @@ def naive_k0(y_folded: np.ndarray, lam: float) -> np.ndarray:
 EDGE_FRAC = 0.9
 
 
-def slip_flag(recovered: np.ndarray, lam: float, *, frac: float = 0.2, win: int = 1024) -> bool:
+def slip_flag(
+    recovered: np.ndarray, lam: float, *, frac: float = 0.2, win: int = 1024
+) -> bool:
     """Blind check: quiet baseline at the start vs end of record differ by > λ."""
     r = np.asarray(recovered, dtype=float)
     m = max(int(len(r) * frac), win + 1)

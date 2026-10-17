@@ -41,7 +41,6 @@ import numpy as np
 
 from .modulo import central_modulo
 
-
 InitKind = Literal["residue", "mid", "zeros"]
 
 
@@ -215,11 +214,11 @@ def block_mahalanobis_detect(
     local_inv: list[np.ndarray] = []
     local_H: list[np.ndarray] = []
     for blk in blocks:
-        I = blk.samples
+        I_j = blk.samples
         Cj = blk.local
-        Sig_j = Sigma_T[np.ix_(I, I)]
-        local_inv.append(np.linalg.inv(Sig_j + 1e-12 * np.eye(len(I))))
-        local_H.append(H[np.ix_(I, Cj)])
+        Sig_j = Sigma_T[np.ix_(I_j, I_j)]
+        local_inv.append(np.linalg.inv(Sig_j + 1e-12 * np.eye(len(I_j))))
+        local_H.append(H[np.ix_(I_j, Cj)])
 
     eval_count = 0
     n_passes = 0
@@ -230,12 +229,12 @@ def block_mahalanobis_detect(
         a_new = a_hat.copy()
         # Jacobi: all blocks read â^(k-1) only (paper: "in parallel")
         for j, blk in enumerate(blocks):
-            I = blk.samples
+            I_j = blk.samples
             Cj = blk.local
             keep = blk.keep
             Nb_eff = len(Cj)
-            d_j = H[I, :] @ a_prev - local_H[j] @ a_prev[Cj]
-            y_eff = y_lam[I] - d_j
+            d_j = H[I_j, :] @ a_prev - local_H[j] @ a_prev[Cj]
+            y_eff = y_lam[I_j] - d_j
             a_j, _m_j, n_ev = _local_mahalanobis_search(
                 y_eff, local_H[j], alphabet, lam, local_inv[j], Nb_eff
             )

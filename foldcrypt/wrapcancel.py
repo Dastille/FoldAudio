@@ -22,7 +22,6 @@ ASSUMPTION: wrapcancel_detect uses exhaustive search over S^{Ns}
 from __future__ import annotations
 
 import itertools
-from typing import Sequence
 
 import numpy as np
 
@@ -110,4 +109,3 @@ __all__ = [
     "block_mahalanobis_detect",
     "build_block_index_sets",
 ]
-

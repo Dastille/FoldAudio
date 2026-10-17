@@ -57,7 +57,7 @@ max_sample_jump, write_wav.
 from __future__ import annotations
 
 import json
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -244,10 +244,12 @@ class ShockDAQResult:
     edge_flag: bool = False
     rail_hits: int = 0
     front_end: str = "ideal"
-    fw_status: str = ""          # recover_or_clip(folded).status (blind; 2026-10-15)
-    fw_fallback: bool = False    # recover_or_clip discarded the unwrap (UNREC → folded/clip view)
-    fw_untrusted: int = 0        # samples recover_or_clip marked untrusted
-    snr_fw_db: float = 0.0       # SNR of recover_or_clip's output vs the original
+    fw_status: str = ""  # recover_or_clip(folded).status (blind; 2026-10-15)
+    fw_fallback: bool = (
+        False  # recover_or_clip discarded the unwrap (UNREC → folded/clip view)
+    )
+    fw_untrusted: int = 0  # samples recover_or_clip marked untrusted
+    snr_fw_db: float = 0.0  # SNR of recover_or_clip's output vs the original
 
     @property
     def rail_clipped(self) -> bool:
@@ -315,23 +317,24 @@ def overload_event_mask(
     starts = np.r_[idx[0], idx[brk + 1]]
     ends = np.r_[idx[brk], idx[-1]]
     for a, b in zip(starts, ends):
-        m[max(a - pad, 0): b + 2 + pad] = True
+        m[max(a - pad, 0) : b + 2 + pad] = True
     return m
 
 
 @dataclass
 class CaptureOutput:
     """What firmware would hand downstream for one capture (recover_or_clip)."""
-    signal: np.ndarray          # waveform to use (recovered, or folded fallback)
-    status: str                 # one of CAPTURE_STATUSES
-    fallback: bool              # True → unwrap discarded, signal = folded ADC samples
-    untrusted: np.ndarray       # bool mask: samples whose value is NOT the true input
-    peak_V: float               # reported peak |x|
-    peak_is_lower_bound: bool   # True → "peak ≥ peak_V" (saturated, like a clip)
+
+    signal: np.ndarray  # waveform to use (recovered, or folded fallback)
+    status: str  # one of CAPTURE_STATUSES
+    fallback: bool  # True → unwrap discarded, signal = folded ADC samples
+    untrusted: np.ndarray  # bool mask: samples whose value is NOT the true input
+    peak_V: float  # reported peak |x|
+    peak_is_lower_bound: bool  # True → "peak ≥ peak_V" (saturated, like a clip)
     slip_flag: bool
     edge_flag: bool
     rail_hits: int
-    k: int                      # blind 2λ level offset used by recover_blind
+    k: int  # blind 2λ level offset used by recover_blind
 
     @property
     def n_untrusted(self) -> int:
@@ -375,10 +378,16 @@ def recover_or_clip(
     nrail = int(np.count_nonzero(rmask))
     if slip or edge:
         return CaptureOutput(
-            signal=y.copy(), status="UNRECOVERABLE", fallback=True,
+            signal=y.copy(),
+            status="UNRECOVERABLE",
+            fallback=True,
             untrusted=overload_event_mask(y, lam),
-            peak_V=float(lam), peak_is_lower_bound=True,
-            slip_flag=slip, edge_flag=edge, rail_hits=nrail, k=k,
+            peak_V=float(lam),
+            peak_is_lower_bound=True,
+            slip_flag=slip,
+            edge_flag=edge,
+            rail_hits=nrail,
+            k=k,
         )
     wrapped = bool(np.any(np.abs(rec - y) > 1e-9 * lam))
     if nrail:
@@ -386,9 +395,16 @@ def recover_or_clip(
     else:
         status = "RECOVERED" if wrapped else "IN_RANGE"
     return CaptureOutput(
-        signal=rec, status=status, fallback=False, untrusted=rmask,
-        peak_V=float(np.max(np.abs(rec))) if len(rec) else 0.0, peak_is_lower_bound=False,
-        slip_flag=slip, edge_flag=edge, rail_hits=nrail, k=k,
+        signal=rec,
+        status=status,
+        fallback=False,
+        untrusted=rmask,
+        peak_V=float(np.max(np.abs(rec))) if len(rec) else 0.0,
+        peak_is_lower_bound=False,
+        slip_flag=slip,
+        edge_flag=edge,
+        rail_hits=nrail,
+        k=k,
     )
 
 
@@ -417,10 +433,16 @@ def run_case(
 
     # Soft-sat without flag ≡ hard clip for v0 math.
     clipped = hard_clip(x, lam)
-    folded = fold_capture(x, lam) if fold_fn is None else np.asarray(fold_fn(x, lam), dtype=float)
+    folded = (
+        fold_capture(x, lam)
+        if fold_fn is None
+        else np.asarray(fold_fn(x, lam), dtype=float)
+    )
     recovered = recover_itoh(folded, lam, anchor=x)
     blind, _k = recover_blind(folded, lam)
-    fw = recover_or_clip(folded, lam, prior="zero_mean")  # same prior as the blind column
+    fw = recover_or_clip(
+        folded, lam, prior="zero_mean"
+    )  # same prior as the blind column
 
     pe_c = peak_abs_error(x, clipped)
     pe_f = peak_abs_error(x, recovered)
@@ -474,7 +496,9 @@ def run_case(
 def _unrec_tag(r: ShockDAQResult) -> str:
     if not r.overload_unrecoverable:
         return "no"
-    return "+".join(t for t, on in (("slip", r.slip_flag), ("edge", r.edge_flag)) if on).upper()
+    return "+".join(
+        t for t, on in (("slip", r.slip_flag), ("edge", r.edge_flag)) if on
+    ).upper()
 
 
 def format_shockdaq_table(rows: list[ShockDAQResult]) -> str:
@@ -522,11 +546,19 @@ def run_shockdaq_demo(
         "impact_transient": (gen_impact_transient(sr=sr, lam=lam), None, "ideal"),
         # Deliberately past the slew limit (max|Δx| > λ): fold can't recover
         # this one — the point is that firmware SAYS so instead of going silent.
-        "impact_too_fast": (gen_impact_transient(sr=sr, lam=lam, peak_amp=60.0), None, "ideal"),
+        "impact_too_fast": (
+            gen_impact_transient(sr=sr, lam=lam, peak_amp=60.0),
+            None,
+            "ideal",
+        ),
         # Same gearbox through a fold step 1 % LONG (g=+0.01, synthetic): the
         # unwrap holds, but samples just past each wrap clip at the ADC rail →
         # RAIL lights up ("overload peak, bounded accuracy"), UNREC stays off.
-        "gearbox_fold_long": (gearbox, lambda v, l: nonideal_fold(v, l, long_step), long_step.name),
+        "gearbox_fold_long": (
+            gearbox,
+            lambda v, lam_: nonideal_fold(v, lam_, long_step),
+            long_step.name,
+        ),
     }
     rows: list[ShockDAQResult] = []
     for name, (x, fn, fe) in cases.items():

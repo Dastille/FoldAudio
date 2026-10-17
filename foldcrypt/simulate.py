@@ -34,7 +34,9 @@ class SerRow:
     snr_db: float
 
 
-def _draw_symbols(alphabet: np.ndarray, Ns: int, rng: np.random.Generator) -> np.ndarray:
+def _draw_symbols(
+    alphabet: np.ndarray, Ns: int, rng: np.random.Generator
+) -> np.ndarray:
     idx = rng.integers(0, len(alphabet), size=Ns)
     return alphabet[idx]
 
@@ -63,7 +65,9 @@ def run_ser_point(
     symbols_total = 0
     for _ in range(n_trials):
         a = _draw_symbols(alphabet, Ns, rng)
-        y_q, Sigma_w, sigma_q2, y_unc = transmit_with_OF(a, H, OF, lam, sigma, bits, rng)
+        y_q, Sigma_w, sigma_q2, y_unc = transmit_with_OF(
+            a, H, OF, lam, sigma, bits, rng
+        )
         a_wc, _ = wrapcancel_detect(y_q, H, alphabet, lam, Sigma_w, sigma_q2)
         a_un, _ = unfold_then_detect(y_q, H, alphabet, lam, Sigma_w, sigma_q2)
         # Oracle: unclipped Ha+w, no quantization noise term.

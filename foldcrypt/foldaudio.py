@@ -254,7 +254,9 @@ def gen_harsh_kick(
     return x.astype(float)
 
 
-def ensure_testdata(testdata_dir: Path | str, sr: int = DEFAULT_SR) -> dict[str, np.ndarray]:
+def ensure_testdata(
+    testdata_dir: Path | str, sr: int = DEFAULT_SR
+) -> dict[str, np.ndarray]:
     """Build synthetic float arrays + write listening WAVs; return name→samples."""
     d = Path(testdata_dir)
     d.mkdir(parents=True, exist_ok=True)

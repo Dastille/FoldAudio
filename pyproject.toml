@@ -10,7 +10,8 @@ requires-python = ">=3.10"
 dependencies = ["numpy"]
 
 [project.optional-dependencies]
-dev = ["pytest"]
+# ruff is pinned so local lint/format matches CI exactly.
+dev = ["pytest", "ruff==0.17.1", "pip-audit"]
 real = ["scipy"]
 
 [tool.setuptools.packages.find]
@@ -20,3 +21,14 @@ include = ["foldcrypt*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+# Explicit rule set so CI does not depend on ruff's evolving defaults.
+select = ["E", "F", "W", "I", "UP", "B"]
+# E501: line length is owned by `ruff format`; long comments/strings are kept.
+# B905: zip(strict=) would change runtime behaviour, so not enforced here.
+ignore = ["E501", "B905"]

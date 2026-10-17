@@ -14,10 +14,10 @@ from foldcrypt.foldaudio import (
     gen_tone_burst,
     hard_clip,
     max_sample_jump,
+    read_wav,
     recover_itoh,
     snr_db,
     write_wav,
-    read_wav,
 )
 
 

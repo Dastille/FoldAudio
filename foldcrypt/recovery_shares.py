@@ -30,8 +30,8 @@ from .defect_mask import (
     _hamming74_encode,
 )
 
-
 # --- named ECC params -------------------------------------------------
+
 
 @dataclass(frozen=True)
 class ShareParams:
@@ -75,6 +75,7 @@ class ShareBundle:
 
 # --- passphrase → key -------------------------------------------------
 
+
 def derive_key(
     passphrase: str,
     salt: bytes,
@@ -116,6 +117,7 @@ def _xor_bytes(a: bytes, b: bytes) -> bytes:
 
 # --- bit packing ------------------------------------------------------
 
+
 def _bytes_to_bits(data: bytes) -> list[int]:
     bits: list[int] = []
     for byte in data:
@@ -146,6 +148,7 @@ def _pad_msg_bits(bits: list[int], k: int = 4) -> list[int]:
 
 
 # --- erasure-aware Hamming decode -------------------------------------
+
 
 def _syndrome_bits(r: list[int]) -> tuple[int, int, int]:
     u0, u1, u2, u3, p0, p1, p2 = r
@@ -203,6 +206,7 @@ def _hamming74_decode_erasure(r: list[int | None]) -> list[int]:
 
 
 # --- split / recover --------------------------------------------------
+
 
 def split_secret(
     secret: bytes,
@@ -284,14 +288,10 @@ def recover_secret(
         try:
             msg4 = _hamming74_decode_erasure(cw)
         except ValueError as exc:
-            raise ValueError(
-                f"recover failed at block {b}: {exc}"
-            ) from exc
+            raise ValueError(f"recover failed at block {b}: {exc}") from exc
         msg_bits.extend(msg4)
 
-    key = derive_key(
-        passphrase, bundle.salt, iterations=bundle.pbkdf2_iterations
-    )
+    key = derive_key(passphrase, bundle.salt, iterations=bundle.pbkdf2_iterations)
     masked = _bits_to_bytes(msg_bits, bundle.secret_bit_len)
     secret = _xor_bytes(masked, _keystream(key, len(masked)))
 
@@ -308,4 +308,3 @@ def corrupt_share(share: Share, block_indices: list[int]) -> Share:
     for b in block_indices:
         bits[b] ^= 1
     return Share(index=share.index, bits=bits)
-

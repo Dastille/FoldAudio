@@ -16,7 +16,7 @@ def _ring(sr, f=3000.0, n=24000, seed=0):
 
 
 def test_file_table_is_well_formed():
-    for fid, (sr, label, digest) in rd.CWRU_FILES.items():
+    for _fid, (sr, label, digest) in rd.CWRU_FILES.items():
         assert sr in (12000, 48000) and label and len(digest) == 64
     assert sum(sr == 48000 for sr, _, _ in rd.CWRU_FILES.values()) == 7
 
@@ -29,7 +29,9 @@ def test_offline_fetch_without_cache_raises(tmp_path):
 def test_kurtosis_and_crest_basics():
     g = np.random.default_rng(1).standard_normal(200_000)
     assert abs(rd.kurtosis(g) - 3.0) < 0.1
-    assert rd.crest_factor(np.sin(np.linspace(0, 200 * np.pi, 100_000))) == pytest.approx(np.sqrt(2), rel=1e-3)
+    assert rd.crest_factor(
+        np.sin(np.linspace(0, 200 * np.pi, 100_000))
+    ) == pytest.approx(np.sqrt(2), rel=1e-3)
 
 
 def test_fast_sampling_recovers_exactly_and_keeps_kurtosis():
@@ -54,7 +56,9 @@ def test_cached_cwru_sweep_has_no_silent_failures():
         for fid in rd.CWRU_FILES:
             rd.fetch(fid, download=False)
     except FileNotFoundError:
-        pytest.skip("CWRU files not cached (run python -m foldcrypt shockdaq-real once)")
+        pytest.skip(
+            "CWRU files not cached (run python -m foldcrypt shockdaq-real once)"
+        )
     s = rd.run_real_sweep(download=False)["summary"]
     assert s["cells"] == 120
     assert s["rule_correct"] == 120

@@ -16,8 +16,6 @@ import itertools
 
 import numpy as np
 
-from .modulo import central_modulo
-
 
 def itoh_unwrap(y_lam: np.ndarray, lam: float) -> np.ndarray:
     """First-order unwrap: correct jumps whose absolute value exceeds λ.

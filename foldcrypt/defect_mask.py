@@ -14,7 +14,6 @@ from __future__ import annotations
 import hashlib
 from dataclasses import dataclass
 
-
 # --- tiny binary Hamming [7,4,3], t=1 ---------------------------------
 # Generator G (systematic): columns for u0..u3 then p0..p2
 # Parity: p0=u0+u1+u3, p1=u0+u2+u3, p2=u1+u2+u3  (mod 2)

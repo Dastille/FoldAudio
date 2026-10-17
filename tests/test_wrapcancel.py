@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import numpy as np
+
 from foldcrypt.channel import build_H, noise_covariance, sample_noise, transmit_with_OF
 from foldcrypt.constellation import injective_8pam
 from foldcrypt.modulo import central_modulo

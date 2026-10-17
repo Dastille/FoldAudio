@@ -64,10 +64,6 @@ def transmit(
 
     Returns (y_q, Sigma_w, sigma_q2).
     """
-    from .modulo import central_modulo, quantize_folded
-
-    N = H.shape[0]
-    OF_implied = max(1, (N - 1) // max(1, (len(a) - 1))) if len(a) > 1 else 1
     # Caller passes consistent OF via H; recover OF from H shape convention.
     # We recompute Sigma from N and inferred OF — prefer explicit OF.
     raise NotImplementedError("use transmit_with_OF")

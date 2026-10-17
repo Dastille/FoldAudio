@@ -54,14 +54,22 @@ def test_block_agrees_with_exhaustive_ns2():
     alphabet = injective_8pam(lam)
     H = build_H(2, OF)
     a = alphabet[[2, 5]]
-    y_q, Sigma_w, sigma_q2, _ = transmit_with_OF(
-        a, H, OF, lam, lam / ratio, bits, rng
-    )
+    y_q, Sigma_w, sigma_q2, _ = transmit_with_OF(a, H, OF, lam, lam / ratio, bits, rng)
     a_ex, _ = wrapcancel_detect(y_q, H, alphabet, lam, Sigma_w, sigma_q2)
     stats: dict = {}
     a_bl, _ = block_mahalanobis_detect(
-        y_q, H, alphabet, lam, Sigma_w, sigma_q2,
-        Nb=2, eta=1, K=3, OF=OF, init="residue", stats=stats,
+        y_q,
+        H,
+        alphabet,
+        lam,
+        Sigma_w,
+        sigma_q2,
+        Nb=2,
+        eta=1,
+        K=3,
+        OF=OF,
+        init="residue",
+        stats=stats,
     )
     np.testing.assert_array_equal(a_bl, a_ex)
     np.testing.assert_array_equal(a_bl, a)
@@ -81,13 +89,20 @@ def test_block_agrees_with_exhaustive_ns4_high_snr():
     Ns = 4
     H = build_H(Ns, OF)
     a = alphabet[rng.integers(0, 8, size=Ns)]
-    y_q, Sigma_w, sigma_q2, _ = transmit_with_OF(
-        a, H, OF, lam, lam / ratio, bits, rng
-    )
+    y_q, Sigma_w, sigma_q2, _ = transmit_with_OF(a, H, OF, lam, lam / ratio, bits, rng)
     a_ex, _ = wrapcancel_detect(y_q, H, alphabet, lam, Sigma_w, sigma_q2)
     a_bl, _ = block_mahalanobis_detect(
-        y_q, H, alphabet, lam, Sigma_w, sigma_q2,
-        Nb=2, eta=2, K=5, OF=OF, init="residue",
+        y_q,
+        H,
+        alphabet,
+        lam,
+        Sigma_w,
+        sigma_q2,
+        Nb=2,
+        eta=2,
+        K=5,
+        OF=OF,
+        init="residue",
     )
     np.testing.assert_array_equal(a_bl, a_ex)
 
@@ -103,12 +118,20 @@ def test_block_roundtrip_ns16_comfortable():
     alphabet = injective_8pam(lam)
     H = build_H(Ns, OF)
     a = alphabet[rng.integers(0, 8, size=Ns)]
-    y_q, Sigma_w, sigma_q2, _ = transmit_with_OF(
-        a, H, OF, lam, lam / ratio, bits, rng
-    )
+    y_q, Sigma_w, sigma_q2, _ = transmit_with_OF(a, H, OF, lam, lam / ratio, bits, rng)
     a_hat, _ = block_mahalanobis_detect(
-        y_q, H, alphabet, lam, Sigma_w, sigma_q2,
-        Nb=4, eta=2, K=5, edge_discard=1, OF=OF, init="residue",
+        y_q,
+        H,
+        alphabet,
+        lam,
+        Sigma_w,
+        sigma_q2,
+        Nb=4,
+        eta=2,
+        K=5,
+        edge_discard=1,
+        OF=OF,
+        init="residue",
     )
     n_match = int(np.sum(a_hat == a))
     assert n_match >= int(0.75 * Ns), f"only {n_match}/{Ns} symbols matched"
@@ -130,8 +153,18 @@ def test_complexity_scales_linear_in_ns():
         )
         stats: dict = {}
         block_mahalanobis_detect(
-            y_q, H, alphabet, lam, Sigma_w, sigma_q2,
-            Nb=Nb, eta=1, K=2, OF=OF, init="residue", stats=stats,
+            y_q,
+            H,
+            alphabet,
+            lam,
+            Sigma_w,
+            sigma_q2,
+            Nb=Nb,
+            eta=1,
+            K=2,
+            OF=OF,
+            init="residue",
+            stats=stats,
         )
         counts[Ns] = stats["eval_count"]
         P = stats["n_blocks"]

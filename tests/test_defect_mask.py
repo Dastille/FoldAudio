@@ -10,7 +10,6 @@ from foldcrypt.defect_mask import (
     flip_bits,
 )
 
-
 KEY = b"test-structure-salt"
 
 
