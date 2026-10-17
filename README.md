@@ -1,5 +1,7 @@
 # FoldAudio: modulo folding instead of hard clipping, for audio and vibration acquisition
 
+[![CI](https://github.com/Dastille/FoldAudio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Dastille/FoldAudio/actions/workflows/ci.yml)
+
 > **📄 Technical report (v1.0, 2026-10-13):** [**Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration**](docs/foldaudio-whitepaper.md)
 
 When a microphone or an IEPE accelerometer chain is overdriven, the converter clips and the peaks are lost, often with no flag. This repository simulates a different overload behaviour: values beyond ±λ **fold** (modulo wrap) back into range, and are then **unwrapped** in software. Recovery is exact while the slew rate stays below λ·f<sub>s</sub>. The absolute level is recovered blindly for AC-coupled signals. Each capture gets a self-diagnosed status (`UNRECOVERABLE` / `BOUNDED_ACCURACY` / `RECOVERED` / `IN_RANGE`), so failures are reported, not silent. Two configurations share one implementation: **FoldAudio** (audio, 48 kHz) and **ShockDAQ** (IEPE vibration/shock, 51.2 kHz).
@@ -9,7 +11,7 @@ When a microphone or an IEPE accelerometer chain is overdriven, the converter cl
 Quick start:
 
 ```bash
-pip install -e ".[dev]" && python -m pytest -q
+pip install -e ".[dev]" && python -m pytest -q   # test suite; runs in CI on every push (see badge)
 python -m foldcrypt audio-demo          # audio: fold vs hard clip
 python -m foldcrypt shockdaq-demo       # vibration: fold vs clip + capture status
 python -m foldcrypt shockdaq-failmap    # where recovery fails, and whether it is flagged

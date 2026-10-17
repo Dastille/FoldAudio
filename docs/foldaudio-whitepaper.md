@@ -303,7 +303,7 @@ A single damped ringing burst (Section 5.2 envelope, 0.5 s record, impact at 40 
 
 ### 5.5 Software
 
-Python 3 with NumPy, CPU-only, deterministic seeds. SciPy is used only to read the MATLAB files of Section 6.6. The test suite (78 tests) passes on the commit that accompanies this report.
+Python 3 with NumPy, CPU-only, deterministic seeds. SciPy is used only to read the MATLAB files of Section 6.6. The test suite (`python -m pytest -q`) runs in GitHub Actions CI on every push and pull request to `main` (`.github/workflows/ci.yml`, Python 3.11 and 3.12); the test count is not hardcoded here, see the CI run for the commit. The full measured-record sweep test (`tests/test_realdata.py`) is skipped unless the CWRU files have been cached by `python -m foldcrypt shockdaq-real`.
 
 ---
 
@@ -588,7 +588,7 @@ cd FoldAudio
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev,real]"
 
-python -m pytest -q                               # 78 tests
+python -m pytest -q                               # full test suite (count: see CI)
 python -m foldcrypt audio-demo                    # Table 1   -> artifacts/foldaudio/metrics.json  (FoldAudio)
 python -m foldcrypt shockdaq-demo                 # Table 2   -> artifacts/shockdaq/metrics.json   (ShockDAQ)
 python -m foldcrypt shockdaq-failmap              # Tables 3-4 (seed 7) -> failmap.json, failmap.svg
