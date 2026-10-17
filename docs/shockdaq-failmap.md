@@ -13,7 +13,9 @@ two samples. As a spec line for a DAQ buyer:
 
 On a 56-cell sweep (ringing impact, peak 6–40 V, ring 0.5–12 kHz, blind
 recovery with no original) that rule predicted success/failure in **56/56**
-cells; across 5 noise seeds, **280/280**.
+cells (all 56 overloaded); across 5 noise seeds, **275/275 overloaded cells**.
+Five of the 280 cells (6 V row, peaks 4.94–4.99 V) never reach λ, so they are
+left out of every recovery count below (they would be "recovered" trivially).
 
 The sales-relevant part: **every failure flagged itself** (166/166 failures
 across 5 seeds, 0 silent) using two checks that only need the capture:
@@ -67,6 +69,7 @@ Question: does a real N-bit ADC move the slew edge? Run
 `python -m foldcrypt shockdaq-failmap --quant` → `artifacts/shockdaq/quantmap.json`.
 The same 56-cell grid is passed through an N-bit modulo-ADC (step
 Δ = λ/2^(N−1)); "ok" = every recovered sample within one LSB of the true input.
+All 56 seed-7 cells are overloaded.
 
 ```
  bits  step(V)  ok  fail  rule  tight  flagged  SILENT  slipFA  edge-on-ok
@@ -84,9 +87,12 @@ at ≤4 bits, where it is actually slightly *worse* than the plain rule (54/56)
 because rounding errors rarely line up adversely. Quantization costs
 resolution (LSB-sized error), not range or honesty.
 
-Caveats: single noise seed (7) in the CLI sweep (an ad-hoc 5-seed run for
-3–24 bits showed the same pattern — 0 silent failures at every depth; plain rule
-matched 280/280 from 4 bits up, 275/280 at 3 bits); quantizer is the ideal
+Caveats: single noise seed (7) in the CLI sweep. A 5-seed run for 3–24 bits
+(`python -m foldcrypt claims`, asserted in `tests/test_claims.py`) shows 0 silent
+failures at every depth; the plain rule matches 275/275 overloaded cells from
+8 bits up, 274/275 at 4 and 6 bits, and 268/275 at 3 bits (all cells: 280, 279,
+279 and 273 of 280). An earlier ad-hoc note said "280/280 from 4 bits up,
+275/280 at 3 bits"; that does not reproduce and is corrected here. Quantizer is the ideal
 mid-riser in `modulo.py`, no ADC nonlinearity, no thermal/clock noise.
 
 ## Non-ideal front end (2026-10-11 Sunday hard push, NOTES #6)
@@ -110,15 +116,19 @@ not a measured part:
 "ok" = no unwrap slip (max error < λ). "accurate" = ok **and** max error ≤ 1 % of
 the true peak.
 
-### Results (280 cells per config; full table in the CLI output)
+### Results (280 cells per config, counted over overloaded cells: 275–280 per config)
+
+Full all-cell table in the CLI output; the overloaded-only table is printed by
+`python -m foldcrypt claims` and is Table 6 of the whitepaper.
 
 - **Unwrap failures stay loud: 0 silent failures and 0 slip false alarms in all
   24 configs** (every failure caught by the slip and/or edge check). No new
   silent-failure mode found.
 - **Sensor noise does not break the slew rule; it moves the edge.** The rule
-  applied to the input the fold actually saw (noise included) predicts 280/280
-  at every noise level. But the *spec-sheet* rule on the noiseless signal
-  degrades: 279/280 at 40 dB, 266/280 at 10 dB, 219/280 at 0 dB SNR. Rough
+  applied to the input the fold actually saw (noise included) predicts every
+  overloaded cell at every noise level. But the *spec-sheet* rule on the
+  noiseless signal degrades: 275/276 overloaded cells at 40 dB, 265/279 at
+  10 dB, 219/280 at 0 dB SNR. Rough
   numbers: a cell sitting right at the edge (max step 4.99 V of 5) flips at
   σ ≈ 5 mV (0.1 % of λ); cells with 4.3 V steps flip at σ ≈ 90–160 mV
   (2–3 % of λ). Noise costs slew margin only — the recovered waveform equals the noisy
@@ -134,17 +144,17 @@ the true peak.
     of the peak (1 % → ~1–2 % of peak, 5 % → up to ~10 %; −5 % worst 2.0 V on
     a 40 V burst).
   Thresholds for ≤ 1 % of peak: g ≲ 0.5 %, e ≲ 1 %, o ≲ 1 %, INL ≲ 1 % (combo-mild
-  passes everywhere; combo-bad: 40/112 recovered cells within 1 %, worst 1.9 %).
+  passes everywhere; combo-bad: 40/108 recovered overloaded cells within 1 %, worst 1.9 %).
   This is the same class as ordinary ADC gain/offset/INL specs — but only on
   overloaded samples — and the current blind checks **cannot see it**
   (a wrap-count-proportional error returns to zero at baseline). It needs
   factory calibration of the fold step, not a self-flag.
 - **INL nudges the slew edge** (bow slope 1+π·a at mid-scale shrinks the limit
-  by ~π·a): the plain rule says "ok" for 12 cells (of 6,720 non-ideal cells) that
+  by ~π·a): the plain rule says "ok" for 12 cells (of 6,623 overloaded non-ideal cells) that
   actually slipped — all in the INL / combo configs, all flagged. A derated rule
-  λ·(1 − 2|g| − |e| − |o| − π·a) never called a failing cell "ok" (0 of 6,720) at
+  λ·(1 − 2|g| − |e| − |o| − π·a) never called a failing cell "ok" (0 of 6,623) at
   the price of being conservative (69 cells that still recovered were called "no").
-- Edge warnings on recovered cells rise with noise (up to 15/114 at 15 dB) —
+- Edge warnings on recovered cells rise with noise (up to 15/109 recovered overloaded cells at 15 dB) —
   nuisance warnings, not slips; slip false alarms stay 0.
 
 ### New limits to state to an OEM
@@ -174,31 +184,36 @@ target ≤ 1e-3): noiseless 3e-6, 80 dB 1e-5, **60 dB 3e-4 (meets)**, 40 dB 3e-2
 (misses), 20 dB 1.0 (Itoh fails). INL estimate within 0.0002·λ of truth.
 The INL terms matter: without them an INL bow of 5 % leaks into ĝ as +4.7 %.
 
-**Burst grid before → after calibration** (280 cells per row = 56 × 5 seeds; 114
-is the ceiling because the other 166 cells are past the slew limit):
+**Burst grid before → after calibration** (overloaded cells only: 275 per row,
+276 for combo-bad; 109 is the ceiling because the other 166 are past the slew
+limit. Before v1.5 of the report these counts included the 5 in-range cells,
+which gave a ceiling of 114):
 
 | config | accurate (≤ 1 % of peak) | unflagged > 1 %-off cells with **no** rail-clipped sample |
 |---|---|---|
-| gain −1 % | 21 → **114** | 68 → 0 |
-| gain −5 % | 5 → 89 | 75 → 0 |
-| gain +1 % | 27 → 63 | 5 → 0 |
-| gain +5 % | 7 → 5 (no help) | 0 → 0 |
-| INL 2 % | 40 → **114** | 64 → 0 |
-| INL 5 % | 15 → **114** | 84 → 0 |
-| combo-mild | 113 → 113 | 0 → 0 |
-| combo-bad | 40 → 36 (no help) | 3 → 0 |
+| gain −1 % | 16 → **109** | 68 → 0 |
+| gain −5 % | 0 → 84 | 75 → 0 |
+| gain +1 % | 22 → 58 | 5 → 0 |
+| gain +5 % | 2 → 0 (no help) | 0 → 0 |
+| INL 2 % | 40 → **109** | 59 → 0 |
+| INL 5 % | 15 → **109** | 79 → 0 |
+| combo-mild | 108 → 109 | 0 → 0 |
+| combo-bad | 40 → 35 (no help) | 2 → 0 |
 
 Still 0 silent unwrap failures and 0 slip false alarms in every row.
 
 **What it means.**
 - Negative gain error and INL are fully fixable by a one-tone factory/service
-  calibration. Across all rows, 304 truly invisible > 1 %-off cells become 0.
+  calibration. Across all rows, 288 truly invisible > 1 %-off overloaded cells become 0
+  (304 if the 16 in-range cells are counted).
 - What calibration can't fix is samples the gain error pushed **past the ADC
   rail** — their value is clipped and gone. For g > 0 that happens right after
   every wrap, so a +5 % fold step stays inaccurate. Those cells are not silent,
   though: the capture shows rail-clipped samples (`rail_hits`), so firmware can
   mark the overloaded peaks "bounded accuracy". The rail check is conservative
-  (it also fires on many cells that were accurate, e.g. 43/46 in combo-mild).
+  (it also fires on many cells that were accurate, e.g. 99 of the 108 recovered
+  overloaded cells in combo-mild, all accurate; an older note said 43/46, which
+  does not reproduce).
 - **Design rule for an OEM:** trim the fold step slightly *short* (g ≤ 0) and
   calibrate it; never long. Wrap-threshold and offset errors (combo-bad) also
   clip at the rails and are not helped by this calibration.
@@ -228,7 +243,7 @@ some peak samples clipped at the rail); else overload → "recovered".
 
 Here max|Δx_signal| is the signal's own (noiseless, spec-sheet) per-sample step
 and σ is the front-end noise RMS. The plain rule applied to the noisy samples
-is already exact (280/280 at every SNR). This rule is for the situation a
+is already exact (every overloaded cell at every SNR). This rule is for the situation a
 datasheet or test plan is actually in: you know the signal's slew and the
 noise floor, not the realised noisy samples. Do not apply it to an
 already-noisy max|Δx|, because that counts the noise twice.
@@ -239,19 +254,22 @@ from 0 to 8 in steps of 0.25 (`failmap.fit_noise_k`, which reuses the swept
 cells at no extra cost). The criterion: no "rule says ok but the unwrap
 slipped" cell (false-ok, the dangerous miss), at the smallest k that achieves it.
 
-| k | agree / 2520 | false-ok | false-no |
-|---|---|---|---|
-| 0 (plain spec-sheet rule) | 2401 | **119** | 0 |
-| 3 (max agreement) | 2481 | 12 | 27 |
-| 4 | 2472 | 4 | 44 |
-| 4.75 (smallest with 0 false-ok) | 2439 | 0 | 81 |
-| **5 (chosen)** | **2435** | **0** | 85 |
+| k | agree / 2497 overloaded | agree / 2520 all | false-ok | false-no |
+|---|---|---|---|---|
+| 0 (plain spec-sheet rule) | 2378 | 2401 | **119** | 0 |
+| 3 (max agreement) | 2458 | 2481 | 12 | 27 |
+| 4 | 2449 | 2472 | 4 | 44 |
+| 4.75 (smallest with 0 false-ok) | 2416 | 2439 | 0 | 81 |
+| **5 (chosen)** | **2412** | **2435** | **0** | 85 |
+
+The 23 in-range noise-row cells agree trivially at every k; every false-ok and
+false-no cell is overloaded.
 
 Cross-check: fitting on seeds 7–9 alone gives k = 4, but that k still leaves 4
 false-ok cells on held-out seeds 10–11. k = 4.75 is 0/0 on both halves, and 5
 rounds it up for margin. The 85 conservative cells are all at SNR ≤ 30 dB
 (30 dB: 1, 20 dB: 8, 15 dB: 15, 10 dB: 25, 5 dB: 13, 0 dB: 23). The ideal,
-60 dB and 40 dB rows are unchanged at 280/280. Rough physics: white noise adds
+60 dB and 40 dB rows are unchanged (every overloaded cell agrees). Rough physics: white noise adds
 a per-step term of std √2·σ, so k = 5 is about 3.5 step-σ at the steepest step.
 
 The sweep table now has an `n-aware` column (agreement) and a `falseOK c→n`
@@ -309,7 +327,7 @@ Synthetic only; λ = 5 V is still an assumption, not an OEM part.
 Same clean-slew convention as the noise-aware rule. σ = 0 → derate-only; no
 front-end errors (D = 1) → noise-aware; both apply together.
 
-**Falsify (INL + combo rows, 1,400 cells, seeds 7–11).**
+**Falsify (INL + combo rows, 1,400 cells, 1,376 overloaded, seeds 7–11).**
 
 | config | n-aware false-ok | combined false-ok | n-aware false-no | combined false-no |
 |---|---|---|---|---|
@@ -320,7 +338,7 @@ front-end errors (D = 1) → noise-aware; both apply together.
 | combo-bad | 1 | **0** | 0 | 2 |
 | **total** | **12** | **0** | **0** | **19** |
 
-Ideal / 60 dB / 40 dB rows stay 280/280 under combined (0 false-ok, 0 false-no).
+Ideal / 60 dB / 40 dB rows: combined agrees on every overloaded cell (0 false-ok, 0 false-no).
 Noise-only rows match the noise-aware counts exactly (derate factor D = 1).
 Over-derate cost is concentrated on the 5 % INL row; mild INL clears its three
 false-ok cells with no extra false-no.

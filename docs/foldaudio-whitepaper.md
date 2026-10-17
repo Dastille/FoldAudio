@@ -1,11 +1,13 @@
 # Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration
 
-**Technical report, version 1.4**
+**Technical report, version 1.5**
 **Date:** 2026-10-17
 **Author:** Ashlynn (GitHub: [Dastille](https://github.com/Dastille))
 **Repository:** <https://github.com/Dastille/FoldAudio> (MIT License)
 **Evidence class:** numerical simulation, plus software folding of public measured accelerometer recordings (Section 6.6). No hardware folding front end was built or measured for this work.
 
+> **Revision note (v1.5, 2026-10-17).** Recovery results are now counted over cells that were actually overloaded (input peak ≥ λ). Five of the 280 failure-map cells (6 V row; peaks 4.94–4.99 V) never reach λ, so they were "recovered" trivially and inflated the recovery, agreement and accuracy counts. Tables 4, 6, 7 and 9, the abstract and Sections 4.4, 4.5, 6.3, 6.5, 7.3 and 7.4 are restated over overloaded cells, with an explicit overloaded-cell count. Failure, flagging and false-"recoverable" counts are unchanged (every failure is an overloaded cell). The seed-7 grid (Tables 3 and 5) and all 120 CWRU cells (Table 10) were already fully overloaded. No code result changed; the new counts are printed by `python -m foldcrypt claims` and asserted in `tests/test_claims.py`.
+>
 > **Revision note (v1.4, 2026-10-17).** Claim audit, no new experiments. Spot numbers that no demo table prints are now reproduced by `python -m foldcrypt claims` and asserted in `tests/test_claims.py` (Sections 3.6, 4.4, 4.5, 5.3, 6.2, 7.1, 7.4). Corrected: Section 4.5 σ-estimate error (about 5 % → at most 3.6 %); Section 5.3 burst peak (0.85–0.94 A on inspected cells → 0.82–0.98 A over all 280 cells; 5 of the 40 cells in the 6 V row never exceed λ). Section 3.6 now names the seven captures and adds the full seed-7 range. Section 7.5 is marked unverified. Section 6.6 notes that it is not checked in CI.
 >
 > **Revision note (v1.3, 2026-10-16).** Sections 4.4–4.5 add the combined derate-plus-noise slew specification and a blind quiet-window noise estimate. No earlier result changed.
@@ -22,7 +24,7 @@
 
 When a signal exceeds the input range of an acquisition chain, conventional converters saturate. The samples above the rail are lost, and the loss often goes unflagged. This report evaluates a different overload behaviour: a centred modulo (fold) nonlinearity with threshold $\lambda$, applied before quantization in place of hard clipping. Recovery uses first-order difference unwrapping. The input is recovered exactly, up to one global multiple of $2\lambda$, whenever $\max_n \lvert x[n]-x[n-1]\rvert < \lambda$, that is, whenever the slew rate stays below $\lambda f_s$. For AC-coupled signals such as IEPE accelerometer outputs, the remaining offset is fixed blindly from a zero-mean or quiet-baseline prior, with no reference signal. We pair the reconstruction with three blind diagnostics (baseline slip, near-threshold step, rail contact), which combine into a four-level capture status.
 
-On synthetic audio at 48 kHz ($\lambda = 0.45$ full scale), fold-and-unwrap reconstructs three test signals to the 120 dB metric ceiling, against 3.3–4.2 dB for hard clipping. A deliberately impulsive fourth signal fails, and does so without tripping the diagnostics. On synthetic vibration records at 51.2 kHz ($\lambda = 5$ V), a 280-cell sweep of ringing impacts shows that the slew rule predicts the outcome in 280 of 280 cells. All 166 failures are flagged blindly, with no silent failures and no slip false alarms. ADC resolution from 4 to 24 bits does not move this boundary. Additive noise and front-end errors (fold-step gain, threshold, offset, INL) do not produce silent unwrap failures. They do, however, introduce a bounded, unflagged peak error. A one-tone (159.2 Hz) calibration removes the part of that error that the capture cannot otherwise reveal. The calibration study also gives a design rule: trim the fold step short, never long. On 13 measured bearing-fault accelerometer records (CWRU Bearing Data Center), with overload emulated in software by lowering $\lambda$ below the record peak, the slew rule again predicts all 120 cells, and all 94 failures are flagged with no silent failures. At 48 kHz, fold recovers exactly with $\lambda$ at 0.33–0.5 of peak (7.5–9.8 dB of extra range) and preserves kurtosis and crest factor, which clipping depresses. At 12 kHz the per-sample step of these impacts exceeds their peak, so no overload is recoverable. Limitations are stated in Section 8. The main ones are that no folding hardware was built, that the measured-data study applies the fold in software to records acquired within range, and that folding at the digitizer cannot repair saturation that has already occurred inside a sensor's internal amplifier.
+On synthetic audio at 48 kHz ($\lambda = 0.45$ full scale), fold-and-unwrap reconstructs three test signals to the 120 dB metric ceiling, against 3.3–4.2 dB for hard clipping. A deliberately impulsive fourth signal fails, and does so without tripping the diagnostics. On synthetic vibration records at 51.2 kHz ($\lambda = 5$ V), a 280-cell sweep of ringing impacts, 275 of which actually overload the input, shows that the slew rule predicts the outcome in all 275 overloaded cells (109 recovered, 166 failed). All 166 failures are flagged blindly, with no silent failures and no slip false alarms. ADC resolution from 4 to 24 bits does not move this boundary. Additive noise and front-end errors (fold-step gain, threshold, offset, INL) do not produce silent unwrap failures. They do, however, introduce a bounded, unflagged peak error. A one-tone (159.2 Hz) calibration removes the part of that error that the capture cannot otherwise reveal. The calibration study also gives a design rule: trim the fold step short, never long. On 13 measured bearing-fault accelerometer records (CWRU Bearing Data Center), with overload emulated in software by lowering $\lambda$ below the record peak, the slew rule again predicts all 120 cells, and all 94 failures are flagged with no silent failures. At 48 kHz, fold recovers exactly with $\lambda$ at 0.33–0.5 of peak (7.5–9.8 dB of extra range) and preserves kurtosis and crest factor, which clipping depresses. At 12 kHz the per-sample step of these impacts exceeds their peak, so no overload is recoverable. Limitations are stated in Section 8. The main ones are that no folding hardware was built, that the measured-data study applies the fold in software to records acquired within range, and that folding at the digitizer cannot repair saturation that has already occurred inside a sensor's internal amplifier.
 
 ---
 
@@ -233,7 +235,7 @@ With an $N$-bit quantizer, each folded sample carries an error of at most $\Delt
 
 Noise added before the fold increases sample-to-sample differences. The recovery condition still applies exactly, but it applies to the noisy input the fold actually sees, not to the noiseless signal on a specification sheet. In practice, the slew specification must be derated by a margin of several noise standard deviations (Section 6.5). Recovery introduces no error beyond the noise itself.
 
-A fitted form of this margin is $\max \lvert \Delta x_{\mathrm{signal}} \rvert < \lambda - k\sigma$, where $\sigma$ is the front-end noise RMS and the margin is clamped to $[0, \lambda]$. The fit used the nine noise rows of the non-ideal sweep (ideal, then 60 to 0 dB SNR; 56 cells × 5 seeds, 2,520 cells). The smallest $k$ on a 0.25 grid with no case of "predicted recoverable but slipped" is 4.75, rounded up to $k = 5$. Against the noiseless specification rule ($k = 0$), false "recoverable" predictions fall from 119 to 0 and agreement rises from 2,401 to 2,435 of 2,520. The cost is 85 conservative predictions, all at SNR ≤ 30 dB; rows at 40 dB and above are unchanged. A fit on three seeds alone gave $k = 4$, which still left 4 false predictions on the two held-out seeds. The margin covers noise only. The residual INL-driven misses of Section 6.5 (3–4 cells per INL row) still need the derated rule; the combined form in Section 4.5 clears them.
+A fitted form of this margin is $\max \lvert \Delta x_{\mathrm{signal}} \rvert < \lambda - k\sigma$, where $\sigma$ is the front-end noise RMS and the margin is clamped to $[0, \lambda]$. The fit used the nine noise rows of the non-ideal sweep (ideal, then 60 to 0 dB SNR; 56 cells × 5 seeds, 2,520 cells). The smallest $k$ on a 0.25 grid with no case of "predicted recoverable but slipped" is 4.75, rounded up to $k = 5$. Against the noiseless specification rule ($k = 0$), false "recoverable" predictions fall from 119 to 0 and, counting only the 2,497 cells whose input actually reaches λ, agreement rises from 2,378 to 2,412 (2,401 to 2,435 of 2,520 if the 23 in-range cells, which agree trivially, are included). The cost is 85 conservative predictions, all on overloaded cells at SNR ≤ 30 dB; rows at 40 dB and above are unchanged. A fit on three seeds alone gave $k = 4$, which still left 4 false predictions on the two held-out seeds. The margin covers noise only. The residual INL-driven misses of Section 6.5 (3–4 cells per INL row) still need the derated rule; the combined form in Section 4.5 clears them.
 
 ### 4.5 Front-end errors
 
@@ -257,7 +259,7 @@ $$
 D = \max\big(0,\, 1 - 2\lvert g \rvert - \lvert e \rvert - \lvert o \rvert - \pi\lvert a \rvert\big),
 $$
 
-with the right-hand side clamped at zero. On the INL and combined rows of the non-ideal sweep (1,400 cells, five seeds), this combined rule removes the 12 residual false-"recoverable" predictions that the noise margin alone left, at a cost of 19 additional conservative cells (14 of them on the 5 % INL row). Ideal and ≥ 40 dB rows are unchanged. For live firmware, $\sigma$ need not be known a priori: the sample standard deviation of the quietest window of the folded capture estimates it (at most 3.6 % relative error over five synthetic quiet-baseline-plus-noise records, one of them folded mid-overload).
+with the right-hand side clamped at zero. On the INL and combined rows of the non-ideal sweep (1,400 cells, five seeds; 1,376 of them overloaded), this combined rule removes the 12 residual false-"recoverable" predictions that the noise margin alone left, at a cost of 19 additional conservative cells (14 of them on the 5 % INL row). Ideal and ≥ 40 dB rows are unchanged. For live firmware, $\sigma$ need not be known a priori: the sample standard deviation of the quietest window of the folded capture estimates it (at most 3.6 % relative error over five synthetic quiet-baseline-plus-noise records, one of them folded mid-overload).
 
 The gain-error staircase returns to zero whenever the signal returns to baseline ($m = 0$). The slip check therefore cannot detect it, and neither can the edge check. This accuracy error is invisible to blind diagnostics and must be removed by calibration (Section 7).
 
@@ -291,7 +293,7 @@ Amplitudes are in units of digital full scale before the fold, so values above 1
 
 ### 5.3 Failure-map grid
 
-A single damped ringing burst (Section 5.2 envelope, 0.5 s record, impact at 40 % of the record, 60 Hz baseline at 0.4 V, white noise 0.075 V RMS) is swept over amplitude parameter $A \in \{6, 8, 10, 14, 20, 30, 40\}$ V and ring frequency $f \in \{0.5, 1, 2, 3, 4, 6, 8, 12\}$ kHz. That gives 56 cells per noise seed. Five seeds (7–11) give 280 cells. The measured peak $\lvert x \rvert$ is 0.82–0.98 A over all 280 cells, so the 6 V row sits at the threshold: its peaks are 4.94–5.87 V, and 5 of its 40 cells never exceed $\lambda$. Recovery is always blind (quiet-baseline prior).
+A single damped ringing burst (Section 5.2 envelope, 0.5 s record, impact at 40 % of the record, 60 Hz baseline at 0.4 V, white noise 0.075 V RMS) is swept over amplitude parameter $A \in \{6, 8, 10, 14, 20, 30, 40\}$ V and ring frequency $f \in \{0.5, 1, 2, 3, 4, 6, 8, 12\}$ kHz. That gives 56 cells per noise seed. Five seeds (7–11) give 280 cells. The measured peak $\lvert x \rvert$ is 0.82–0.98 A over all 280 cells, so the 6 V row sits at the threshold: its peaks are 4.94–5.87 V, and 5 of its 40 cells never exceed $\lambda$. Those 5 cells (peaks 4.94–4.99 V) are recovered trivially, because the fold is the identity below $\lambda$, so from v1.5 on all recovery, agreement and accuracy counts are stated over the 275 overloaded cells (input peak $\ge \lambda$). With sensor noise added (Section 6.5) the overloaded count per configuration is 275–280. Recovery is always blind (quiet-baseline prior).
 
 ### 5.4 Metrics and outcome definitions
 
@@ -345,7 +347,7 @@ Blind level recovery was also tested on records that begin in the middle of an o
 
 ### 6.3 Failure map (ideal front end)
 
-**Table 3.** Outcome grid, seed 7 (56 cells). `ok` = recovered blind; `ok~` = recovered with edge warning; `F!` = failed and flagged; `FS` = failed silently (none occurred).
+**Table 3.** Outcome grid, seed 7 (56 cells, all 56 overloaded). `ok` = recovered blind; `ok~` = recovered with edge warning; `F!` = failed and flagged; `FS` = failed silently (none occurred).
 
 | $A$ (V) \ ring (Hz) | 500 | 1000 | 2000 | 3000 | 4000 | 6000 | 8000 | 12000 |
 |---|---|---|---|---|---|---|---|---|
@@ -362,8 +364,10 @@ Blind level recovery was also tested on records that begin in the middle of an o
 | | Seed 7 | Seeds 7–11 |
 |---|---|---|
 | Cells | 56 | 280 |
-| Recovered / failed | 23 / 33 | 114 / 166 |
-| Slew rule agrees with outcome | 56 / 56 | 280 / 280 |
+| Overloaded cells (input peak ≥ λ) | 56 | 275 |
+| Recovered / failed (overloaded cells) | 23 / 33 | 109 / 166 |
+| In-range cells (never reach λ; trivially "recovered") | 0 | 5 |
+| Slew rule agrees with outcome (overloaded cells) | 56 / 56 | 275 / 275 |
 | Failures flagged (slip or edge) | 33 / 33 | 166 / 166 |
 | — caught by slip check | 33 | 157 |
 | — caught by edge check | 33 | 166 |
@@ -371,11 +375,11 @@ Blind level recovery was also tested on records that begin in the middle of an o
 | Slip false alarms on recovered cells | 0 | 0 |
 | Edge warnings on recovered cells | 1 | 7 |
 
-The boundary follows the slew rule exactly. Every failure in this signal class is flagged. Correction to earlier repository notes: the slip check alone catches 157 of 166 failures over five seeds, not all of them. The edge check catches all 166, and the combined status catches all 166. The edge check also produces 7 warnings on recovered cells near the boundary. Those are conservative warnings, not missed failures.
+The boundary follows the slew rule exactly on every overloaded cell. Before v1.5 this table read 114 / 166 recovered / failed and 280 / 280 agreement; those counts included the 5 in-range cells. Every failure in this signal class is flagged. Correction to earlier repository notes: the slip check alone catches 157 of 166 failures over five seeds, not all of them. The edge check catches all 166, and the combined status catches all 166. The edge check also produces 7 warnings on recovered cells near the boundary. Those are conservative warnings, not missed failures.
 
 ### 6.4 Quantization
 
-**Table 5.** The same 56-cell grid (seed 7) through an $N$-bit modulo ADC. "Recovered" means within one LSB of the input. "Tight rule" is $\max\lvert\Delta x\rvert < \lambda - \Delta$.
+**Table 5.** The same 56-cell grid (seed 7; all 56 overloaded) through an $N$-bit modulo ADC. "Recovered" means within one LSB of the input. "Tight rule" is $\max\lvert\Delta x\rvert < \lambda - \Delta$.
 
 | Bits | LSB (V) | Recovered | Failed | Plain rule agrees | Tight rule agrees | Flagged | Silent | Slip false alarms | Edge on recovered |
 |---|---|---|---|---|---|---|---|---|---|
@@ -391,57 +395,59 @@ The same cells fail at every resolution from 4 to 24 bits. The plain slew rule a
 
 ### 6.5 Non-ideal front end
 
-**Table 6.** 280 cells per configuration (56 cells × 5 seeds). "Rule (noisy)": slew rule evaluated on the input the fold actually saw. "Rule (clean)": rule evaluated on the noiseless burst, as a specification sheet would. "Derated": rule of Section 4.5. "Unflagged > 1 %": recovered with no slip but more than 1 % of peak in error, with neither the slip nor the edge check set.
+**Table 6.** 280 cells per configuration (56 cells × 5 seeds); every count except "Overloaded" and "Silent" is over the overloaded cells only (input peak ≥ λ; noise raises the count above 275 at low SNR). "Silent" is 0 over all cells. "Rule (noisy)": slew rule evaluated on the input the fold actually saw. "Rule (clean)": rule evaluated on the noiseless burst, as a specification sheet would. "Derated": rule of Section 4.5. "Unflagged > 1 %": recovered with no slip but more than 1 % of peak in error, with neither the slip nor the edge check set.
 
-| Configuration | Recovered | Failed | Rule (noisy) | Rule (clean) | Derated | Flagged | Silent | Slip false alarms | Edge on recovered | Accurate | Unflagged > 1 % |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| ideal | 114 | 166 | 280 | 280 | 280 | 166 | 0 | 0 | 7 | 114 | 0 |
-| noise 60 dB | 114 | 166 | 280 | 280 | 280 | 166 | 0 | 0 | 7 | 114 | 0 |
-| noise 40 dB | 113 | 167 | 280 | 279 | 280 | 167 | 0 | 0 | 6 | 113 | 0 |
-| noise 30 dB | 113 | 167 | 280 | 279 | 280 | 167 | 0 | 0 | 6 | 113 | 0 |
-| noise 20 dB | 113 | 167 | 280 | 279 | 280 | 167 | 0 | 0 | 11 | 113 | 0 |
-| noise 15 dB | 111 | 169 | 280 | 277 | 280 | 169 | 0 | 0 | 15 | 111 | 0 |
-| noise 10 dB | 100 | 180 | 280 | 266 | 280 | 180 | 0 | 0 | 13 | 100 | 0 |
-| noise 5 dB | 76 | 204 | 280 | 242 | 280 | 204 | 0 | 0 | 4 | 76 | 0 |
-| noise 0 dB | 53 | 227 | 280 | 219 | 280 | 227 | 0 | 0 | 11 | 53 | 0 |
-| gain −5 % | 114 | 166 | 280 | 280 | 273 | 166 | 0 | 0 | 14 | 5 | 95 |
-| gain −1 % | 114 | 166 | 280 | 280 | 277 | 166 | 0 | 0 | 7 | 21 | 86 |
-| gain +0.1 % | 114 | 166 | 280 | 280 | 279 | 166 | 0 | 0 | 7 | 114 | 0 |
-| gain +1 % | 114 | 166 | 280 | 280 | 277 | 166 | 0 | 0 | 7 | 27 | 80 |
-| gain +5 % | 114 | 166 | 280 | 280 | 273 | 166 | 0 | 0 | 7 | 7 | 100 |
-| threshold −10 % | 114 | 166 | 280 | 280 | 273 | 166 | 0 | 0 | 12 | 4 | 98 |
-| threshold −2 % | 114 | 166 | 280 | 280 | 277 | 166 | 0 | 0 | 7 | 63 | 48 |
-| threshold +2 % | 114 | 166 | 280 | 280 | 277 | 166 | 0 | 0 | 7 | 71 | 38 |
-| threshold +10 % | 114 | 166 | 280 | 280 | 273 | 166 | 0 | 0 | 8 | 0 | 106 |
-| offset +2 % | 114 | 166 | 280 | 280 | 277 | 166 | 0 | 0 | 7 | 62 | 48 |
-| offset +10 % | 114 | 166 | 280 | 280 | 273 | 166 | 0 | 0 | 7 | 3 | 104 |
-| INL 1 % | 111 | 169 | 277 | 277 | 280 | 169 | 0 | 0 | 6 | 106 | 5 |
-| INL 2 % | 111 | 169 | 277 | 277 | 279 | 169 | 0 | 0 | 7 | 40 | 64 |
-| INL 5 % | 110 | 170 | 276 | 276 | 266 | 170 | 0 | 0 | 13 | 15 | 84 |
-| combined, mild¹ | 113 | 167 | 279 | 279 | 279 | 167 | 0 | 0 | 6 | 113 | 0 |
-| combined, severe² | 112 | 168 | 279 | 278 | 278 | 168 | 0 | 0 | 7 | 40 | 65 |
+| Configuration | Overloaded | Recovered | Failed | Rule (noisy) | Rule (clean) | Derated | Flagged | Silent | Slip false alarms | Edge on recovered | Accurate | Unflagged > 1 % |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ideal | 275 | 109 | 166 | 275 | 275 | 275 | 166 | 0 | 0 | 7 | 109 | 0 |
+| noise 60 dB | 275 | 109 | 166 | 275 | 275 | 275 | 166 | 0 | 0 | 7 | 109 | 0 |
+| noise 40 dB | 276 | 109 | 167 | 276 | 275 | 276 | 167 | 0 | 0 | 6 | 109 | 0 |
+| noise 30 dB | 276 | 109 | 167 | 276 | 275 | 276 | 167 | 0 | 0 | 6 | 109 | 0 |
+| noise 20 dB | 278 | 111 | 167 | 278 | 277 | 278 | 167 | 0 | 0 | 11 | 111 | 0 |
+| noise 15 dB | 278 | 109 | 169 | 278 | 275 | 278 | 169 | 0 | 0 | 15 | 109 | 0 |
+| noise 10 dB | 279 | 99 | 180 | 279 | 265 | 279 | 180 | 0 | 0 | 13 | 99 | 0 |
+| noise 5 dB | 280 | 76 | 204 | 280 | 242 | 280 | 204 | 0 | 0 | 4 | 76 | 0 |
+| noise 0 dB | 280 | 53 | 227 | 280 | 219 | 280 | 227 | 0 | 0 | 11 | 53 | 0 |
+| gain −5 % | 275 | 109 | 166 | 275 | 275 | 268 | 166 | 0 | 0 | 14 | 0 | 95 |
+| gain −1 % | 275 | 109 | 166 | 275 | 275 | 272 | 166 | 0 | 0 | 7 | 16 | 86 |
+| gain +0.1 % | 275 | 109 | 166 | 275 | 275 | 274 | 166 | 0 | 0 | 7 | 109 | 0 |
+| gain +1 % | 275 | 109 | 166 | 275 | 275 | 272 | 166 | 0 | 0 | 7 | 22 | 80 |
+| gain +5 % | 275 | 109 | 166 | 275 | 275 | 268 | 166 | 0 | 0 | 7 | 2 | 100 |
+| threshold −10 % | 275 | 109 | 166 | 275 | 275 | 268 | 166 | 0 | 0 | 12 | 1 | 96 |
+| threshold −2 % | 275 | 109 | 166 | 275 | 275 | 272 | 166 | 0 | 0 | 7 | 59 | 47 |
+| threshold +2 % | 275 | 109 | 166 | 275 | 275 | 272 | 166 | 0 | 0 | 7 | 69 | 35 |
+| threshold +10 % | 275 | 109 | 166 | 275 | 275 | 268 | 166 | 0 | 0 | 8 | 0 | 101 |
+| offset +2 % | 275 | 109 | 166 | 275 | 275 | 272 | 166 | 0 | 0 | 7 | 59 | 46 |
+| offset +10 % | 275 | 109 | 166 | 275 | 275 | 268 | 166 | 0 | 0 | 7 | 0 | 102 |
+| INL 1 % | 275 | 106 | 169 | 272 | 272 | 275 | 169 | 0 | 0 | 6 | 106 | 0 |
+| INL 2 % | 275 | 106 | 169 | 272 | 272 | 274 | 169 | 0 | 0 | 7 | 40 | 59 |
+| INL 5 % | 275 | 105 | 170 | 271 | 271 | 261 | 170 | 0 | 0 | 13 | 15 | 79 |
+| combined, mild¹ | 275 | 108 | 167 | 274 | 274 | 274 | 167 | 0 | 0 | 6 | 108 | 0 |
+| combined, severe² | 276 | 108 | 168 | 275 | 274 | 274 | 168 | 0 | 0 | 7 | 40 | 61 |
 
 ¹ 60 dB noise, $g$ = 0.1 %, $e$ = 0.5 %, $o$ = 0.5 %, INL 0.2 %, 16 bit. ² 40 dB noise, $g$ = 0.5 %, $e$ = 1 %, $o$ = 1 %, INL 1 %, 12 bit.
 
+The in-range cells (0–5 per row) are excluded above. They still matter for accuracy: under threshold, offset and INL errors some of them are more than 1 % off without any flag (for example all 5 in-range cells of each INL row, and 5 in the +10 % threshold row). That is a plain-ADC accuracy error, not a fold effect; `python -m foldcrypt claims` lists it per row.
+
 Findings:
 
-1. **No silent unwrap failures and no slip false alarms in any of the 24 configurations** (6,720 non-ideal cells in total).
-2. **Noise moves the boundary but does not invalidate the rule.** Evaluated on the noisy input, the rule agrees in 280 of 280 cells at every noise level. Evaluated on the noiseless specification, agreement falls to 266 at 10 dB SNR and 219 at 0 dB. The maximum reconstruction error relative to the noisy input is zero in every noise configuration. Noise costs slew margin only.
-3. **INL narrows the boundary.** In 12 of 6,720 non-ideal cells, all in the INL and combined configurations, the plain rule predicted success but the unwrap slipped. All 12 were flagged. The derated rule of Section 4.5 never predicted success for a failing cell (0 of 6,720). In exchange it is conservative: 69 cells it rejected did in fact recover.
+1. **No silent unwrap failures and no slip false alarms in any of the 24 configurations** (6,720 non-ideal cells in total, 6,623 of them overloaded).
+2. **Noise moves the boundary but does not invalidate the rule.** Evaluated on the noisy input, the rule agrees on every overloaded cell at every noise level (275–280 per row). Evaluated on the noiseless specification, agreement falls to 265 of 279 at 10 dB SNR and 219 of 280 at 0 dB. The maximum reconstruction error relative to the noisy input is zero in every noise configuration. Noise costs slew margin only.
+3. **INL narrows the boundary.** In 12 of the 6,623 overloaded non-ideal cells, all in the INL and combined configurations, the plain rule predicted success but the unwrap slipped. All 12 were flagged. The derated rule of Section 4.5 never predicted success for a failing cell (0 of 6,623). In exchange it is conservative: 69 overloaded cells it rejected did in fact recover.
 4. **Fold errors cost accuracy, not reliability.** Table 7 gives the observed maximum errors on recovered cells. They match the bounds of Section 4.5.
 
-**Table 7.** Maximum absolute error on recovered cells (280 cells per configuration).
+**Table 7.** Maximum absolute error on recovered overloaded cells.
 
 | Configuration | Max error (V) | Max error / peak | Predicted |
 |---|---|---|---|
 | gain −5 % | 2.00 | 9.9 % | ≈ $g$ of peak |
 | gain −1 % | 0.40 | 2.0 % | ≈ $g$ of peak |
-| gain +1 % | 0.30 | 1.9 % | ≈ $g$ of peak |
+| gain +1 % | 0.30 | 1.8 % | ≈ $g$ of peak |
 | gain +5 % | 1.50 | 9.1 % | ≈ $g$ of peak |
-| threshold ±2 % | 0.10 | 1.8–1.9 % | $\lvert e\rvert\lambda$ = 0.10 V |
+| threshold ±2 % | 0.10 | 1.7–1.8 % | $\lvert e\rvert\lambda$ = 0.10 V |
 | threshold ±10 % | 0.50 | 9.8–9.9 % | $\lvert e\rvert\lambda$ = 0.50 V |
-| offset +2 % / +10 % | 0.10 / 0.50 | 1.9 % / 9.9 % | $\lvert o\rvert\lambda$ |
-| INL 1 % / 2 % / 5 % | 0.05 / 0.10 / 0.25 | 1.0 % / 2.0 % / 5.1 % | $a\lambda$ |
+| offset +2 % / +10 % | 0.10 / 0.50 | 1.8 % / 9.7 % | $\lvert o\rvert\lambda$ |
+| INL 1 % / 2 % / 5 % | 0.05 / 0.10 / 0.25 | 1.0 % / 2.0 % / 5.0 % | $a\lambda$ |
 | combined, mild | 0.05 | 0.9 % | — |
 | combined, severe | 0.20 | 1.9 % | — |
 
@@ -455,6 +461,7 @@ To test the recovery condition and the blind diagnostics on measured waveforms, 
 
 | Quantity | Value |
 |---|---|
+| overloaded cells ($\lambda = r \cdot$ peak, every $r < 1$) | 120 / 120 |
 | slew rule $\max\lvert\Delta x\rvert < \lambda$ predicts outcome | 120 / 120 |
 | recovered exactly | 26 (all at 48 kHz; 26 / 42 cells) |
 | failed | 94 (78 / 78 cells at 12 kHz) |
@@ -509,27 +516,27 @@ At 60 dB injection SNR, the per-configuration estimates in Table 9 are within $2
 
 ### 7.3 Effect on the burst grid
 
-**Table 9.** Burst grid (280 cells per row) before and after calibration at 60 dB injection SNR. Only 114 cells are within the slew limit, so 114 is the maximum possible "accurate" count. "Invisible" counts recovered cells more than 1 % off with no slip, no edge, **and no rail sample**, i.e. errors the capture gives no indication of.
+**Table 9.** Burst grid (280 cells per row) before and after calibration at 60 dB injection SNR, counted over overloaded cells. Of the 275 overloaded ideal-front-end cells, 109 are within the slew limit, so 109 is the maximum possible "accurate" count (before v1.5 this was given as 114 by including the 5 in-range cells). "Invisible" counts recovered cells more than 1 % off with no slip, no edge, **and no rail sample**, i.e. errors the capture gives no indication of.
 
-| Configuration | $g$ / $\hat{g}$ | Accurate, before → after | Unflagged > 1 %, before → after | Invisible, before → after |
-|---|---|---|---|---|
-| ideal | 0 / −0.00008 | 114 → 114 | 0 → 0 | 0 → 0 |
-| gain −5 % | −0.0500 / −0.05023 | 5 → 89 | 95 → 20 | 75 → 0 |
-| gain −1 % | −0.0100 / −0.01016 | 21 → **114** | 86 → 0 | 68 → 0 |
-| gain +0.1 % | +0.0010 / +0.00091 | 114 → 114 | 0 → 0 | 0 → 0 |
-| gain +1 % | +0.0100 / +0.00988 | 27 → 63 | 80 → 47 | 5 → 0 |
-| gain +5 % | +0.0500 / +0.04980 | 7 → 5 | 100 → 102 | 0 → 0 |
-| INL 1 % | 0 / −0.00008 | 106 → **114** | 5 → 0 | 5 → 0 |
-| INL 2 % | 0 / −0.00007 | 40 → **114** | 64 → 0 | 64 → 0 |
-| INL 5 % | 0 / +0.00003 | 15 → **114** | 84 → 0 | 84 → 0 |
-| combined, mild | +0.0010 / +0.00090 | 113 → 113 | 0 → 1 | 0 → 0 |
-| combined, severe | +0.0050 / +0.00488 | 40 → 36 | 65 → 70 | 3 → 0 |
+| Configuration | $g$ / $\hat{g}$ | Overloaded | Accurate, before → after | Unflagged > 1 %, before → after | Invisible, before → after |
+|---|---|---|---|---|---|
+| ideal | 0 / −0.00008 | 275 | 109 → 109 | 0 → 0 | 0 → 0 |
+| gain −5 % | −0.0500 / −0.05023 | 275 | 0 → 84 | 95 → 20 | 75 → 0 |
+| gain −1 % | −0.0100 / −0.01016 | 275 | 16 → **109** | 86 → 0 | 68 → 0 |
+| gain +0.1 % | +0.0010 / +0.00091 | 275 | 109 → 109 | 0 → 0 | 0 → 0 |
+| gain +1 % | +0.0100 / +0.00988 | 275 | 22 → 58 | 80 → 47 | 5 → 0 |
+| gain +5 % | +0.0500 / +0.04980 | 275 | 2 → 0 | 100 → 102 | 0 → 0 |
+| INL 1 % | 0 / −0.00008 | 275 | 106 → **109** | 0 → 0 | 0 → 0 |
+| INL 2 % | 0 / −0.00007 | 275 | 40 → **109** | 59 → 0 | 59 → 0 |
+| INL 5 % | 0 / +0.00003 | 275 | 15 → **109** | 79 → 0 | 79 → 0 |
+| combined, mild | +0.0010 / +0.00090 | 275 | 108 → **109** | 0 → 0 | 0 → 0 |
+| combined, severe | +0.0050 / +0.00488 | 276 | 40 → 35 | 61 → 67 | 2 → 0 |
 
-Across all rows, invisible errors fall from 304 cells to 0. After calibration, there are still no silent unwrap failures and no slip false alarms in any row.
+Across all rows, invisible errors on overloaded cells fall from 288 to 0 (304 → 0 if the 16 in-range cells are included). After calibration, there are still no silent unwrap failures and no slip false alarms in any row.
 
 ### 7.4 Interpretation and design rule
 
-Calibration fully corrects negative gain errors (fold step short) and INL. It cannot correct samples that a front-end error pushed past the converter rail, because their values are clipped. With a long fold step ($g > 0$), the first sample after every wrap lands outside the range, so a +5 % step stays inaccurate after calibration. The same holds for threshold and offset errors, which this calibration does not model (the severe combined row). Those residual errors are not silent. Every such capture contains rail-clipped samples and is reported as `BOUNDED_ACCURACY` (Section 3.6). The rail check is conservative, however: in the mild combined configuration it fires on 101 of the 113 recovered cells, all of which are accurate.
+Calibration fully corrects negative gain errors (fold step short) and INL. It cannot correct samples that a front-end error pushed past the converter rail, because their values are clipped. With a long fold step ($g > 0$), the first sample after every wrap lands outside the range, so a +5 % step stays inaccurate after calibration. The same holds for threshold and offset errors, which this calibration does not model (the severe combined row). Those residual errors are not silent. Every such capture contains rail-clipped samples and is reported as `BOUNDED_ACCURACY` (Section 3.6). The rail check is conservative, however: in the mild combined configuration it fires on 99 of the 108 recovered overloaded cells, all of which are accurate.
 
 **Design rule.** Trim the fold step slightly short ($g \le 0$) and calibrate it. Never trim it long. Keep the wrap threshold and the converter offset within about 0.5–1 % of $\lambda$.
 
@@ -599,7 +606,7 @@ python -m foldcrypt shockdaq-failmap              # Tables 3-4 (seed 7) -> failm
 python -m foldcrypt shockdaq-failmap --quant      # Table 5   -> quantmap.json
 python -m foldcrypt shockdaq-failmap --nonideal   # Table 6   -> nonidealmap.json (~25 s)
 python -m foldcrypt shockdaq-calibrate            # Tables 8-9 -> calibration.json (~25 s)
-python -m foldcrypt claims                        # spot numbers of Sections 3.6, 4.4, 4.5, 5.3, 6.2, 7.1, 7.4 (~10 s; asserted in tests/test_claims.py)
+python -m foldcrypt claims                        # spot numbers of Sections 3.6-7.4 + overloaded-only Tables 4, 6, 7, 9 (~45 s; asserted in tests/test_claims.py)
 python -m foldcrypt shockdaq-real --cells         # Tables 10-11 (not run in CI) -> artifacts/realdata/metrics.json (downloads ~45 MB of CWRU data, SHA-256 checked)
 ```
 
@@ -688,3 +695,4 @@ URLs were accessed on 2026-10-13.
 | 1.2 | 2026-10-15 | Section 4.4: fitted noise margin $\lambda - k\sigma$, $k = 5$ (false "recoverable" 119 → 0 of 2,520 noise cells). Section 3.6: `UNRECOVERABLE` fallback output (folded samples plus untrusted mask; peak reported as $\ge \lambda$). |
 | 1.3 | 2026-10-16 | Sections 4.4–4.5: combined derate + noise slew rule (INL/combo false "recoverable" 12 → 0 of 1,400 cells; +19 conservative); blind quiet-window $\sigma$ estimate for live $\lambda - k\sigma$. |
 | 1.4 | 2026-10-17 | Claim audit: spot numbers reproduced by `python -m foldcrypt claims` and asserted in `tests/test_claims.py`. Corrected §4.5 σ-estimate error (≈ 5 % → ≤ 3.6 %) and §5.3 burst peak range (0.85–0.94 A → 0.82–0.98 A; 5 of 40 cells in the 6 V row stay below λ). §3.6 names its seven captures and adds the full seed-7 range. §7.5 marked unverified. §6.6 noted as not checked in CI. |
+| 1.5 | 2026-10-17 | Recovery counted over overloaded cells only (input peak ≥ λ). Failure map 114/166 recovered/failed and 280/280 agreement → 109/166 and 275/275 overloaded cells (5 in-range cells removed). Tables 6, 7 and 9 restated with an "Overloaded" column; Table 9 accurate ceiling 114 → 109, invisible 304 → 288 → 0; §7.4 rail check 101/113 → 99/108; §4.4 agreement 2,401 → 2,435 of 2,520 → 2,378 → 2,412 of 2,497. Table 7 max error/peak: gain +1 % 1.9 → 1.8 %, threshold ±2 % 1.8–1.9 → 1.7–1.8 %, offset 1.9/9.9 → 1.8/9.7 %, INL 5 % 5.1 → 5.0 %. Failure and flag counts unchanged; CWRU cells all overloaded by construction. |

@@ -232,6 +232,12 @@ class FailCell:
     slip_flag: bool
     edge_flag: bool
     bits: int | None = None  # None = ideal (unquantized) capture
+    peak_V: float = float("nan")  # max |x| of the input; overloaded iff ≥ λ
+
+    @property
+    def overloaded(self) -> bool:
+        """Input actually exceeded the fold threshold (a plain ADC would clip)."""
+        return bool(self.peak_V >= self.lam_V)
 
     @property
     def silent_fail(self) -> bool:
@@ -277,6 +283,7 @@ def eval_cell(
         slip_flag=slip_flag(rec, lam),
         edge_flag=edge_flag(y, lam),
         bits=bits,
+        peak_V=float(np.max(np.abs(x))),
     )
 
 
@@ -426,11 +433,18 @@ class NonIdealCell:
     noise_aware_ok: bool = (
         True  # noise_aware_slew_ok(max_dx_clean, λ, σ): spec-sheet rule with k·σ margin
     )
+    peak_V: float = float("nan")  # max |x| of the input the fold saw (noisy)
+    lam_V: float = DEFAULT_LAM_V
     combined_ok: bool = True  # combined_slew_ok(max_dx_clean, λ, σ, g/e/o/inl): derate + k·σ (NOTES #8b)
 
     @property
     def silent_fail(self) -> bool:
         return (not self.recovered_ok) and not (self.slip_flag or self.edge_flag)
+
+    @property
+    def overloaded(self) -> bool:
+        """Input the fold saw actually reached λ (a plain ADC would clip)."""
+        return bool(self.peak_V >= self.lam_V)
 
     @property
     def silent_inaccurate(self) -> bool:
@@ -516,6 +530,8 @@ def eval_nonideal_cell(
             inl=ni.inl,
             k=noise_k,
         ),
+        peak_V=peak,
+        lam_V=lam,
     )
 
 

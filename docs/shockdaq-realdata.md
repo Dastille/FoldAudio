@@ -23,7 +23,7 @@ The original CWRU acquisition did not overload. Overload is emulated in software
 
 ## Results
 
-**Totals (120 cells):** the exact-recovery condition $\max\lvert\Delta x\rvert < \lambda$ predicted the outcome in 120/120 cells. 26 cells recovered exactly and 94 failed. All 94 failures were flagged (0 silent failures), with 0 slip false alarms. The edge check fired conservatively on 3 cells that did recover (109 and 213 at $r$ = 0.4, 226 at $r$ = 0.33).
+**Totals (120 cells, all overloaded: λ = r·peak with every r ≤ 0.8):** the exact-recovery condition $\max\lvert\Delta x\rvert < \lambda$ predicted the outcome in 120/120 cells. 26 cells recovered exactly and 94 failed. All 94 failures were flagged (0 silent failures), with 0 slip false alarms. The edge check fired conservatively on 3 cells that did recover (109 and 213 at $r$ = 0.4, 226 at $r$ = 0.33).
 
 **Sample rate decides feasibility.** At 48 kHz the largest sample-to-sample step is 0.32–0.42 of the record peak, so fold can recover overloads with the rail set to 0.33–0.5 of peak (7.5–9.8 dB of extra input range, computed as $20\log_{10}(\text{peak}/\max\lvert\Delta x\rvert)$). At 12 kHz, whether recorded natively or subsampled from 48 kHz, the largest step is 1.03–1.61 times the peak. Since recovery needs $\lambda > \max\lvert\Delta x\rvert$ and overload needs $\lambda < \text{peak}$, no overload of these waveforms is recoverable at 12 kHz. Every such cell (78/78) failed and was flagged.
 

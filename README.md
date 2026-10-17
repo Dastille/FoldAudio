@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Dastille/FoldAudio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Dastille/FoldAudio/actions/workflows/ci.yml)
 
-> **📄 Technical report (v1.4, 2026-10-17):** [**Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration**](docs/foldaudio-whitepaper.md)
+> **📄 Technical report (v1.5, 2026-10-17):** [**Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration**](docs/foldaudio-whitepaper.md)
 
 When a microphone or an IEPE accelerometer chain is overdriven, the converter clips and the peaks are lost, often with no flag. This repository simulates a different overload behaviour: values beyond ±λ **fold** (modulo wrap) back into range, and are then **unwrapped** in software. Recovery is exact while the slew rate stays below λ·f<sub>s</sub>. The absolute level is recovered blindly for AC-coupled signals. Each capture gets a self-diagnosed status (`UNRECOVERABLE` / `BOUNDED_ACCURACY` / `RECOVERED` / `IN_RANGE`), so failures are reported, not silent. Two configurations share one implementation: **FoldAudio** (audio, 48 kHz) and **ShockDAQ** (IEPE vibration/shock, 51.2 kHz).
 
@@ -51,7 +51,7 @@ Artifacts → `artifacts/shockdaq/` (`.npy` + listening WAVs + `metrics.json`).
 
 **Measured records:** [`docs/shockdaq-realdata.md`](docs/shockdaq-realdata.md) — CWRU bearing faults; 120/120 rule, 0 silent; 48 kHz works, 12 kHz does not.
 
-**Fail map:** [`docs/shockdaq-failmap.md`](docs/shockdaq-failmap.md) — fold recovers iff max slew < λ × sample rate (280/280 sweep cells); every failure flagged itself blind (0 silent).
+**Fail map:** [`docs/shockdaq-failmap.md`](docs/shockdaq-failmap.md) — fold recovers iff max slew < λ × sample rate (275/275 overloaded sweep cells; 5 of the 280 never reach λ); every failure flagged itself blind (0 silent).
 
 ### ShockDAQ v0 metrics (λ=5.0 V, sr=51200, synthetic — real run)
 
@@ -81,7 +81,7 @@ Artifacts → `artifacts/shockdaq/` (`.npy` + listening WAVs + `metrics.json`).
 | **WrapCancel / modulo / Itoh** | Engine (archived symbol-detect toys still in tree) |
 | **Recovery shares** | Parked — Sigil constellation already covers seed/backup |
 
-**Technical report:** [`docs/foldaudio-whitepaper.md`](docs/foldaudio-whitepaper.md) (v1.4, 2026-10-17; covers audio and vibration).
+**Technical report:** [`docs/foldaudio-whitepaper.md`](docs/foldaudio-whitepaper.md) (v1.5, 2026-10-17; covers audio and vibration).
 
 **Repo:** https://github.com/Dastille/FoldAudio
 
