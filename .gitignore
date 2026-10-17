@@ -13,3 +13,6 @@ build/
 
 # ShockDAQ float dumps (regenerate via shockdaq-demo)
 artifacts/shockdaq/*.npy
+
+# Raw CWRU data is downloaded to ~/.cache/foldcrypt/cwru and never committed
+*.mat

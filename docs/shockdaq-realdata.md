@@ -1,6 +1,6 @@
 # ShockDAQ on measured bearing-fault recordings (CWRU)
 
-**Date:** 2026-10-14 · **Command:** `python -m foldcrypt shockdaq-real [--cells]` · **Output:** `artifacts/realdata/metrics.json`
+**Date:** 2026-10-14 · **Command:** `python -m foldcrypt shockdaq-real [--cells]` · **Output:** `artifacts/realdata/metrics.json` · **Re-run log (2026-10-17, all numbers below matched):** [`artifacts/cwru-run-2026-10-17.log`](../artifacts/cwru-run-2026-10-17.log)
 
 ## Purpose
 

@@ -37,8 +37,13 @@ jobs:
       - name: Ruff format check
         run: ruff format --check .
 
-      - name: pip-audit (installed environment)
-        run: pip-audit --skip-editable
+      # pip-audit audits the installed third-party dependencies only. foldcrypt
+      # itself is not published on PyPI, so --skip-editable leaves the editable
+      # install out (there is no PyPI advisory record to check it against).
+      - name: pip-audit (dependencies only; foldcrypt itself is not on PyPI)
+        run: |
+          echo "pip-audit: auditing installed dependencies only; foldcrypt is not on PyPI and is skipped (--skip-editable)."
+          pip-audit --skip-editable
 
       - name: Pytest
         run: python -m pytest -q -rs

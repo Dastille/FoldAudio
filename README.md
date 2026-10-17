@@ -20,7 +20,9 @@ python -m foldcrypt shockdaq-real       # measured CWRU bearing-fault records (n
 python -m foldcrypt claims             # report spot numbers, each asserted in tests/test_claims.py
 ```
 
-**Measured data (2026-10-14):** on 13 public CWRU bearing-fault accelerometer records with software-applied overload, the slew rule predicted 120/120 cells and every failure was flagged (0 silent). Fold buys 7.5–9.8 dB of range at 48 kHz and nothing at 12 kHz. See [`docs/shockdaq-realdata.md`](docs/shockdaq-realdata.md). Reproducible with `python -m foldcrypt shockdaq-real` (downloads ~45 MB of CWRU data, needs `.[real]`); **not checked in CI**.
+CI (badge above) runs ruff, pytest and `pip-audit`. pip-audit audits the installed third-party dependencies only; foldcrypt itself is not published on PyPI, so it is skipped (`--skip-editable`) rather than audited.
+
+**Measured data (2026-10-14):** on 13 public CWRU bearing-fault accelerometer records with software-applied overload, the slew rule predicted 120/120 cells and every failure was flagged (0 silent). Fold buys 7.5–9.8 dB of range at 48 kHz and nothing at 12 kHz. See [`docs/shockdaq-realdata.md`](docs/shockdaq-realdata.md). Reproducible with `python -m foldcrypt shockdaq-real` (downloads ~45 MB of CWRU data, needs `.[real]`); **not checked in CI**. A full re-run on 2026-10-17 (commit `c9b8ac5`, data SHA-256 verified, previously skipped CWRU test passing, all doc numbers matched) is logged in [`artifacts/cwru-run-2026-10-17.log`](artifacts/cwru-run-2026-10-17.log).
 
 ---
 

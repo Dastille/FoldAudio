@@ -1,0 +1,237 @@
+# CWRU measured-record run (ShockDAQ §6.6)
+timestamp_start: 2026-10-17 16:40:01 EDT (UTC-04:00)
+code commit (run executed on): c9b8ac5c7e8471ac5a2708fbefd458d829e06f95 (clean tree: 0 changed files before run)
+python: Python 3.13.5
+numpy: 2.5.4  scipy: 1.18.1
+platform: Linux 6.12.94+ x86_64
+
+$ python -m foldcrypt shockdaq-real --cells
+note: foldcrypt/ code is unchanged in the commit that adds this log; the run was made on the box (Python 3.13.5), CI covers 3.11/3.12 without the data.
+
+## Data: 13 CWRU drive-end .mat records (downloaded to ~/.cache/foldcrypt/cwru, NOT committed)
+source: https://engineering.case.edu/sites/default/files/{id}.mat
+  id     sr    bytes  sha256 (computed)                                                 matches pinned
+  97  48000  3903344  16bf48babcf1c7ac224bc1a81cd9eafdb27e42d5cf559761907e067e8eeadf3c  yes   normal, 0 hp
+ 109  48000  3903344  daddef5f784879becdf8fefbe2453f11c3cfc8d061a2a671da2f546d1bb48460  yes   inner race 0.007 in
+ 122  48000  3916160  f392129bf3b43360b964d4e5b3479d0797d1647af8359934b0f56b9abab4739a  yes   ball 0.007 in
+ 135  48000  3896944  5a1c3ceec1f2b58af9e01051e425aa9d31dd018f58a8d31cda25bbdb1ac6dca9  yes   outer race 0.007 in @6
+ 213  48000  3909760  6afb81f36a9efcdd370a52166d71c13cb42278c7de22752c81d4b2a22fa133f0  yes   inner race 0.021 in
+ 226  48000  3903344  fc78f08085760f2e17bcf7efe486b3a278e108093cd184acf278daecad6765e4  yes   ball 0.021 in
+ 238  48000  3941808  63209a4057f199beb42beedf5b4481987fdb3ac746c46777dd385d689bc481df  yes   outer race 0.021 in @6
+ 105  12000  2910768  f80b0ea04fd06b372a0eaec7c056543ea37e4bb4727a5b173d2a5bacd2aa9cab  yes   inner race 0.007 in
+ 118  12000  2942112  b00628f8dd8d1d930af77fa465d1e5cdb385fe259489053f91f3680bda7f640e  yes   ball 0.007 in
+ 130  12000  2928192  35a095307d0971477049b343a1b5981dde465a58fb7f233ad89b035068c1717d  yes   outer race 0.007 in @6
+ 209  12000  2931672  9f723d6d9d2eba714c6dc50f99321dffa73d8b1e4d3605675b2c2251511eff80  yes   inner race 0.021 in
+ 222  12000  2928192  fcc0ee740fa123b1f4683f555458891719efb2857afd9fdee63e8fde0ed14469  yes   ball 0.021 in
+ 234  12000  2938632  ebcbdb96612e8085bbdbf81f0e5e8e8a8d1a693d1ec559c4894f7792771aa9b2  yes   outer race 0.021 in @6
+all 13 checksums match realdata.CWRU_FILES: True
+
+## Run
+ShockDAQ on real bearing-fault recordings (CWRU Bearing Data Center, drive-end accel, g)
+  Fold rail λ = ratio × record peak, applied in software; blind recovery; original used only to score.
+
+record           sr label                     peak g  maxΔ g Δ/peak headroom  kurt
+----------------------------------------------------------------------------------
+97@48k        48000 normal, 0 hp               0.311   0.132   0.42  +7.5 dB   2.8
+97@48→12k     12000 normal, 0 hp               0.287   0.378   1.32     none   2.8
+109@48k       48000 inner race 0.007 in        3.569   1.372   0.38  +8.3 dB   6.0
+109@48→12k    12000 inner race 0.007 in        3.407   4.653   1.37     none   6.0
+122@48k       48000 ball 0.007 in              0.736   0.261   0.35  +9.0 dB   3.1
+122@48→12k    12000 ball 0.007 in              0.732   0.920   1.26     none   3.2
+135@48k       48000 outer race 0.007 in @6     6.541   2.638   0.40  +7.9 dB   6.7
+135@48→12k    12000 outer race 0.007 in @6     6.219   9.290   1.49     none   6.8
+213@48k       48000 inner race 0.021 in        3.075   1.131   0.37  +8.7 dB   4.2
+213@48→12k    12000 inner race 0.021 in        3.075   3.777   1.23     none   4.2
+226@48k       48000 ball 0.021 in              2.380   0.767   0.32  +9.8 dB   3.2
+226@48→12k    12000 ball 0.021 in              2.380   2.442   1.03     none   3.2
+238@48k       48000 outer race 0.021 in @6     7.702   3.092   0.40  +7.9 dB  20.8
+238@48→12k    12000 outer race 0.021 in @6     6.840  11.001   1.61     none  20.8
+105@12k       12000 inner race 0.007 in        1.739   2.195   1.26     none   5.4
+118@12k       12000 ball 0.007 in              0.607   0.821   1.35     none   3.0
+130@12k       12000 outer race 0.007 in @6     3.630   5.184   1.43     none   7.6
+209@12k       12000 inner race 0.021 in        3.788   4.808   1.27     none   7.4
+222@12k       12000 ball 0.021 in              1.660   2.375   1.43     none   8.5
+234@12k       12000 outer race 0.021 in @6     6.653   9.909   1.49     none  21.0
+
+record        λ/pk rule  rec      flag  SNR_c  SNR_f       kurt t/c/f      crest t/c/f
+--------------------------------------------------------------------------------------
+97@48k        0.80   ok  yes        no   49.7  exact   2.8/ 2.8/  2.8   4.2/ 3.4/  4.2
+97@48k        0.60   ok  yes        no   30.8  exact   2.8/ 2.7/  2.8   4.2/ 2.5/  4.2
+97@48k        0.50   ok  yes        no   23.2  exact   2.8/ 2.5/  2.8   4.2/ 2.2/  4.2
+97@48k        0.40   NO   NO SLIP+EDGE   16.8  -17.2   2.8/ 2.2/  1.5   4.2/ 1.8/  2.8
+97@48k        0.33   NO   NO SLIP+EDGE   13.0  -50.7   2.8/ 2.0/  1.9   4.2/ 1.6/  1.9
+97@48k        0.25   NO   NO SLIP+EDGE    9.1  -70.6   2.8/ 1.7/  1.8   4.2/ 1.4/  1.8
+97@48→12k     0.80   NO   NO SLIP+EDGE   44.9  -64.2   2.8/ 2.8/  1.8   3.9/ 3.1/  1.8
+97@48→12k     0.60   NO   NO SLIP+EDGE   27.3  -68.6   2.8/ 2.6/  1.8   3.9/ 2.4/  1.7
+97@48→12k     0.50   NO   NO SLIP+EDGE   20.6  -67.9   2.8/ 2.4/  1.8   3.9/ 2.0/  1.8
+97@48→12k     0.40   NO   NO SLIP+EDGE   15.0  -64.2   2.8/ 2.1/  1.7   3.9/ 1.7/  1.8
+97@48→12k     0.33   NO   NO SLIP+EDGE   11.6  -57.7   2.8/ 1.9/  1.7   3.9/ 1.5/  1.8
+97@48→12k     0.25   NO   NO SLIP+EDGE    8.2  -44.1   2.8/ 1.6/  1.5   3.9/ 1.4/  1.7
+109@48k       0.80   ok  yes        no   41.0  exact   6.0/ 6.0/  6.0   6.1/ 4.9/  6.1
+109@48k       0.60   ok  yes        no   25.1  exact   6.0/ 5.4/  6.0   6.1/ 3.7/  6.1
+109@48k       0.50   ok  yes        no   19.5  exact   6.0/ 4.7/  6.0   6.1/ 3.2/  6.1
+109@48k       0.40   ok  yes      EDGE   14.8  exact   6.0/ 3.8/  6.0   6.1/ 2.7/  6.1
+109@48k       0.33   NO   NO SLIP+EDGE   11.9  -35.5   6.0/ 3.2/  2.0   6.1/ 2.3/  2.0
+109@48k       0.25   NO   NO SLIP+EDGE    9.0  -41.9   6.0/ 2.6/  2.0   6.1/ 1.9/  1.9
+109@48→12k    0.80   NO   NO SLIP+EDGE   36.8  -40.6   6.0/ 5.9/  2.0   5.8/ 4.6/  2.1
+109@48→12k    0.60   NO   NO SLIP+EDGE   23.5  -50.7   6.0/ 5.2/  1.9   5.8/ 3.5/  1.8
+109@48→12k    0.50   NO   NO SLIP+EDGE   18.4  -50.4   6.0/ 4.5/  2.0   5.8/ 3.0/  2.0
+109@48→12k    0.40   NO   NO SLIP+EDGE   14.0  -47.1   6.0/ 3.7/  1.7   5.8/ 2.6/  1.8
+109@48→12k    0.33   NO   NO SLIP+EDGE   11.4  -36.7   6.0/ 3.1/  2.1   5.8/ 2.2/  2.2
+109@48→12k    0.25   NO   NO SLIP+EDGE    8.6  -34.9   6.0/ 2.5/  1.6   5.8/ 1.9/  1.9
+122@48k       0.80   ok  yes        no   46.2  exact   3.1/ 3.1/  3.1   4.9/ 3.9/  4.9
+122@48k       0.60   ok  yes        no   31.6  exact   3.1/ 3.0/  3.1   4.9/ 3.0/  4.9
+122@48k       0.50   ok  yes        no   24.6  exact   3.1/ 2.8/  3.1   4.9/ 2.5/  4.9
+122@48k       0.40   ok  yes        no   18.3  exact   3.1/ 2.5/  3.1   4.9/ 2.1/  4.9
+122@48k       0.33   NO   NO SLIP+EDGE   14.4   -9.5   3.1/ 2.2/  2.4   4.9/ 1.8/  4.3
+122@48k       0.25   NO   NO SLIP+EDGE   10.3  -22.4   3.1/ 1.9/  1.9   4.9/ 1.5/  2.2
+122@48→12k    0.80   NO   NO SLIP+EDGE   45.0  -24.5   3.2/ 3.2/  2.4   4.9/ 3.9/  2.7
+122@48→12k    0.60   NO   NO SLIP+EDGE   31.1  -32.5   3.2/ 3.0/  2.3   4.9/ 3.0/  2.3
+122@48→12k    0.50   NO   NO SLIP+EDGE   24.2  -40.8   3.2/ 2.8/  1.7   4.9/ 2.5/  2.0
+122@48→12k    0.40   NO   NO SLIP+EDGE   18.1  -41.0   3.2/ 2.5/  1.6   4.9/ 2.1/  1.9
+122@48→12k    0.33   NO   NO SLIP+EDGE   14.2  -35.5   3.2/ 2.2/  1.9   4.9/ 1.8/  2.2
+122@48→12k    0.25   NO   NO SLIP+EDGE   10.2  -34.1   3.2/ 1.9/  1.4   4.9/ 1.5/  1.7
+135@48k       0.80   ok  yes        no   36.4  exact   6.7/ 6.6/  6.7   5.2/ 4.2/  5.2
+135@48k       0.60   ok  yes        no   20.6  exact   6.7/ 5.7/  6.7   5.2/ 3.2/  5.2
+135@48k       0.50   ok  yes        no   15.8  exact   6.7/ 4.9/  6.7   5.2/ 2.8/  5.2
+135@48k       0.40   NO   NO SLIP+EDGE   11.9   -2.0   6.7/ 4.1/  5.8   5.2/ 2.5/  5.6
+135@48k       0.33   NO   NO SLIP+EDGE    9.4  -37.5   6.7/ 3.6/  1.6   5.2/ 2.2/  1.6
+135@48k       0.25   NO   NO SLIP+EDGE    6.9  -41.3   6.7/ 2.9/  2.5   5.2/ 2.0/  2.3
+135@48→12k    0.80   NO   NO SLIP+EDGE   31.4  -44.7   6.8/ 6.5/  2.0   4.9/ 4.0/  1.9
+135@48→12k    0.60   NO   NO SLIP+EDGE   18.8  -36.2   6.8/ 5.4/  1.6   4.9/ 3.1/  2.3
+135@48→12k    0.50   NO   NO SLIP+EDGE   14.7  -42.1   6.8/ 4.8/  3.1   4.9/ 2.7/  2.5
+135@48→12k    0.40   NO   NO SLIP+EDGE   11.1  -46.2   6.8/ 4.0/  2.1   4.9/ 2.4/  2.1
+135@48→12k    0.33   NO   NO SLIP+EDGE    8.9  -38.2   6.8/ 3.4/  1.6   4.9/ 2.2/  1.9
+135@48→12k    0.25   NO   NO SLIP+EDGE    6.5  -43.6   6.8/ 2.8/  2.2   4.9/ 1.9/  2.2
+213@48k       0.80   ok  yes        no   42.6  exact   4.2/ 4.1/  4.2   5.3/ 4.2/  5.3
+213@48k       0.60   ok  yes        no   27.0  exact   4.2/ 3.8/  4.2   5.3/ 3.2/  5.3
+213@48k       0.50   ok  yes        no   21.0  exact   4.2/ 3.4/  4.2   5.3/ 2.7/  5.3
+213@48k       0.40   ok  yes      EDGE   15.9  exact   4.2/ 2.9/  4.2   5.3/ 2.3/  5.3
+213@48k       0.33   NO   NO SLIP+EDGE   12.8   -6.8   4.2/ 2.5/  2.1   5.3/ 2.0/  3.5
+213@48k       0.25   NO   NO SLIP+EDGE    9.4  -34.2   4.2/ 2.1/  1.5   5.3/ 1.7/  1.7
+213@48→12k    0.80   NO   NO SLIP+EDGE   43.2  -35.1   4.2/ 4.1/  3.0   5.3/ 4.2/  2.6
+213@48→12k    0.60   NO   NO SLIP+EDGE   27.2  -37.4   4.2/ 3.8/  2.0   5.3/ 3.2/  2.2
+213@48→12k    0.50   NO   NO SLIP+EDGE   21.1  -36.1   4.2/ 3.4/  2.0   5.3/ 2.7/  2.2
+213@48→12k    0.40   NO   NO SLIP+EDGE   16.0  -40.3   4.2/ 2.9/  1.6   5.3/ 2.3/  1.7
+213@48→12k    0.33   NO   NO SLIP+EDGE   12.8  -29.7   4.2/ 2.5/  3.1   5.3/ 2.0/  2.9
+213@48→12k    0.25   NO   NO SLIP+EDGE    9.4  -41.8   4.2/ 2.1/  1.8   5.3/ 1.7/  2.3
+226@48k       0.80   ok  yes        no   49.6  exact   3.2/ 3.2/  3.2   5.6/ 4.5/  5.6
+226@48k       0.60   ok  yes        no   36.0  exact   3.2/ 3.1/  3.2   5.6/ 3.3/  5.6
+226@48k       0.50   ok  yes        no   29.7  exact   3.2/ 3.0/  3.2   5.6/ 2.8/  5.6
+226@48k       0.40   ok  yes        no   22.8  exact   3.2/ 2.8/  3.2   5.6/ 2.3/  5.6
+226@48k       0.33   ok  yes      EDGE   17.9  exact   3.2/ 2.6/  3.2   5.6/ 1.9/  5.6
+226@48k       0.25   NO   NO SLIP+EDGE   12.6  -16.9   3.2/ 2.5/  1.1   5.6/ 1.6/  1.6
+226@48→12k    0.80   NO   NO SLIP+EDGE   46.8  -25.0   3.2/ 3.2/  1.0   5.6/ 4.5/  1.2
+226@48→12k    0.60   NO   NO SLIP+EDGE   35.4  -22.7   3.2/ 3.1/  3.5   5.6/ 3.3/  3.2
+226@48→12k    0.50   NO   NO SLIP+EDGE   29.5  -25.8   3.2/ 3.0/  2.3   5.6/ 2.8/  2.4
+226@48→12k    0.40   NO   NO SLIP+EDGE   22.8  -27.3   3.2/ 2.8/  2.2   5.6/ 2.3/  2.2
+226@48→12k    0.33   NO   NO SLIP+EDGE   17.9  -29.4   3.2/ 2.6/  2.6   5.6/ 1.9/  2.6
+226@48→12k    0.25   NO   NO SLIP+EDGE   12.6  -32.1   3.2/ 2.5/  2.0   5.6/ 1.6/  2.1
+238@48k       0.80   ok  yes        no   38.1  exact  20.8/20.4/ 20.8  11.5/ 9.2/ 11.5
+238@48k       0.60   ok  yes        no   24.8  exact  20.8/18.1/ 20.8  11.5/ 7.0/ 11.5
+238@48k       0.50   ok  yes        no   19.6  exact  20.8/15.9/ 20.8  11.5/ 6.0/ 11.5
+238@48k       0.40   NO   NO SLIP+EDGE   15.1  -15.6  20.8/13.1/  1.3  11.5/ 5.0/  3.1
+238@48k       0.33   NO   NO      EDGE   12.2  -11.6  20.8/10.8/  5.0  11.5/ 4.4/  5.8
+238@48k       0.25   NO   NO SLIP+EDGE    9.1  -26.6  20.8/ 8.2/  2.4  11.5/ 3.7/  2.5
+238@48→12k    0.80   NO   NO      EDGE   33.6  -31.8  20.8/19.9/  2.0  10.3/ 8.2/  2.0
+238@48→12k    0.60   NO   NO SLIP+EDGE   21.3  -35.3  20.8/16.8/  1.8  10.3/ 6.3/  2.1
+238@48→12k    0.50   NO   NO SLIP+EDGE   17.1  -36.7  20.8/14.5/  2.2  10.3/ 5.4/  2.3
+238@48→12k    0.40   NO   NO SLIP+EDGE   13.2  -32.2  20.8/11.7/  2.0  10.3/ 4.6/  2.2
+238@48→12k    0.33   NO   NO SLIP+EDGE   10.8  -33.4  20.8/ 9.7/  2.4  10.3/ 4.1/  2.3
+238@48→12k    0.25   NO   NO SLIP+EDGE    8.1  -33.6  20.8/ 7.4/  2.0  10.3/ 3.4/  2.2
+105@12k       0.80   NO   NO SLIP+EDGE   39.0  -52.7   5.4/ 5.3/  1.7   6.0/ 4.8/  1.8
+105@12k       0.60   NO   NO SLIP+EDGE   25.8  -46.3   5.4/ 4.9/  2.3   6.0/ 3.6/  2.2
+105@12k       0.50   NO   NO SLIP+EDGE   20.5  -40.4   5.4/ 4.3/  2.5   6.0/ 3.1/  2.6
+105@12k       0.40   NO   NO SLIP+EDGE   15.6  -41.6   5.4/ 3.6/  3.8   6.0/ 2.6/  2.9
+105@12k       0.33   NO   NO SLIP+EDGE   12.5  -45.6   5.4/ 3.1/  1.8   6.0/ 2.2/  1.7
+105@12k       0.25   NO   NO SLIP+EDGE    9.3  -47.4   5.4/ 2.5/  2.0   6.0/ 1.9/  2.2
+118@12k       0.80   NO   NO SLIP+EDGE   42.5  -33.1   3.0/ 3.0/  2.4   4.4/ 3.5/  2.5
+118@12k       0.60   NO   NO SLIP+EDGE   28.2  -37.6   3.0/ 2.8/  2.6   4.4/ 2.6/  2.6
+118@12k       0.50   NO   NO SLIP+EDGE   21.9  -42.6   3.0/ 2.6/  2.6   4.4/ 2.2/  2.3
+118@12k       0.40   NO   NO SLIP+EDGE   16.3  -34.7   3.0/ 2.3/  3.5   4.4/ 1.9/  2.8
+118@12k       0.33   NO   NO SLIP+EDGE   12.8  -43.5   3.0/ 2.0/  1.8   4.4/ 1.7/  1.9
+118@12k       0.25   NO   NO SLIP+EDGE    9.1  -34.5   3.0/ 1.7/  3.0   4.4/ 1.4/  3.0
+130@12k       0.80   NO   NO SLIP+EDGE   34.8  -41.3   7.6/ 7.5/  2.3   5.4/ 4.4/  2.3
+130@12k       0.60   NO   NO SLIP+EDGE   20.3  -36.7   7.6/ 6.4/  1.8   5.4/ 3.4/  2.1
+130@12k       0.50   NO   NO SLIP+EDGE   15.6  -42.9   7.6/ 5.6/  1.7   5.4/ 3.0/  1.8
+130@12k       0.40   NO   NO SLIP+EDGE   11.6  -38.8   7.6/ 4.8/  2.9   5.4/ 2.6/  2.6
+130@12k       0.33   NO   NO SLIP+EDGE    9.2  -36.2   7.6/ 4.1/  3.3   5.4/ 2.4/  2.7
+130@12k       0.25   NO   NO SLIP+EDGE    6.7  -50.6   7.6/ 3.4/  1.8   5.4/ 2.1/  1.9
+209@12k       0.80   NO   NO SLIP+EDGE   36.3  -27.8   7.4/ 7.2/  2.4   7.2/ 5.8/  3.0
+209@12k       0.60   NO   NO SLIP+EDGE   24.0  -40.1   7.4/ 6.3/  2.5   7.2/ 4.4/  2.2
+209@12k       0.50   NO   NO SLIP+EDGE   19.5  -35.8   7.4/ 5.5/  1.8   7.2/ 3.7/  2.0
+209@12k       0.40   NO   NO SLIP+EDGE   15.4  -39.9   7.4/ 4.6/  1.6   7.2/ 3.1/  2.0
+209@12k       0.33   NO   NO SLIP+EDGE   12.7  -48.1   7.4/ 3.9/  1.7   7.2/ 2.7/  1.9
+209@12k       0.25   NO   NO SLIP+EDGE    9.8  -43.8   7.4/ 3.1/  2.1   7.2/ 2.2/  2.1
+222@12k       0.80   NO   NO SLIP+EDGE   37.2  -27.6   8.5/ 8.0/  1.4  12.2/ 9.8/  2.3
+222@12k       0.60   NO   NO SLIP+EDGE   27.4  -35.0   8.5/ 6.8/  1.5  12.2/ 7.4/  1.7
+222@12k       0.50   NO   NO SLIP+EDGE   23.7  -31.9   8.5/ 6.0/  1.5  12.2/ 6.2/  1.7
+222@12k       0.40   NO   NO SLIP+EDGE   20.4  -35.7   8.5/ 5.1/  2.2  12.2/ 5.0/  2.0
+222@12k       0.33   NO   NO SLIP+EDGE   18.1  -38.9   8.5/ 4.5/  1.8  12.2/ 4.2/  1.8
+222@12k       0.25   NO   NO SLIP+EDGE   15.4  -37.4   8.5/ 3.8/  2.5  12.2/ 3.2/  2.3
+234@12k       0.80   NO   NO SLIP+EDGE   36.5  -41.0  21.0/20.5/  2.4  11.4/ 9.1/  2.6
+234@12k       0.60   NO   NO SLIP+EDGE   23.7  -33.0  21.0/17.8/  3.3  11.4/ 7.0/  3.0
+234@12k       0.50   NO   NO SLIP+EDGE   18.9  -46.0  21.0/15.6/  1.9  11.4/ 5.9/  2.0
+234@12k       0.40   NO   NO SLIP+EDGE   14.7  -34.2  21.0/12.9/  2.0  11.4/ 5.0/  2.2
+234@12k       0.33   NO   NO SLIP+EDGE   12.0  -35.0  21.0/10.8/  3.0  11.4/ 4.3/  2.9
+234@12k       0.25   NO   NO SLIP+EDGE    9.1  -43.9  21.0/ 8.4/  1.9  11.4/ 3.6/  2.1
+
+  cells=120  rule max|Δx|<λ correct=120/120  recovered=26  failed=94 (flagged 94)
+  silent_fail=0  slip_false_alarm=0  edge_conservative=3
+  wrote artifacts/realdata/metrics.json
+  shockdaq_real=OK
+
+real	0m8.807s
+user	0m3.163s
+sys	0m0.235s
+
+artifacts/realdata/metrics.json sha256: 2ef5168d7e61fd370f8dd3595bf45e84620034f8cbea8dd658ece6c5fe62c3bf
+artifacts/realdata/metrics.json vs committed copy: identical
+
+## Previously skipped CWRU test, with the cached data
+$ python -m pytest -v -rs tests/test_realdata.py -p no:cacheprovider
+collecting ... collected 6 items
+
+tests/test_realdata.py::test_file_table_is_well_formed PASSED            [ 16%]
+tests/test_realdata.py::test_offline_fetch_without_cache_raises PASSED   [ 33%]
+tests/test_realdata.py::test_kurtosis_and_crest_basics PASSED            [ 50%]
+tests/test_realdata.py::test_fast_sampling_recovers_exactly_and_keeps_kurtosis PASSED [ 66%]
+tests/test_realdata.py::test_same_event_subsampled_fails_and_is_flagged PASSED [ 83%]
+tests/test_realdata.py::test_cached_cwru_sweep_has_no_silent_failures PASSED [100%]
+
+============================== 6 passed in 3.22s ===============================
+
+## Doc check
+$ python scripts/check_cwru_numbers.py
+  OK   cells: run=120 doc=120
+  OK   rule correct: run=120 doc=120
+  OK   recovered: run=26 doc=26
+  OK   failed: run=94 doc=94
+  OK   failures flagged: run=94 doc=94
+  OK   silent failures: run=0 doc=0
+  OK   slip false alarms: run=0 doc=0
+  OK   edge conservative: run=3 doc=3
+  OK   48 kHz recovered: run=(26, 42) doc=(26, 42)
+  OK   12 kHz failed: run=(78, 78) doc=(78, 78)
+  OK   every cell overloaded: run=True doc=True
+  OK   edge on recovered: run=[('109@48k', 0.4), ('213@48k', 0.4), ('226@48k', 0.33)] doc=[('109@48k', 0.4), ('213@48k', 0.4), ('226@48k', 0.33)]
+  OK   48 kHz step/peak: run=(0.32, 0.42) doc=(0.32, 0.42)
+  OK   12 kHz step/peak: run=(1.03, 1.61) doc=(1.03, 1.61)
+  OK   48 kHz extra range dB: run=(7.5, 9.8) doc=(7.5, 9.8)
+  OK   Table 11 row 97: run=(0.42, 7.5, 0.5, 23.2, 2.8, 2.5, 4.2, 2.2) doc=(0.42, 7.5, 0.5, 23.2, 2.8, 2.5, 4.2, 2.2)
+  OK     97: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 109: run=(0.38, 8.3, 0.4, 19.5, 6.0, 4.7, 6.1, 3.2) doc=(0.38, 8.3, 0.4, 19.5, 6.0, 4.7, 6.1, 3.2)
+  OK     109: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 122: run=(0.35, 9.0, 0.4, 24.6, 3.1, 2.8, 4.9, 2.5) doc=(0.35, 9.0, 0.4, 24.6, 3.1, 2.8, 4.9, 2.5)
+  OK     122: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 135: run=(0.4, 7.9, 0.5, 15.8, 6.7, 4.9, 5.2, 2.8) doc=(0.4, 7.9, 0.5, 15.8, 6.7, 4.9, 5.2, 2.8)
+  OK     135: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 213: run=(0.37, 8.7, 0.4, 21.0, 4.2, 3.4, 5.3, 2.7) doc=(0.37, 8.7, 0.4, 21.0, 4.2, 3.4, 5.3, 2.7)
+  OK     213: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 226: run=(0.32, 9.8, 0.33, 29.7, 3.2, 3.0, 5.6, 2.8) doc=(0.32, 9.8, 0.33, 29.7, 3.2, 3.0, 5.6, 2.8)
+  OK     226: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 238: run=(0.4, 7.9, 0.5, 19.6, 20.8, 15.9, 11.5, 6.0) doc=(0.4, 7.9, 0.5, 19.6, 20.8, 15.9, 11.5, 6.0)
+  OK     238: fold-recovered kurtosis/crest exact: run=True doc=True
+RESULT: ALL MATCH (29/29 checks)
+
+timestamp_end: 2026-10-17 16:41:18 EDT (UTC-04:00)
