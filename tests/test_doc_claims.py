@@ -55,3 +55,17 @@ def test_documented_test_counts_match_pytest_collection():
     assert n > 0
     stale = [(f, ln, c) for f, ln, c in _doc_claims() if c != n]
     assert not stale, f"pytest collects {n} tests; stale doc counts: {stale}"
+
+
+def test_readme_links_current_whitepaper_version():
+    """README's "(vX.Y, date" references must match the whitepaper header."""
+    wp = (ROOT / "docs" / "foldaudio-whitepaper.md").read_text(encoding="utf-8")
+    m = re.search(
+        r"\*\*Technical report, version (\d+\.\d+)\*\*\s+\*\*Date:\*\* (\S+)", wp
+    )
+    assert m, "whitepaper header not found"
+    version, date = m.groups()
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    refs = re.findall(r"\(v(\d+\.\d+), (\d{4}-\d{2}-\d{2})", readme)
+    assert refs, "README does not reference the report version"
+    assert all(r == (version, date) for r in refs), (refs, version, date)

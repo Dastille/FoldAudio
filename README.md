@@ -2,11 +2,11 @@
 
 [![CI](https://github.com/Dastille/FoldAudio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Dastille/FoldAudio/actions/workflows/ci.yml)
 
-> **📄 Technical report (v1.0, 2026-10-13):** [**Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration**](docs/foldaudio-whitepaper.md)
+> **📄 Technical report (v1.4, 2026-10-17):** [**Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration**](docs/foldaudio-whitepaper.md)
 
 When a microphone or an IEPE accelerometer chain is overdriven, the converter clips and the peaks are lost, often with no flag. This repository simulates a different overload behaviour: values beyond ±λ **fold** (modulo wrap) back into range, and are then **unwrapped** in software. Recovery is exact while the slew rate stays below λ·f<sub>s</sub>. The absolute level is recovered blindly for AC-coupled signals. Each capture gets a self-diagnosed status (`UNRECOVERABLE` / `BOUNDED_ACCURACY` / `RECOVERED` / `IN_RANGE`), so failures are reported, not silent. Two configurations share one implementation: **FoldAudio** (audio, 48 kHz) and **ShockDAQ** (IEPE vibration/shock, 51.2 kHz).
 
-**Status:** every result is from synthetic signals in software. There is no hardware folding front end, and no measured data. See §8 *Limitations* in the report.
+**Status:** results come from synthetic signals, plus 13 public measured CWRU accelerometer records whose overload is applied in software (those records were captured within range, so no measured overload event has been processed). There is no hardware folding front end. See §8 *Limitations* in the report.
 
 Quick start:
 
@@ -16,10 +16,11 @@ python -m foldcrypt audio-demo          # audio: fold vs hard clip
 python -m foldcrypt shockdaq-demo       # vibration: fold vs clip + capture status
 python -m foldcrypt shockdaq-failmap    # where recovery fails, and whether it is flagged
 python -m foldcrypt shockdaq-calibrate  # one-tone fold-step gain + INL calibration
-python -m foldcrypt shockdaq-real       # measured CWRU bearing-fault records (needs .[real] = SciPy)
+python -m foldcrypt shockdaq-real       # measured CWRU bearing-fault records (needs .[real] = SciPy; not run in CI)
+python -m foldcrypt claims             # report spot numbers, each asserted in tests/test_claims.py
 ```
 
-**Measured data (2026-10-14):** on 13 public CWRU bearing-fault accelerometer records with software-applied overload, the slew rule predicted 120/120 cells and every failure was flagged (0 silent). Fold buys 7.5–9.8 dB of range at 48 kHz and nothing at 12 kHz. See [`docs/shockdaq-realdata.md`](docs/shockdaq-realdata.md).
+**Measured data (2026-10-14):** on 13 public CWRU bearing-fault accelerometer records with software-applied overload, the slew rule predicted 120/120 cells and every failure was flagged (0 silent). Fold buys 7.5–9.8 dB of range at 48 kHz and nothing at 12 kHz. See [`docs/shockdaq-realdata.md`](docs/shockdaq-realdata.md). Reproducible with `python -m foldcrypt shockdaq-real` (downloads ~45 MB of CWRU data, needs `.[real]`); **not checked in CI**.
 
 ---
 
@@ -80,7 +81,7 @@ Artifacts → `artifacts/shockdaq/` (`.npy` + listening WAVs + `metrics.json`).
 | **WrapCancel / modulo / Itoh** | Engine (archived symbol-detect toys still in tree) |
 | **Recovery shares** | Parked — Sigil constellation already covers seed/backup |
 
-**Technical report:** [`docs/foldaudio-whitepaper.md`](docs/foldaudio-whitepaper.md) (v1.0, 2026-10-13; covers audio and vibration).
+**Technical report:** [`docs/foldaudio-whitepaper.md`](docs/foldaudio-whitepaper.md) (v1.4, 2026-10-17; covers audio and vibration).
 
 **Repo:** https://github.com/Dastille/FoldAudio
 

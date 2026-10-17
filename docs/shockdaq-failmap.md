@@ -278,9 +278,11 @@ an `untrusted` sample mask, and `peak_V` plus `peak_is_lower_bound`.
   untrusted samples (4.4 %), with SNR −0.1 dB vs the original instead of the
   slipped unwrap's −29.7 dB and its 300 V phantom peak.
 - Rejected: clipping the unwrap at ±λ. After a slip its baseline sits 2λ off,
-  so the clipped tail parks at the rail. On seven failing captures it scored
-  −11 to −16 dB SNR vs a true hard clip, against −0.9 to +1.9 dB for the folded
-  samples.
+  so the clipped tail parks at the rail. On seven failing captures (seed-7 bursts
+  at 8 kHz, A = 8–40 V, plus `impact_too_fast`) it scored −11 to −16 dB SNR vs a
+  true hard clip, against −0.9 to +1.9 dB for the folded samples (all 33 failing
+  seed-7 cells: −18 to −11 dB vs −1.0 to +8.7 dB). Reproduced by
+  `python -m foldcrypt claims`, asserted in `tests/test_claims.py`.
 - `overload_event_mask` (wraps or wrapped steps ≥ 0.5λ, merged within 1,024
   samples, ±32 padding) covered every |x| ≥ λ sample in 168 burst cells
   (56 × seeds 7–9) and the 3 demo signals. Median masked fraction 4 %, gearbox
@@ -327,7 +329,8 @@ false-ok cells with no extra false-no.
 `quietest_window_std`: sample std of the minimum-variance window of the
 *folded* capture (quiet samples do not wrap). On synthetic quiet-baseline +
 white noise, and on folded mid-overload records, the estimate tracks the
-injected σ within about 5 % max relative error (median ≈ 3.6 %). Re-exported
+injected σ within 3.6 % max relative error (median 2.8 %) on five synthetic
+records (`claims.sigma_estimate_errors`, asserted in `tests/test_claims.py`). Re-exported
 by `failmap`. Firmware can apply λ − kσ_hat live without an oracle σ.
 
 Sweep table: `combined` agreement column and `falseOK n→c` (noise-aware →

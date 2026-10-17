@@ -1,11 +1,13 @@
 # Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration
 
-**Technical report, version 1.3**
-**Date:** 2026-10-16
+**Technical report, version 1.4**
+**Date:** 2026-10-17
 **Author:** Ashlynn (GitHub: [Dastille](https://github.com/Dastille))
 **Repository:** <https://github.com/Dastille/FoldAudio> (MIT License)
 **Evidence class:** numerical simulation, plus software folding of public measured accelerometer recordings (Section 6.6). No hardware folding front end was built or measured for this work.
 
+> **Revision note (v1.4, 2026-10-17).** Claim audit, no new experiments. Spot numbers that no demo table prints are now reproduced by `python -m foldcrypt claims` and asserted in `tests/test_claims.py` (Sections 3.6, 4.4, 4.5, 5.3, 6.2, 7.1, 7.4). Corrected: Section 4.5 σ-estimate error (about 5 % → at most 3.6 %); Section 5.3 burst peak (0.85–0.94 A on inspected cells → 0.82–0.98 A over all 280 cells; 5 of the 40 cells in the 6 V row never exceed λ). Section 3.6 now names the seven captures and adds the full seed-7 range. Section 7.5 is marked unverified. Section 6.6 notes that it is not checked in CI.
+>
 > **Revision note (v1.3, 2026-10-16).** Sections 4.4–4.5 add the combined derate-plus-noise slew specification and a blind quiet-window noise estimate. No earlier result changed.
 >
 > **Revision note (v1.2, 2026-10-15).** Section 4.4 now states a fitted noise margin for the slew specification ($k = 5$). Section 3.6 specifies the `UNRECOVERABLE` fallback output. No earlier result changed.
@@ -174,7 +176,7 @@ The checks combine into one status per capture, in priority order:
 | `RECOVERED` | input exceeded $\lambda$, no flag | overload reconstructed | use the reconstruction; record that an overload occurred |
 | `IN_RANGE` | input never exceeded $\lambda$ | conventional linear capture | normal handling |
 
-**Fallback output for `UNRECOVERABLE`.** The reference implementation (`shockdaq.recover_or_clip`) discards the reconstruction and emits the folded samples $y$. Wherever $\lvert x \rvert < \lambda$ these equal the input exactly. Inside an overload event they are bounded in $[-\lambda, \lambda)$. A blind event mask marks those samples as untrusted, and the peak is reported as a lower bound, $\ge \lambda$. This carries the same information as a clipped capture with an overload flag. Clipping the reconstruction at $\pm\lambda$ was rejected: after a slip the reconstructed baseline is offset by $2\lambda$, so the clipped tail sits at the rail. On seven failing captures (six bursts and the past-limit impact case), clipping the reconstruction gave −11 to −16 dB SNR relative to a true hard clip, against −0.9 to +1.9 dB for the folded samples. The event mask covered every $\lvert x \rvert \ge \lambda$ sample in 168 burst cells. It shares the isolated-impulse blind spot of Section 4.6.
+**Fallback output for `UNRECOVERABLE`.** The reference implementation (`shockdaq.recover_or_clip`) discards the reconstruction and emits the folded samples $y$. Wherever $\lvert x \rvert < \lambda$ these equal the input exactly. Inside an overload event they are bounded in $[-\lambda, \lambda)$. A blind event mask marks those samples as untrusted, and the peak is reported as a lower bound, $\ge \lambda$. This carries the same information as a clipped capture with an overload flag. Clipping the reconstruction at $\pm\lambda$ was rejected: after a slip the reconstructed baseline is offset by $2\lambda$, so the clipped tail sits at the rail. On seven failing captures (the six seed-7 failure-map bursts at 8 kHz ring with $A$ = 8–40 V, and the past-limit impact case), clipping the reconstruction gave −11 to −16 dB SNR relative to a true hard clip (the hard-clipped input as reference), against −0.9 to +1.9 dB for the folded samples. Over all 33 failing cells of the seed-7 grid the ranges are −18 to −11 dB and −1.0 to +8.7 dB. The event mask covered every $\lvert x \rvert \ge \lambda$ sample in 168 burst cells (56 cells × seeds 7–9). It shares the isolated-impulse blind spot of Section 4.6.
 
 ### 3.7 Non-ideal front-end model
 
@@ -255,7 +257,7 @@ $$
 D = \max\big(0,\, 1 - 2\lvert g \rvert - \lvert e \rvert - \lvert o \rvert - \pi\lvert a \rvert\big),
 $$
 
-with the right-hand side clamped at zero. On the INL and combined rows of the non-ideal sweep (1,400 cells, five seeds), this combined rule removes the 12 residual false-"recoverable" predictions that the noise margin alone left, at a cost of 19 additional conservative cells (14 of them on the 5 % INL row). Ideal and ≥ 40 dB rows are unchanged. For live firmware, $\sigma$ need not be known a priori: the sample standard deviation of the quietest window of the folded capture estimates it (within about 5 % relative error on synthetic quiet-baseline-plus-noise records).
+with the right-hand side clamped at zero. On the INL and combined rows of the non-ideal sweep (1,400 cells, five seeds), this combined rule removes the 12 residual false-"recoverable" predictions that the noise margin alone left, at a cost of 19 additional conservative cells (14 of them on the 5 % INL row). Ideal and ≥ 40 dB rows are unchanged. For live firmware, $\sigma$ need not be known a priori: the sample standard deviation of the quietest window of the folded capture estimates it (at most 3.6 % relative error over five synthetic quiet-baseline-plus-noise records, one of them folded mid-overload).
 
 The gain-error staircase returns to zero whenever the signal returns to baseline ($m = 0$). The slip check therefore cannot detect it, and neither can the edge check. This accuracy error is invisible to blind diagnostics and must be removed by calibration (Section 7).
 
@@ -289,7 +291,7 @@ Amplitudes are in units of digital full scale before the fold, so values above 1
 
 ### 5.3 Failure-map grid
 
-A single damped ringing burst (Section 5.2 envelope, 0.5 s record, impact at 40 % of the record, 60 Hz baseline at 0.4 V, white noise 0.075 V RMS) is swept over amplitude parameter $A \in \{6, 8, 10, 14, 20, 30, 40\}$ V and ring frequency $f \in \{0.5, 1, 2, 3, 4, 6, 8, 12\}$ kHz. That gives 56 cells per noise seed. Five seeds (7–11) give 280 cells. The measured peak $\lvert x \rvert$ is 0.85–0.94 A on the cells inspected, so the 6 V row only just exceeds $\lambda$. Recovery is always blind (quiet-baseline prior).
+A single damped ringing burst (Section 5.2 envelope, 0.5 s record, impact at 40 % of the record, 60 Hz baseline at 0.4 V, white noise 0.075 V RMS) is swept over amplitude parameter $A \in \{6, 8, 10, 14, 20, 30, 40\}$ V and ring frequency $f \in \{0.5, 1, 2, 3, 4, 6, 8, 12\}$ kHz. That gives 56 cells per noise seed. Five seeds (7–11) give 280 cells. The measured peak $\lvert x \rvert$ is 0.82–0.98 A over all 280 cells, so the 6 V row sits at the threshold: its peaks are 4.94–5.87 V, and 5 of its 40 cells never exceed $\lambda$. Recovery is always blind (quiet-baseline prior).
 
 ### 5.4 Metrics and outcome definitions
 
@@ -475,6 +477,8 @@ To test the recovery condition and the blind diagnostics on measured waveforms, 
 
 Three observations follow. First, the recovery condition and the blind diagnostics, developed on synthetic signals, hold on measured impact waveforms with their real noise and quantization: every failure was flagged and no recovered record raised a slip alarm. Second, the usable range extension is modest and set by the sample rate. At 48 kHz the largest per-sample step is 0.32–0.42 of the peak, which permits 7.5–9.8 dB of extra range. At 12 kHz, recorded natively or subsampled, the largest step is 1.03–1.61 times the peak. Recovery requires $\lambda > \max\lvert\Delta x\rvert$ and overload requires $\lambda < \max\lvert x\rvert$, so no overload of these waveforms can be recovered at that rate. Bearing impacts excite structural resonances in the kHz range, which is why the step is large relative to the peak. Third, clipping biases exactly the time-domain indicators used for fault detection: at $r = 0.5$, kurtosis on the 0.021 in outer-race record falls from 20.8 to 15.9 and crest factor from 11.5 to 6.0, whereas recovered records reproduce both exactly. Details and per-cell data are in `docs/shockdaq-realdata.md` and `artifacts/realdata/metrics.json`.
 
+*Reproducibility note:* every number in this section is reproducible with `python -m foldcrypt shockdaq-real --cells`, which downloads the 13 CWRU records (about 45 MB, SHA-256 checked) and needs the `[real]` extra (SciPy). Because of that download, Section 6.6 is **not checked in CI**: the matching test (`tests/test_realdata.py::test_cached_cwru_sweep_has_no_silent_failures`) is skipped unless the files are cached locally.
+
 ---
 
 ## 7. Front-end calibration
@@ -531,8 +535,8 @@ Calibration fully corrects negative gain errors (fold step short) and INL. It ca
 
 ### 7.5 Alternatives evaluated and rejected
 
-* Estimating $g$ blindly from the impact burst itself gave a bias of about 4 %, because the signal changes too much between samples to separate gain from waveform.
-* Interpolating across rail-clipped samples made fast bursts worse and was not adopted.
+* Estimating $g$ blindly from the impact burst itself gave a bias of about 4 %, because the signal changes too much between samples to separate gain from waveform. *(Unverified: the code for this rejected alternative is not in the repository, so the figure cannot be reproduced.)*
+* Interpolating across rail-clipped samples made fast bursts worse and was not adopted. *(Unverified: code not retained.)*
 
 ---
 
@@ -580,7 +584,7 @@ Field recorders, camera audio and phone recording paths face the same unattended
 
 ## 10. Reproducibility
 
-All results in this report are produced by the repository at the commit that introduces this version. Commands:
+All results in this report are produced by the repository at the commit that introduces this version, except the two rejected alternatives of Section 7.5, which are marked unverified. Commands:
 
 ```bash
 git clone https://github.com/Dastille/FoldAudio
@@ -595,7 +599,8 @@ python -m foldcrypt shockdaq-failmap              # Tables 3-4 (seed 7) -> failm
 python -m foldcrypt shockdaq-failmap --quant      # Table 5   -> quantmap.json
 python -m foldcrypt shockdaq-failmap --nonideal   # Table 6   -> nonidealmap.json (~25 s)
 python -m foldcrypt shockdaq-calibrate            # Tables 8-9 -> calibration.json (~25 s)
-python -m foldcrypt shockdaq-real --cells         # Tables 10-11 -> artifacts/realdata/metrics.json (downloads ~45 MB of CWRU data, SHA-256 checked)
+python -m foldcrypt claims                        # spot numbers of Sections 3.6, 4.4, 4.5, 5.3, 6.2, 7.1, 7.4 (~10 s; asserted in tests/test_claims.py)
+python -m foldcrypt shockdaq-real --cells         # Tables 10-11 (not run in CI) -> artifacts/realdata/metrics.json (downloads ~45 MB of CWRU data, SHA-256 checked)
 ```
 
 (The Python package directory is named `foldcrypt` for historical reasons.)
@@ -682,3 +687,4 @@ URLs were accessed on 2026-10-13.
 | 1.1 | 2026-10-14 | Added Section 6.6 (Tables 10–11): measured CWRU bearing-fault records with software-applied overload; 120/120 rule agreement, 0 silent failures; sample-rate finding (48 kHz recoverable, 12 kHz not). Updated abstract, Limitations 1 and 6, Section 9.2, reproducibility, conclusion and references. |
 | 1.2 | 2026-10-15 | Section 4.4: fitted noise margin $\lambda - k\sigma$, $k = 5$ (false "recoverable" 119 → 0 of 2,520 noise cells). Section 3.6: `UNRECOVERABLE` fallback output (folded samples plus untrusted mask; peak reported as $\ge \lambda$). |
 | 1.3 | 2026-10-16 | Sections 4.4–4.5: combined derate + noise slew rule (INL/combo false "recoverable" 12 → 0 of 1,400 cells; +19 conservative); blind quiet-window $\sigma$ estimate for live $\lambda - k\sigma$. |
+| 1.4 | 2026-10-17 | Claim audit: spot numbers reproduced by `python -m foldcrypt claims` and asserted in `tests/test_claims.py`. Corrected §4.5 σ-estimate error (≈ 5 % → ≤ 3.6 %) and §5.3 burst peak range (0.85–0.94 A → 0.82–0.98 A; 5 of 40 cells in the 6 V row stay below λ). §3.6 names its seven captures and adds the full seed-7 range. §7.5 marked unverified. §6.6 noted as not checked in CI. |

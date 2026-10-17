@@ -26,6 +26,14 @@ from .unfold_detect import unfold_then_detect
 from .wrapcancel import block_mahalanobis_detect, wrapcancel_detect
 
 
+def cmd_claims(args: argparse.Namespace) -> int:
+    """Print the whitepaper spot claims (foldcrypt.claims)."""
+    from .claims import format_claims
+
+    print(format_claims())
+    return 0
+
+
 def cmd_demo(args: argparse.Namespace) -> int:
     """Single-shot WrapCancel vs unfold on one random draw."""
     lam = 1.0
@@ -547,6 +555,11 @@ def main(argv: list[str] | None = None) -> int:
         "--sr", type=int, default=48000, help="sample rate for generated WAVs"
     )
     au.set_defaults(func=cmd_audio_demo)
+
+    cl = sub.add_parser(
+        "claims", help="reproduce whitepaper spot numbers (asserted in tests)"
+    )
+    cl.set_defaults(func=cmd_claims)
 
     args = p.parse_args(argv)
     return args.func(args)
