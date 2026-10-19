@@ -360,3 +360,199 @@ def write_report(sweep: dict, path: Path | str) -> None:
     }
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_text(json.dumps(out, indent=2) + "\n")
+
+
+# ---------------------------------------------------------------------------
+# Non-ideal front end + firmware fallback on the measured records (NOTES #8c,
+# 2026-10-19 weekday slice).
+#
+# Question: does recover_or_clip stay honest on measured data when the fold
+# front end is non-ideal (failmap.default_nonideal_configs)? "Honest" means:
+#   - no SILENT SLIP: whenever the unwrap is kept (no fallback), it is within λ
+#     of the truth everywhere;
+#   - on fallback (UNRECOVERABLE), every overloaded sample (|x| ≥ λ) is in the
+#     untrusted mask (UNCOVERED = overloaded but not marked).
+# Also reported, not gated: max error on samples left trusted (fraction of
+# record peak) and the fraction of each record the fallback marks untrusted.
+# Truth includes the quantizer DC offset o·λ (same convention as
+# failmap.eval_nonideal_cell). Noise rows add white noise at the stated SNR
+# relative to the record RMS, on top of the record's own measurement noise,
+# from a fixed seed per (record, config). CPU only.
+# ---------------------------------------------------------------------------
+
+NONIDEAL_NOISE_SEED = 20_000
+TRUSTED_ERR_BAR_FRAC = 0.01  # same 1 %-of-peak bar as failmap.NONIDEAL_OK_BAR_FRAC
+
+
+@dataclass
+class RealNonIdealCell:
+    record: str
+    sr: int
+    ratio: float  # λ / record peak
+    config: str  # failmap.NonIdeal name
+    status: str  # shockdaq.CAPTURE_STATUSES
+    fallback: bool  # unwrap discarded, folded samples emitted
+    n_overloaded: int  # samples with |x| ≥ λ (x = input the fold saw)
+    n_uncovered: int  # overloaded samples NOT marked untrusted (fallback only)
+    masked_frac: float  # fraction of the record marked untrusted
+    max_err_frac: float  # max |signal − truth| / peak, all samples
+    trusted_err_frac: float  # max |signal − truth| / peak, trusted samples only
+    silent_slip: bool  # no fallback, yet max |signal − truth| ≥ λ
+
+    @property
+    def trusted_inaccurate(self) -> bool:
+        """A sample the output calls trusted is off by more than 1 % of peak."""
+        return self.trusted_err_frac > TRUSTED_ERR_BAR_FRAC
+
+
+def _variants(fid: int, cache, download: bool, decimate: bool):
+    sr, label, _ = CWRU_FILES[fid]
+    x = load_de(fetch(fid, cache, download=download))
+    out = [(f"{fid}@{sr // 1000}k", label, x, sr)]
+    if decimate and sr == 48000:
+        out.append((f"{fid}@48→12k", label, x[::4], 12000))
+    return out
+
+
+def eval_record_nonideal(
+    record: str,
+    x: np.ndarray,
+    sr: int,
+    configs=None,
+    ratios=RATIOS,
+    *,
+    seed: int = 0,
+) -> list[RealNonIdealCell]:
+    """Run recover_or_clip on one record through each non-ideal front end."""
+    from .failmap import default_nonideal_configs, nonideal_fold
+    from .shockdaq import recover_or_clip
+
+    configs = default_nonideal_configs() if configs is None else list(configs)
+    v = np.asarray(x, dtype=float)
+    peak0 = float(np.max(np.abs(v)))
+    rms = float(np.sqrt(np.mean(v**2)))
+    noisy = {}
+    for ci, ni in enumerate(configs):
+        if ni.noise_snr_db is not None:
+            rng = np.random.default_rng(NONIDEAL_NOISE_SEED + seed * 31 + ci)
+            sigma = rms / 10 ** (ni.noise_snr_db / 20.0)
+            noisy[ci] = v + sigma * rng.standard_normal(len(v))
+    cells = []
+    for r in ratios:
+        lam = r * peak0
+        for ci, ni in enumerate(configs):
+            xs = noisy.get(ci, v)
+            y = nonideal_fold(xs, lam, ni)
+            out = recover_or_clip(y, lam, bits=ni.bits)
+            err = np.abs(out.signal - (xs + ni.offset * lam))
+            over = np.abs(xs) >= lam
+            trusted = ~out.untrusted
+            cells.append(
+                RealNonIdealCell(
+                    record=record,
+                    sr=sr,
+                    ratio=r,
+                    config=ni.name,
+                    status=out.status,
+                    fallback=out.fallback,
+                    n_overloaded=int(np.count_nonzero(over)),
+                    n_uncovered=int(np.count_nonzero(over & trusted))
+                    if out.fallback
+                    else 0,
+                    masked_frac=float(np.mean(out.untrusted)),
+                    max_err_frac=float(np.max(err)) / peak0,
+                    trusted_err_frac=(float(np.max(err[trusted])) / peak0)
+                    if np.any(trusted)
+                    else 0.0,
+                    silent_slip=bool((not out.fallback) and np.max(err) >= lam),
+                )
+            )
+    return cells
+
+
+def run_real_nonideal_sweep(
+    cache: Path | str | None = None,
+    *,
+    download: bool = True,
+    ids=None,
+    decimate: bool = True,
+    configs=None,
+) -> dict:
+    """All CWRU records × RATIOS × non-ideal configs through recover_or_clip."""
+    ids = list(ids) if ids is not None else list(CWRU_FILES)
+    cells: list[RealNonIdealCell] = []
+    for fid in ids:
+        for name, _label, v, vsr in _variants(fid, cache, download, decimate):
+            cells.extend(eval_record_nonideal(name, v, vsr, configs, seed=fid))
+    return {"cells": cells, "summary": summarize_real_nonideal(cells)}
+
+
+def _nonideal_counts(cells: list[RealNonIdealCell]) -> dict:
+    fb = [c for c in cells if c.fallback]
+    kept = [c for c in cells if not c.fallback]
+    return {
+        "cells": len(cells),
+        "fallback": len(fb),
+        "kept_unwrap": len(kept),
+        "silent_slip": sum(c.silent_slip for c in cells),
+        "fallback_cells_uncovered": sum(c.n_uncovered > 0 for c in fb),
+        "uncovered_samples": sum(c.n_uncovered for c in fb),
+        "trusted_inaccurate_kept": sum(c.trusted_inaccurate for c in kept),
+        "trusted_inaccurate_fallback": sum(c.trusted_inaccurate for c in fb),
+        # Status RECOVERED (no slip, no edge, no rail sample) yet > 1 % off:
+        # the capture gives no sign of the error (Table 9 "invisible").
+        "invisible_kept": sum(
+            c.trusted_inaccurate and c.status == "RECOVERED" for c in kept
+        ),
+        "max_trusted_err_frac": max((c.trusted_err_frac for c in cells), default=0.0),
+        "median_masked_frac_fallback": float(np.median([c.masked_frac for c in fb]))
+        if fb
+        else None,
+    }
+
+
+def summarize_real_nonideal(cells: list[RealNonIdealCell]) -> dict:
+    names = list(dict.fromkeys(c.config for c in cells))
+    return {
+        "total": _nonideal_counts(cells),
+        "by_config": {
+            n: _nonideal_counts([c for c in cells if c.config == n]) for n in names
+        },
+    }
+
+
+def format_nonideal_summary(summary: dict) -> str:
+    hdr = (
+        f"{'front end':<14} {'cells':>5} {'fallbk':>6} {'silent':>6} {'uncov':>5} "
+        f"{'bad-trust kept/fb':>17} {'invis':>5} {'max trusted err':>15} {'masked (fb med)':>15}"
+    )
+    lines = [hdr, "-" * len(hdr)]
+    rows = list(summary["by_config"].items()) + [("TOTAL", summary["total"])]
+    for name, s in rows:
+        mm = s["median_masked_frac_fallback"]
+        lines.append(
+            f"{name:<14} {s['cells']:>5} {s['fallback']:>6} {s['silent_slip']:>6} "
+            f"{s['uncovered_samples']:>5} "
+            f"{s['trusted_inaccurate_kept']:>8}/{s['trusted_inaccurate_fallback']:<8} "
+            f"{s['invisible_kept']:>5} "
+            f"{100 * s['max_trusted_err_frac']:>13.2f} % "
+            f"{'-' if mm is None else f'{100 * mm:.1f} %':>15}"
+        )
+    return "\n".join(lines)
+
+
+def write_nonideal_report(sweep: dict, path: Path | str) -> None:
+    out = {
+        "source": "CWRU Bearing Data Center (engineering.case.edu/bearingdatacenter), drive-end accelerometer, units g",
+        "assumptions": [
+            "Recorded DE channel treated as true sensor output; fold rail λ = ratio·peak applied in software.",
+            "Front end = failmap.nonideal_fold with failmap.default_nonideal_configs(); noise rows add seeded white noise at the stated SNR vs record RMS.",
+            "Output = shockdaq.recover_or_clip (blind, quiet-window prior); original used only for scoring; truth includes the quantizer DC offset.",
+            "silent_slip = unwrap kept but max|signal−truth| ≥ λ; uncovered = overloaded sample (|x| ≥ λ) left trusted on fallback.",
+            "48→12k rows = plain 4:1 subsampling of the 48 kHz record (no anti-alias filter).",
+        ],
+        "summary": sweep["summary"],
+        "cells": [asdict(c) for c in sweep["cells"]],
+    }
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    Path(path).write_text(json.dumps(out, indent=2) + "\n")

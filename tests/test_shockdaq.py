@@ -246,6 +246,26 @@ def test_recover_or_clip_falls_back_on_failmap_failures():
         )  # baseline not parked at a rail
 
 
+def test_recover_or_clip_fallback_marks_rail_clipped_samples_untrusted():
+    """Regression (2026-10-19, NOTES #8c): a slow excursion just past λ under a
+    +10 % wrap-threshold error is not wrapped, only clipped at the ADC rail. Its
+    steps are small, so overload_event_mask misses it; the fallback must still
+    mark it untrusted (rail mask)."""
+    lam, sr = DEFAULT_LAM_V, 51200
+    x = gen_impact_transient(sr=sr, lam=lam, peak_amp=60.0)  # forces UNREC
+    t = np.arange(len(x))
+    x = x + 1.05 * lam * np.exp(-0.5 * ((t - (len(x) - 3000)) / 400.0) ** 2)
+    y = nonideal_fold(x, lam, NonIdeal(thresh_err=0.10))
+    out = recover_or_clip(y, lam)
+    assert out.fallback and out.status == "UNRECOVERABLE"
+    over = np.abs(x) >= lam
+    assert np.any(
+        over & ~overload_event_mask(y, lam)
+    )  # the event mask alone misses some
+    assert not np.any(over & ~out.untrusted)  # the fallback output does not
+    assert out.rail_hits > 0
+
+
 def test_overload_event_mask_empty_on_in_range_capture():
     x = 0.3 * gen_impact_transient(sr=51200, lam=DEFAULT_LAM_V)
     assert not overload_event_mask(fold_capture(x, DEFAULT_LAM_V), DEFAULT_LAM_V).any()

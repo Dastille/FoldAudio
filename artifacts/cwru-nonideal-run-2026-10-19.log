@@ -1,0 +1,76 @@
+# FoldAudio local CI + CWRU non-ideal run, 2026-10-19 09:12 EDT
+# python 3.13.5, numpy 2.5.4, scipy 1.18.1, ruff 0.17.1
+# code = working tree on top of 0faecf4 (the commit that adds this log)
+## CWRU cache SHA-256
+f80b0ea04fd06b372a0eaec7c056543ea37e4bb4727a5b173d2a5bacd2aa9cab  ~/.cache/foldcrypt/cwru/105.mat
+daddef5f784879becdf8fefbe2453f11c3cfc8d061a2a671da2f546d1bb48460  ~/.cache/foldcrypt/cwru/109.mat
+b00628f8dd8d1d930af77fa465d1e5cdb385fe259489053f91f3680bda7f640e  ~/.cache/foldcrypt/cwru/118.mat
+f392129bf3b43360b964d4e5b3479d0797d1647af8359934b0f56b9abab4739a  ~/.cache/foldcrypt/cwru/122.mat
+35a095307d0971477049b343a1b5981dde465a58fb7f233ad89b035068c1717d  ~/.cache/foldcrypt/cwru/130.mat
+5a1c3ceec1f2b58af9e01051e425aa9d31dd018f58a8d31cda25bbdb1ac6dca9  ~/.cache/foldcrypt/cwru/135.mat
+9f723d6d9d2eba714c6dc50f99321dffa73d8b1e4d3605675b2c2251511eff80  ~/.cache/foldcrypt/cwru/209.mat
+6afb81f36a9efcdd370a52166d71c13cb42278c7de22752c81d4b2a22fa133f0  ~/.cache/foldcrypt/cwru/213.mat
+fcc0ee740fa123b1f4683f555458891719efb2857afd9fdee63e8fde0ed14469  ~/.cache/foldcrypt/cwru/222.mat
+fc78f08085760f2e17bcf7efe486b3a278e108093cd184acf278daecad6765e4  ~/.cache/foldcrypt/cwru/226.mat
+ebcbdb96612e8085bbdbf81f0e5e8e8a8d1a693d1ec559c4894f7792771aa9b2  ~/.cache/foldcrypt/cwru/234.mat
+63209a4057f199beb42beedf5b4481987fdb3ac746c46777dd385d689bc481df  ~/.cache/foldcrypt/cwru/238.mat
+16bf48babcf1c7ac224bc1a81cd9eafdb27e42d5cf559761907e067e8eeadf3c  ~/.cache/foldcrypt/cwru/97.mat
+## ruff check .
+[1;32mAll checks passed![0m
+## ruff format --check .
+43 files already formatted
+## pip-audit --skip-editable
+No known vulnerabilities found
+Name      Skip Reason
+--------- -------------------------------
+foldcrypt distribution marked as editable
+## python -m foldcrypt shockdaq-real --nonideal --offline
+ShockDAQ firmware fallback on real CWRU records, non-ideal fold front end
+  λ = ratio × record peak (software); recover_or_clip; original used only to score.
+  silent = unwrap kept but off by ≥ λ; uncov = overloaded samples left trusted on fallback;
+  bad-trust = cells where a trusted sample is off by > 1 % of peak (kept unwrap / fallback);
+  invis = bad-trust kept cells whose status still reads RECOVERED (no flag at all).
+
+front end      cells fallbk silent uncov bad-trust kept/fb invis max trusted err masked (fb med)
+------------------------------------------------------------------------------------------------
+ideal            120     97      0     0        0/0            0          0.00 %         100.0 %
+noise 60 dB      120     97      0     0        0/0            0          0.00 %         100.0 %
+noise 40 dB      120     97      0     0        0/0            0          0.00 %         100.0 %
+noise 30 dB      120     98      0     0        0/0            0          0.00 %         100.0 %
+noise 20 dB      120     99      0     0        0/0            0          0.00 %         100.0 %
+noise 15 dB      120    101      0     0        0/0            0          0.00 %         100.0 %
+noise 10 dB      120    110      0     0        0/0            0          0.00 %         100.0 %
+noise 5 dB       120    116      0     0        0/0            0          0.00 %         100.0 %
+noise 0 dB       120    119      0     0        0/0            0          0.00 %         100.0 %
+gain -5.0%       120     99      0     0       21/0           16          8.00 %         100.0 %
+gain -1.0%       120     97      0     0       21/0           16          1.60 %         100.0 %
+gain +0.1%       120     97      0     0        0/0            0          0.16 %         100.0 %
+gain +1.0%       120     97      0     0       21/0            0          1.60 %         100.0 %
+gain +5.0%       120     97      0     0       23/0            0          8.00 %         100.0 %
+thresh -10%      120     97      0     0        0/0            0          0.00 %         100.0 %
+thresh -2%       120     97      0     0        0/0            0          0.00 %         100.0 %
+thresh +2%       120     97      0     0        0/0            0          0.00 %         100.0 %
+thresh +10%      120     98      0     0        0/0            0          0.00 %         100.0 %
+offset +2%       120     97      0     0        0/0            0          0.00 %         100.0 %
+offset +10%      120     97      0     0        0/0            0          0.00 %         100.0 %
+inl 1%           120     97      0     0        0/0            0          0.80 %         100.0 %
+inl 2%           120     98      0     0       17/7           11          1.60 %         100.0 %
+inl 5%           120     99      0     0       21/43          14          4.00 %         100.0 %
+combo-mild       120     97      0     0        0/0            0          0.28 %         100.0 %
+combo-bad        120     97      0     0       21/0            0          1.38 %         100.0 %
+TOTAL           3000   2492      0     0      145/50          57          8.00 %         100.0 %
+
+  wrote artifacts/realdata/nonideal-metrics.json
+  shockdaq_real_nonideal=OK
+## python scripts/probe_fallback_mask.py
+fallback cells: 2492
+event mask only : uncovered cells=21 samples=117
+event | rail    : uncovered cells=0 samples=0
+gap=1024  (event|rail) uncovered cells=0 samples=0 masked median=1.0000 p25=0.9994
+gap=256   (event|rail) uncovered cells=0 samples=0 masked median=1.0000 p25=0.7960
+gap=64    (event|rail) uncovered cells=0 samples=0 masked median=0.9509 p25=0.5549
+gap=16    (event|rail) uncovered cells=0 samples=0 masked median=0.7933 p25=0.4026
+## python -m pytest -q -rs (CWRU cache present: the cached tests run)
+........................................................................ [ 61%]
+.............................................                            [100%]
+117 passed in 60.54s (0:01:00)

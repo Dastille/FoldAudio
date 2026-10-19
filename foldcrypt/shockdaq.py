@@ -355,13 +355,21 @@ def recover_or_clip(
     2. UNRECOVERABLE (slip or edge): DISCARD the unwrap. Output the raw folded
        samples y — exact wherever |x| < λ (an ideal fold is the identity there),
        bounded in [−λ, λ) inside the event — with overload_event_mask marking
-       the event untrusted and the peak reported as "≥ λ". That is the honest
+       the event untrusted (together with any rail-clipped sample, see below)
+       and the peak reported as "≥ λ". That is the honest
        content of a clipped capture: in-range samples exact, overload saturated.
        (Rejected: clipping the naive unwrap at ±λ. After a slip the unwrap's
        baseline sits 2λ off, so clip(unwrap) parks the whole tail at the rail —
        measured 2026-10-15: −11 to −16 dB SNR vs a true hard clip on seven
        failing captures, vs −0.9…+1.9 dB for the folded samples, whose
        baseline is exact.)
+       Rail-clipped samples are always marked untrusted, also in the fallback
+       (2026-10-19, NOTES #8c): with a wrap-threshold error the front end can
+       leave a slow excursion just past λ unwrapped and clipped at the ADC rail,
+       with steps too small for overload_event_mask. On the CWRU records under
+       the non-ideal front end that left 117 overloaded samples in 21 fallback
+       cells outside the event mask; event mask OR rail mask covers all of them
+       (realdata.run_real_nonideal_sweep).
     3. BOUNDED_ACCURACY (rail_hits > 0): recovered waveform; rail-clipped
        samples marked untrusted (bounded error, see module docstring).
     4. RECOVERED if the unwrap applied any wrap, else IN_RANGE (blind: no
@@ -381,7 +389,7 @@ def recover_or_clip(
             signal=y.copy(),
             status="UNRECOVERABLE",
             fallback=True,
-            untrusted=overload_event_mask(y, lam),
+            untrusted=overload_event_mask(y, lam) | rmask,
             peak_V=float(lam),
             peak_is_lower_bound=True,
             slip_flag=slip,

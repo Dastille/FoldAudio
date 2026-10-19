@@ -398,6 +398,8 @@ def cmd_shockdaq_real(args: argparse.Namespace) -> int:
 
     from . import realdata as rd
 
+    if args.nonideal:
+        return _shockdaq_real_nonideal(args)
     sweep = rd.run_real_sweep(args.cache, download=not args.offline)
     print(
         "ShockDAQ on real bearing-fault recordings (CWRU Bearing Data Center, drive-end accel, g)"
@@ -430,6 +432,39 @@ def cmd_shockdaq_real(args: argparse.Namespace) -> int:
         and s["rule_correct"] == s["cells"]
     )
     print(f"  shockdaq_real={'OK' if ok else 'FAIL'}")
+    return 0 if ok else 1
+
+
+def _shockdaq_real_nonideal(args: argparse.Namespace) -> int:
+    """CWRU records through the non-ideal front end + recover_or_clip (NOTES #8c)."""
+    from pathlib import Path
+
+    from . import realdata as rd
+
+    sweep = rd.run_real_nonideal_sweep(args.cache, download=not args.offline)
+    print("ShockDAQ firmware fallback on real CWRU records, non-ideal fold front end")
+    print(
+        "  λ = ratio × record peak (software); recover_or_clip; original used only to score."
+    )
+    print(
+        "  silent = unwrap kept but off by ≥ λ; uncov = overloaded samples left trusted on fallback;"
+    )
+    print(
+        "  bad-trust = cells where a trusted sample is off by > 1 % of peak (kept unwrap / fallback);"
+    )
+    print(
+        "  invis = bad-trust kept cells whose status still reads RECOVERED (no flag at all)."
+    )
+    print()
+    print(rd.format_nonideal_summary(sweep["summary"]))
+    print()
+    root = Path(__file__).resolve().parents[1]
+    out = root / "artifacts" / "realdata" / "nonideal-metrics.json"
+    rd.write_nonideal_report(sweep, out)
+    print(f"  wrote {out.relative_to(root)}")
+    t = sweep["summary"]["total"]
+    ok = t["silent_slip"] == 0 and t["uncovered_samples"] == 0
+    print(f"  shockdaq_real_nonideal={'OK' if ok else 'FAIL'}")
     return 0 if ok else 1
 
 
@@ -545,6 +580,11 @@ def main(argv: list[str] | None = None) -> int:
         "--offline", action="store_true", help="use cached files only; never download"
     )
     rl.add_argument("--cells", action="store_true", help="print every (record, λ) cell")
+    rl.add_argument(
+        "--nonideal",
+        action="store_true",
+        help="non-ideal fold front ends + recover_or_clip fallback (writes nonideal-metrics.json)",
+    )
     rl.set_defaults(func=cmd_shockdaq_real)
 
     au = sub.add_parser(

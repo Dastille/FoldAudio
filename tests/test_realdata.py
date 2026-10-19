@@ -63,3 +63,56 @@ def test_cached_cwru_sweep_has_no_silent_failures():
     assert s["cells"] == 120
     assert s["rule_correct"] == 120
     assert s["silent_fail"] == 0 and s["slip_false_alarm"] == 0
+
+
+# --- non-ideal front end + recover_or_clip on measured records (NOTES #8c) --
+
+from foldcrypt.failmap import NonIdeal  # noqa: E402
+
+
+def test_nonideal_eval_keeps_good_unwrap_and_falls_back_honestly():
+    cfgs = [NonIdeal("ideal"), NonIdeal("gain -1%", gain_err=-0.01)]
+    fast = rd.eval_record_nonideal("ring@96k", _ring(96000), 96000, cfgs, ratios=(0.5,))
+    ideal, gain = fast
+    assert not ideal.fallback and ideal.status == "RECOVERED"
+    assert ideal.max_err_frac < 1e-9 and not ideal.silent_slip
+    # Uncalibrated short fold step: unwrap holds (no slip), but > 1 % off with no
+    # flag at all, the limit that front-end calibration (calibrate.py) addresses.
+    assert not gain.fallback and not gain.silent_slip and gain.trusted_inaccurate
+    assert gain.status == "RECOVERED"
+    slow = rd.eval_record_nonideal(
+        "ring@12k", _ring(96000)[::8], 12000, cfgs, ratios=(0.5,)
+    )
+    for c in slow:  # past the slew limit: fallback, every overloaded sample masked
+        assert c.fallback and c.status == "UNRECOVERABLE"
+        assert c.n_overloaded > 0 and c.n_uncovered == 0 and not c.silent_slip
+
+
+def test_cached_cwru_nonideal_fallback_has_no_silent_slip_or_uncovered_sample():
+    """Backs docs/shockdaq-realdata.md and whitepaper §6.6 (Table 12) numbers."""
+    pytest.importorskip("scipy")
+    try:
+        for fid in rd.CWRU_FILES:
+            rd.fetch(fid, download=False)
+    except FileNotFoundError:
+        pytest.skip(
+            "CWRU files not cached (run python -m foldcrypt shockdaq-real once)"
+        )
+    s = rd.run_real_nonideal_sweep(download=False)["summary"]
+    t = s["total"]
+    assert t["cells"] == 3000 and t["fallback"] == 2492 and t["kept_unwrap"] == 508
+    assert t["silent_slip"] == 0 and t["uncovered_samples"] == 0
+    assert t["trusted_inaccurate_kept"] == 145
+    assert t["trusted_inaccurate_fallback"] == 50
+    assert t["invisible_kept"] == 57
+    assert t["max_trusted_err_frac"] == pytest.approx(0.08, abs=5e-4)
+    by = s["by_config"]
+    assert by["ideal"]["fallback"] == 97 and by["ideal"]["trusted_inaccurate_kept"] == 0
+    invisible = {n: c["invisible_kept"] for n, c in by.items() if c["invisible_kept"]}
+    assert invisible == {"gain -5.0%": 16, "gain -1.0%": 16, "inl 2%": 11, "inl 5%": 14}
+    bad_fb = {
+        n: c["trusted_inaccurate_fallback"]
+        for n, c in by.items()
+        if c["trusted_inaccurate_fallback"]
+    }
+    assert bad_fb == {"inl 2%": 7, "inl 5%": 43}

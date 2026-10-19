@@ -45,10 +45,24 @@ Where fold recovers, it is exact, so kurtosis and crest factor are preserved exa
 2. The usable gain is modest and rate-dependent: about 8–10 dB at 48 kHz for these records, none at 12 kHz. Bearing-fault impacts excite structural resonances in the kHz range, so the per-sample step is large. A fold front end for bearing monitoring should sample at 48 kHz or faster, or band-limit ahead of the fold.
 3. Low-cost condition-monitoring nodes that sample at 10–25.6 kHz should not assume fold recovery on impact-rich signals; they still benefit from the flag, which reports the overload instead of passing a silently clipped record.
 
+## Non-ideal front end and firmware fallback (2026-10-19)
+
+`python -m foldcrypt shockdaq-real --nonideal` (needs the CWRU cache; ~25 s) passes the same 120 cells through each of the 25 front-end configurations of `failmap.default_nonideal_configs()` (noise, fold-step gain, wrap threshold, offset, INL, two combined rows) and then through `shockdaq.recover_or_clip`, the firmware path that keeps the reconstruction or falls back to the folded samples with an untrusted mask. Output: `artifacts/realdata/nonideal-metrics.json`. Numbers asserted in `tests/test_realdata.py::test_cached_cwru_nonideal_fallback_has_no_silent_slip_or_uncovered_sample` (skipped in CI without the cache).
+
+**Hypothesis and falsifier.** The fallback mask covers every overloaded sample on measured data, as it did on 168 synthetic burst cells (2026-10-15). Falsified by any overloaded sample ($\lvert x\rvert \ge \lambda$) left trusted on fallback, or any kept reconstruction off by $\lambda$ or more.
+
+**Result.** The first run falsified it: 117 overloaded samples in 21 fallback cells, all in the wrap-threshold and combined rows, were outside the event mask. A threshold error can leave a slow excursion just past $\lambda$ unwrapped; the converter clips it at the rail, and its steps are too small for the event mask. Fix: the fallback mask now includes every rail-clipped sample (regression test `tests/test_shockdaq.py::test_recover_or_clip_fallback_marks_rail_clipped_samples_untrusted`, which fails on the old code). After the fix, over 3,000 cells: 2,492 fall back, 508 keep the reconstruction (all at 48 kHz), 0 silent slips and 0 overloaded samples left trusted. `python scripts/probe_fallback_mask.py` reproduces the before/after counts. A full local run (lint, format, pip-audit, this sweep, the probe and the whole test suite with the CWRU cache present, 117 passed) is logged in `artifacts/cwru-nonideal-run-2026-10-19.log`.
+
+**Accuracy (not a safety failure, but worth knowing).** 145 kept cells have a trusted sample more than 1 % of peak off (uncalibrated gain ±1 / ±5 %, INL 2 / 5 %, severe combined; at most 8.0 % at gain ±5 %). 57 of them still read `RECOVERED` with no flag at all (gain −1 % 16, gain −5 % 16, INL 2 % 11, INL 5 % 14). On fallback the folded samples carry the INL bow: 50 cells (INL 2 % 7, INL 5 % 43) have a trusted sample more than 1 % off, at most 3.9 % of peak.
+
+**The mask is honest but not selective here.** In every configuration the median fallback cell marks 100 % of the record untrusted (lowest single cell 6.2 %, record 238 at 48 kHz), because suspicious steps on these records sit closer together than the 1,024-sample merge gap. A 16-sample gap still covered every overloaded sample but marked a median 79 %, so the default was kept. On continuously impacting machines, a fallback capture amounts to a rejected capture with a correct overload flag.
+
+**Next.** Apply the one-tone calibration (`calibrate.py`) to these records to see whether the 57 invisible cells go to 0 on measured waveforms, as they do on the synthetic grid.
+
 ## Limitations
 
 - Overload is applied in software to records that were acquired within range; no folding hardware was used.
-- Ideal fold only; front-end errors (Section 3.7 of the technical report) were not applied to this set.
+- The sections above use the ideal fold. Front-end errors are applied in the section below, in software; calibration (Section 7 of the technical report) was not applied to these records.
 - One channel (drive end), one motor load (0 hp), one data set. CWRU is a laboratory test rig with seeded faults; field machines differ. Known issues with some CWRU records are discussed by Smith and Randall (2015).
 - The `48→12k` rows use subsampling without an anti-alias filter. A filtered decimation would lower both peaks and steps.
 
