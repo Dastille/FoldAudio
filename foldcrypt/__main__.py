@@ -441,8 +441,16 @@ def _shockdaq_real_nonideal(args: argparse.Namespace) -> int:
 
     from . import realdata as rd
 
-    sweep = rd.run_real_nonideal_sweep(args.cache, download=not args.offline)
+    cal = bool(getattr(args, "calibrated", False))
+    sweep = rd.run_real_nonideal_sweep(
+        args.cache, download=not args.offline, calibrate=cal
+    )
     print("ShockDAQ firmware fallback on real CWRU records, non-ideal fold front end")
+    if cal:
+        print(
+            "  calibrated: one-tone calibration (159.2 Hz at 4λ, 60 dB) per front end, "
+            "INL inverse + calibrated fold step before recover_or_clip."
+        )
     print(
         "  λ = ratio × record peak (software); recover_or_clip; original used only to score."
     )
@@ -459,7 +467,8 @@ def _shockdaq_real_nonideal(args: argparse.Namespace) -> int:
     print(rd.format_nonideal_summary(sweep["summary"]))
     print()
     root = Path(__file__).resolve().parents[1]
-    out = root / "artifacts" / "realdata" / "nonideal-metrics.json"
+    name = "nonideal-cal-metrics.json" if cal else "nonideal-metrics.json"
+    out = root / "artifacts" / "realdata" / name
     rd.write_nonideal_report(sweep, out)
     print(f"  wrote {out.relative_to(root)}")
     t = sweep["summary"]["total"]
@@ -584,6 +593,12 @@ def main(argv: list[str] | None = None) -> int:
         "--nonideal",
         action="store_true",
         help="non-ideal fold front ends + recover_or_clip fallback (writes nonideal-metrics.json)",
+    )
+    rl.add_argument(
+        "--calibrated",
+        action="store_true",
+        help="with --nonideal: apply the one-tone front-end calibration first "
+        "(writes nonideal-cal-metrics.json)",
     )
     rl.set_defaults(func=cmd_shockdaq_real)
 

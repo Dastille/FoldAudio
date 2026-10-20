@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Dastille/FoldAudio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Dastille/FoldAudio/actions/workflows/ci.yml)
 
-> **📄 Technical report (v1.6, 2026-10-19):** [**Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration**](docs/foldaudio-whitepaper.md)
+> **📄 Technical report (v1.7, 2026-10-20):** [**Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration**](docs/foldaudio-whitepaper.md)
 
 When a microphone or an IEPE accelerometer chain is overdriven, the converter clips and the peaks are lost, often with no flag. This repository simulates a different overload behaviour: values beyond ±λ **fold** (modulo wrap) back into range, and are then **unwrapped** in software. Recovery is exact while the slew rate stays below λ·f<sub>s</sub>. The absolute level is recovered blindly for AC-coupled signals. Each capture gets a self-diagnosed status (`UNRECOVERABLE` / `BOUNDED_ACCURACY` / `RECOVERED` / `IN_RANGE`), so failures are reported, not silent. Two configurations share one implementation: **FoldAudio** (audio, 48 kHz) and **ShockDAQ** (IEPE vibration/shock, 51.2 kHz).
 
@@ -64,7 +64,7 @@ Artifacts → `artifacts/shockdaq/` (`.npy` + listening WAVs + `metrics.json`).
 | impact_too_fast *(past slew limit, on purpose)* | 53.47 | 48.47 | 303 | 2.22 | −31.3 | −33.5 | yes | **NO** |
 | gearbox_fold_long *(fold step +1 % long, synthetic)* | 12.82 | 7.82 | 0.10 | 13.35 | 42.0 | +28.7 | yes | yes |
 
-`UNREC` column (2026-10-08): blind self-check, no original. The two good cases read `no`; `impact_too_fast` reads `SLIP+EDGE`, so the firmware knows not to trust that record. `shockdaq.recover_or_clip` (2026-10-15) does the fallback: it discards the unwrap, emits the folded samples (exact wherever the input was in range), marks the overload event untrusted and reports the peak as ≥ λ. Since 2026-10-19 the fallback also marks every rail-clipped sample untrusted: on the measured CWRU records under a wrap-threshold error, the event mask alone left 117 overloaded samples marked trusted (`python -m foldcrypt shockdaq-real --nonideal`, whitepaper Table 12).
+`UNREC` column (2026-10-08): blind self-check, no original. The two good cases read `no`; `impact_too_fast` reads `SLIP+EDGE`, so the firmware knows not to trust that record. `shockdaq.recover_or_clip` (2026-10-15) does the fallback: it discards the unwrap, emits the folded samples (exact wherever the input was in range), marks the overload event untrusted and reports the peak as ≥ λ. Since 2026-10-19 the fallback also marks every rail-clipped sample untrusted: on the measured CWRU records under a wrap-threshold error, the event mask alone left 117 overloaded samples marked trusted (`python -m foldcrypt shockdaq-real --nonideal`, whitepaper Table 12). Since 2026-10-20 the one-tone calibration has also been run on those records (`--nonideal --calibrated`, whitepaper Table 13): at 60 dB injection SNR it removes all 57 unflagged >1 % errors. A noisy calibration made things worse, so a calibration is now applied only if its fit residual is at most 0.5 % of λ (`FrontEndCal.accepted`).
 
 `RAIL` column (2026-10-13): number of folded samples sitting at the ADC rail. Ideal-fold cases read `no`; `gearbox_fold_long` (fold step 1 % too long) reads `92` while `UNREC` stays `no` — the unwrap held, but some samples just past each wrap were clipped, so firmware reports those overload peaks as **bounded accuracy** (≈ 0.1 V on a 12.8 V peak here), not as an unwrap failure. Firmware status per capture: `UNRECOVERABLE` (UNREC) > `BOUNDED_ACCURACY` (RAIL) > `RECOVERED` > `IN_RANGE`.
 
@@ -83,7 +83,7 @@ Artifacts → `artifacts/shockdaq/` (`.npy` + listening WAVs + `metrics.json`).
 | **WrapCancel / modulo / Itoh** | Engine (archived symbol-detect toys still in tree) |
 | **Recovery shares** | Parked — Sigil constellation already covers seed/backup |
 
-**Technical report:** [`docs/foldaudio-whitepaper.md`](docs/foldaudio-whitepaper.md) (v1.6, 2026-10-19; covers audio and vibration).
+**Technical report:** [`docs/foldaudio-whitepaper.md`](docs/foldaudio-whitepaper.md) (v1.7, 2026-10-20; covers audio and vibration).
 
 **Repo:** https://github.com/Dastille/FoldAudio
 

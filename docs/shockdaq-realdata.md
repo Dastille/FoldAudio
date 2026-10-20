@@ -57,7 +57,17 @@ Where fold recovers, it is exact, so kurtosis and crest factor are preserved exa
 
 **The mask is honest but not selective here.** In every configuration the median fallback cell marks 100 % of the record untrusted (lowest single cell 6.2 %, record 238 at 48 kHz), because suspicious steps on these records sit closer together than the 1,024-sample merge gap. A 16-sample gap still covered every overloaded sample but marked a median 79 %, so the default was kept. On continuously impacting machines, a fallback capture amounts to a rejected capture with a correct overload flag.
 
-**Next.** Apply the one-tone calibration (`calibrate.py`) to these records to see whether the 57 invisible cells go to 0 on measured waveforms, as they do on the synthetic grid.
+## Calibration on the measured records (NOTES #8d, 2026-10-20)
+
+`python -m foldcrypt shockdaq-real --nonideal --calibrated` (needs the CWRU cache; ~40 s) runs the same 3,000 cells, but first gives every front end the one-tone calibration of `calibrate.py` at the record's λ and sample rate (159.2 Hz tone at 4λ, 60 dB injection SNR), undoes the fitted INL bow and recovers with the calibrated fold step. Output: `artifacts/realdata/nonideal-cal-metrics.json`.
+
+**Hypothesis and falsifier.** At 60 dB the 57 invisible cells go to 0 with still 0 silent slips and 0 overloaded samples left trusted. Falsified by any of those after calibration.
+
+**Result.** Held: 0 invisible, 0 cells with a trusted sample more than 1 % off, 0 slips, 0 uncovered; the largest trusted error is 0.037 % of peak. Fallback cells 2,492 → 2,489.
+
+**What the falsification probe found.** `python scripts/probe_cal_gate.py` repeats the run at 60, 50, 40 and 20 dB injection SNR. Without a quality check, a noisy calibration is worse than none: at 40 dB, 216 invisible cells (vs 57 uncalibrated); at 20 dB, 4 kept reconstructions slipped and 9,199 overloaded samples were left trusted. Fix: `FrontEndCal.accepted` rejects a calibration whose fit residual RMS is above 0.5 % of λ (measured ≈ 0.28 % at 60 dB, ≈ 0.89 % at 50 dB), and a rejected calibration is not applied. With the gate, the 50/40/20 dB runs give exactly the uncalibrated numbers. The gate is conservative: ungated, 50 dB also removed all 57 invisible cells here (max trusted error 0.47 %), but its ĝ misses the 1e-3 target, so it is rejected. Tests: `tests/test_calibrate.py::test_residual_gate_accepts_clean_and_rejects_noisy_calibration`, `tests/test_realdata.py::test_rejected_calibration_is_not_applied`, `tests/test_realdata.py::test_cached_cwru_nonideal_calibrated_has_no_invisible_error` (skipped in CI without the cache). Local run log: `artifacts/cwru-cal-run-2026-10-20.log`.
+
+**Limit.** The front-end errors and the calibration use the same software model, so this shows the calibration works on measured waveforms, not that it captures every error of a real front end. The gate threshold was set with white injection noise only.
 
 ## Limitations
 

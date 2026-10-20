@@ -71,3 +71,15 @@ def test_inl_inverse_undoes_bow_to_first_order():
     bowed = y + 0.01 * LAM * np.sin(np.pi * y / LAM)
     back = bl.inl_inverse(bowed, LAM, (0.01 * LAM,))
     assert np.max(np.abs(back - y)) < 0.01 * LAM * 0.05
+
+
+def test_residual_gate_accepts_clean_and_rejects_noisy_calibration():
+    """NOTES #8d gate: resid/λ ≈ 2.8e-3 at 60 dB (accept), ≈ 8.9e-3 at 50 dB (reject)."""
+    for ni in (fm.NonIdeal(gain_err=-0.05), fm.NonIdeal(inl=0.05), fm.NonIdeal()):
+        for lam in (1.0, 5.0):
+            ok = cal.calibrate_config(ni, lam, cal_snr_db=60.0)
+            assert ok.accepted(lam) and abs(ok.g_hat - ni.gain_err) < 1e-3
+            for snr in (50.0, 40.0, 20.0):
+                bad = cal.calibrate_config(ni, lam, cal_snr_db=snr)
+                assert not bad.accepted(lam)
+                assert bad.resid_rms_V > cal.CAL_MAX_RESID_FRAC * lam

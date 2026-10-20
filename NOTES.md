@@ -39,6 +39,8 @@
 
 - **Non-ideal front end + fallback on CWRU** (2026-10-19 weekday slice, NOTES #8c) — `shockdaq-real --nonideal` / `realdata.run_real_nonideal_sweep`: 120 CWRU cells × 25 front ends → `recover_or_clip` (3,000 cells). Hypothesis "fallback mask covers every overloaded sample on measured data" **falsified on first run**: 117 overloaded samples in 21 fallback cells (thresh ±2/±10 %, combos) left trusted — threshold error leaves a slow excursion just past λ unwrapped and rail-clipped, steps too small for `overload_event_mask`. **Fix:** fallback untrusted = event mask | rail mask (regression test fails on old code). After: 0 silent slips, 0 uncovered; 2,492 fallback / 508 kept (all 48 kHz). Accuracy: 145 kept cells >1 % off (uncalibrated gain/INL/combo-bad; max 8.0 %), 57 of them invisible (`RECOVERED`, gain −1/−5 %, INL 2/5 %); fallback INL bow 50 cells, ≤3.9 %. Mask is honest but not selective on CWRU: median 100 % of record untrusted (gap 16 → 79 %, default kept; `scripts/probe_fallback_mask.py`). Whitepaper v1.6 (§3.6, §6.6 Table 12, Limitation 1). 117 tests.
 
+- **Calibration on CWRU + acceptance gate** (2026-10-20 weekday slice, NOTES #8d) — `shockdaq-real --nonideal --calibrated` / `run_real_nonideal_sweep(calibrate=True)`: per (record, λ, front end) one-tone calibration at the record's λ and sample rate, INL inverse + calibrated fold step before `recover_or_clip`, applied to all 25 front ends. Hypothesis (57 invisible → 0 at 60 dB, still 0 slips / 0 uncovered) **held**: 0 invisible, 0 bad-trust, max trusted err 0.037 %, fallback 2,492 → 2,489. Falsification probe on injection SNR found the hazard: ungated 40 dB → 216 invisible (worse than uncalibrated 57); 20 dB → 4 silent slips + 9,199 uncovered samples. Fix: `calibrate.CAL_MAX_RESID_FRAC = 5e-3` gate (resid/λ 2.8e-3 at 60 dB vs 8.9e-3 at 50 dB); gated 50/40/20 dB = uncalibrated numbers exactly. `scripts/probe_cal_gate.py`, log `artifacts/cwru-cal-run-2026-10-20.log`. Whitepaper v1.7 (§6.6 Table 13, §7.4 gate, Limitations 1/10). 121 tests.
+
 ## Next slices (weekday-sized, soft freeze)
 
 1. ~~**Listen / plot fail cases**~~ — done 2026-10-07 (`failmap.py`, slew rule + self-flags).
@@ -54,7 +56,8 @@
 8. ~~**Noise-aware slew rule + UNREC fallback**~~ — done 2026-10-15 (`noise_aware_slew_ok`, k = 5; `recover_or_clip`).
 8b. ~~**Combined derate + noise rule + blind σ**~~ — done 2026-10-16 (`combined_slew_ok`; INL/combo false-ok 12 → 0, false-no +19; `estimate_noise_sigma`).
 8c. ~~**Non-ideal front end + `recover_or_clip` on CWRU**~~ — done 2026-10-19 (falsified first, fixed: fallback mask now includes rail samples; 0 silent, 0 uncovered of 3,000 cells).
-8d. **Next (light):** one-tone calibration (`calibrate.py`) applied to the CWRU non-ideal rows — do the 57 invisible cells go to 0 on measured waveforms as on the synthetic grid?
+8d. ~~**One-tone calibration on CWRU non-ideal rows**~~ — done 2026-10-20: at 60 dB the 57 invisible cells go to 0 (max trusted err 0.04 %); ungated noisy calibration is harmful (40 dB → 216 invisible; 20 dB → 4 silent slips, 9,199 uncovered), so `FrontEndCal.accepted` residual gate (≤ 0.5 % λ) added. Whitepaper v1.7 Table 13.
+8e. **Next (light):** Cloudy's ask — `scripts/check_cwru_numbers.py` optionally recomputes metrics.json from the .mat files and prints the verified SHA-256s; extend it to Tables 12–13.
 9. **Still #3:** real IEPE/WAV capture if supplied — the only thing that turns "synthetic" into evidence. Refresh the FoldAudio whitepaper with the fail-map numbers once #3 or an OEM reply lands.
 
 ## Do not do

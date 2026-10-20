@@ -348,6 +348,8 @@ def format_cells(cells: list[RealCell]) -> str:
 def write_report(sweep: dict, path: Path | str) -> None:
     out = {
         "source": "CWRU Bearing Data Center (engineering.case.edu/bearingdatacenter), drive-end accelerometer, units g",
+        "calibrated": sweep.get("calibrated", False),
+        "cal_snr_db": sweep.get("cal_snr_db"),
         "assumptions": [
             "Recorded DE channel treated as true sensor output; fold rail λ = ratio·peak applied in software (the CWRU front end did not overload).",
             "Ideal modulo fold; blind recovery (AC-coupling zero-mean prior); original used only for scoring.",
@@ -398,6 +400,7 @@ class RealNonIdealCell:
     max_err_frac: float  # max |signal − truth| / peak, all samples
     trusted_err_frac: float  # max |signal − truth| / peak, trusted samples only
     silent_slip: bool  # no fallback, yet max |signal − truth| ≥ λ
+    cal_rejected: bool = False  # calibrate=True but the fit failed the residual gate
 
     @property
     def trusted_inaccurate(self) -> bool:
@@ -422,8 +425,26 @@ def eval_record_nonideal(
     ratios=RATIOS,
     *,
     seed: int = 0,
+    calibrate: bool = False,
+    cal_snr_db: float | None = 60.0,
+    cal_gate: bool = True,
 ) -> list[RealNonIdealCell]:
-    """Run recover_or_clip on one record through each non-ideal front end."""
+    """Run recover_or_clip on one record through each non-ideal front end.
+
+    calibrate=True (NOTES #8d): before recovery, every front end gets the
+    one-tone factory calibration of calibrate.calibrate_config at the record's
+    λ and sample rate (tone injected at cal_snr_db). The fitted INL bow is
+    undone on the folded samples (blind_level.inl_inverse) and recover_or_clip
+    undoes wraps with the calibrated step 2λ(1+ĝ). The calibration is applied to
+    every front end, including ones whose error it does not model (threshold,
+    offset, noise), so any harm it does there shows up in the counts. A
+    calibration that fails FrontEndCal.accepted (fit residual > 0.5 % of λ) is
+    not applied; that cell is recovered uncalibrated and counted as cal_rejected.
+    cal_gate=False applies every calibration regardless (only to measure what the
+    gate prevents; scripts/probe_cal_gate.py).
+    """
+    from .blind_level import inl_inverse
+    from .calibrate import calibrate_config
     from .failmap import default_nonideal_configs, nonideal_fold
     from .shockdaq import recover_or_clip
 
@@ -443,7 +464,16 @@ def eval_record_nonideal(
         for ci, ni in enumerate(configs):
             xs = noisy.get(ci, v)
             y = nonideal_fold(xs, lam, ni)
-            out = recover_or_clip(y, lam, bits=ni.bits)
+            g_hat = 0.0
+            rejected = False
+            if calibrate:
+                cal = calibrate_config(ni, lam, sr, cal_snr_db=cal_snr_db)
+                if cal.accepted(lam) or not cal_gate:
+                    g_hat = cal.g_hat
+                    y = inl_inverse(y, lam, cal.inl_coefs)
+                else:
+                    rejected = True
+            out = recover_or_clip(y, lam, fold_gain=g_hat, bits=ni.bits)
             err = np.abs(out.signal - (xs + ni.offset * lam))
             over = np.abs(xs) >= lam
             trusted = ~out.untrusted
@@ -465,6 +495,7 @@ def eval_record_nonideal(
                     if np.any(trusted)
                     else 0.0,
                     silent_slip=bool((not out.fallback) and np.max(err) >= lam),
+                    cal_rejected=rejected,
                 )
             )
     return cells
@@ -477,14 +508,37 @@ def run_real_nonideal_sweep(
     ids=None,
     decimate: bool = True,
     configs=None,
+    calibrate: bool = False,
+    cal_snr_db: float | None = 60.0,
+    cal_gate: bool = True,
 ) -> dict:
-    """All CWRU records × RATIOS × non-ideal configs through recover_or_clip."""
+    """All CWRU records × RATIOS × non-ideal configs through recover_or_clip.
+
+    calibrate=True applies the one-tone calibration first (see eval_record_nonideal).
+    """
     ids = list(ids) if ids is not None else list(CWRU_FILES)
     cells: list[RealNonIdealCell] = []
     for fid in ids:
         for name, _label, v, vsr in _variants(fid, cache, download, decimate):
-            cells.extend(eval_record_nonideal(name, v, vsr, configs, seed=fid))
-    return {"cells": cells, "summary": summarize_real_nonideal(cells)}
+            cells.extend(
+                eval_record_nonideal(
+                    name,
+                    v,
+                    vsr,
+                    configs,
+                    seed=fid,
+                    calibrate=calibrate,
+                    cal_snr_db=cal_snr_db,
+                    cal_gate=cal_gate,
+                )
+            )
+    return {
+        "calibrated": calibrate,
+        "cal_snr_db": cal_snr_db if calibrate else None,
+        "cal_gate": cal_gate if calibrate else None,
+        "cells": cells,
+        "summary": summarize_real_nonideal(cells),
+    }
 
 
 def _nonideal_counts(cells: list[RealNonIdealCell]) -> dict:
@@ -505,6 +559,7 @@ def _nonideal_counts(cells: list[RealNonIdealCell]) -> dict:
             c.trusted_inaccurate and c.status == "RECOVERED" for c in kept
         ),
         "max_trusted_err_frac": max((c.trusted_err_frac for c in cells), default=0.0),
+        "cal_rejected": sum(c.cal_rejected for c in cells),
         "median_masked_frac_fallback": float(np.median([c.masked_frac for c in fb]))
         if fb
         else None,
@@ -544,6 +599,8 @@ def format_nonideal_summary(summary: dict) -> str:
 def write_nonideal_report(sweep: dict, path: Path | str) -> None:
     out = {
         "source": "CWRU Bearing Data Center (engineering.case.edu/bearingdatacenter), drive-end accelerometer, units g",
+        "calibrated": sweep.get("calibrated", False),
+        "cal_snr_db": sweep.get("cal_snr_db"),
         "assumptions": [
             "Recorded DE channel treated as true sensor output; fold rail λ = ratio·peak applied in software.",
             "Front end = failmap.nonideal_fold with failmap.default_nonideal_configs(); noise rows add seeded white noise at the stated SNR vs record RMS.",

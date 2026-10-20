@@ -116,3 +116,60 @@ def test_cached_cwru_nonideal_fallback_has_no_silent_slip_or_uncovered_sample():
         if c["trusted_inaccurate_fallback"]
     }
     assert bad_fb == {"inl 2%": 7, "inl 5%": 43}
+
+
+# --- one-tone calibration on measured records (NOTES #8d) -------------------
+
+
+def test_calibration_removes_unflagged_gain_and_inl_error_on_impact_train():
+    cfgs = [
+        NonIdeal("ideal"),
+        NonIdeal("gain -5%", gain_err=-0.05),
+        NonIdeal("inl 5%", inl=0.05),
+    ]
+    x = _ring(96000)
+    raw = rd.eval_record_nonideal("ring@96k", x, 96000, cfgs, ratios=(0.5,))
+    cal = rd.eval_record_nonideal(
+        "ring@96k", x, 96000, cfgs, ratios=(0.5,), calibrate=True
+    )
+    assert raw[1].trusted_inaccurate and raw[2].trusted_inaccurate
+    for c in cal:
+        assert not c.fallback and not c.silent_slip
+        assert not c.trusted_inaccurate and c.trusted_err_frac < 1e-3
+
+
+def test_cached_cwru_nonideal_calibrated_has_no_invisible_error():
+    """Backs whitepaper §6.6 Table 12 calibrated column (v1.7, NOTES #8d)."""
+    pytest.importorskip("scipy")
+    try:
+        for fid in rd.CWRU_FILES:
+            rd.fetch(fid, download=False)
+    except FileNotFoundError:
+        pytest.skip(
+            "CWRU files not cached (run python -m foldcrypt shockdaq-real once)"
+        )
+    sweep = rd.run_real_nonideal_sweep(download=False, calibrate=True)
+    assert sweep["calibrated"] and sweep["cal_snr_db"] == 60.0
+    t = sweep["summary"]["total"]
+    assert t["cells"] == 3000 and t["fallback"] == 2489 and t["kept_unwrap"] == 511
+    assert t["silent_slip"] == 0 and t["uncovered_samples"] == 0
+    assert t["trusted_inaccurate_kept"] == 0
+    assert t["trusted_inaccurate_fallback"] == 0
+    assert t["invisible_kept"] == 0
+    assert t["max_trusted_err_frac"] < 5e-4
+
+
+def test_rejected_calibration_is_not_applied():
+    cfgs = [NonIdeal("ideal"), NonIdeal("gain -5%", gain_err=-0.05)]
+    x = _ring(96000)
+    raw = rd.eval_record_nonideal("ring@96k", x, 96000, cfgs, ratios=(0.5,))
+    gated = rd.eval_record_nonideal(
+        "ring@96k", x, 96000, cfgs, ratios=(0.5,), calibrate=True, cal_snr_db=20.0
+    )
+    for r, g in zip(raw, gated):
+        assert g.cal_rejected and not r.cal_rejected
+        assert (g.status, g.fallback, g.max_err_frac) == (
+            r.status,
+            r.fallback,
+            r.max_err_frac,
+        )

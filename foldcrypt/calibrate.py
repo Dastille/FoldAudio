@@ -60,6 +60,13 @@ CAL_FREQ_HZ = 159.2
 CAL_AMP_LAMS = 4.0
 CAL_DUR_S = 1.0
 CAL_TARGET_ABS_ERR = 1e-3  # NOTES #7 target: residual ≤ 0.1 % (absolute, in g)
+# Acceptance gate (NOTES #8d, 2026-10-20): reject a calibration whose fit residual
+# RMS exceeds this fraction of λ. Measured on the 25 front ends x 48/12 kHz x 3
+# seeds (white injection noise): resid/λ ≈ 2.8e-3 at 60 dB (worst |ĝ−g| 5.8e-4,
+# meets target), ≈ 8.9e-3 at 50 dB (worst |ĝ−g| 3.9e-3, misses). On the CWRU
+# records an accepted-but-noisy calibration is worse than none: at 40 dB it raised
+# invisible >1 % errors from 57 to 216, at 20 dB it produced 4 silent slips.
+CAL_MAX_RESID_FRAC = 5e-3
 
 
 def cal_tone(
@@ -92,6 +99,16 @@ class FrontEndCal:
     wraps: int  # wrap events in the calibration record
     used: int  # samples used in the fit (rail-clipped ones excluded)
     resid_rms_V: float  # fit residual (noise + unmodelled errors)
+
+    def accepted(self, lam: float, max_resid_frac: float = CAL_MAX_RESID_FRAC) -> bool:
+        """True if the fit residual is small enough to trust ĝ and the INL terms.
+
+        A rejected calibration must not be applied: recover uncalibrated instead
+        (bounded, documented gain/INL error) and report the channel as uncalibrated.
+        """
+        return bool(np.isfinite(self.resid_rms_V)) and (
+            self.resid_rms_V <= max_resid_frac * lam
+        )
 
 
 def estimate_front_end(
