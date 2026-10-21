@@ -1,5 +1,7 @@
 {
   "source": "CWRU Bearing Data Center (engineering.case.edu/bearingdatacenter), drive-end accelerometer, units g",
+  "calibrated": false,
+  "cal_snr_db": null,
   "assumptions": [
     "Recorded DE channel treated as true sensor output; fold rail \u03bb = ratio\u00b7peak applied in software (the CWRU front end did not overload).",
     "Ideal modulo fold; blind recovery (AC-coupling zero-mean prior); original used only for scoring.",
