@@ -1,10 +1,8 @@
 name: CI
 
+# Manual-only: GitHub free-plan Actions cap (Ashlynn, 2026-10-21). Checks run locally; see artifacts/local-check-*.log.
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read

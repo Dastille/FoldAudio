@@ -1,1 +1,9 @@
---: line 6: ruff: command not found
+[1;32mAll checks passed![0m
+45 files already formatted
+No known vulnerabilities found
+Name      Skip Reason
+--------- -------------------------------
+foldcrypt distribution marked as editable
+........................................................................ [ 58%]
+..............s.s.s................................                      [100%]
+120 passed, 3 skipped in 56.00s
