@@ -39,7 +39,7 @@ step() {
 }
 
 dirty=""
-[ -n "$(git status --porcelain)" ] && dirty=" + uncommitted changes"
+[ -n "$(git status --porcelain -- . ":(exclude)$log")" ] && dirty=" + uncommitted changes"
 say "# FoldCrypt local check ($([ $full -eq 1 ] && echo full || echo quick)), $(date '+%F %H:%M %Z')"
 say "# code = $(git rev-parse --short HEAD)$dirty"
 say "# $(python --version 2>&1); $(python -c 'import numpy; print("numpy", numpy.__version__)')"
