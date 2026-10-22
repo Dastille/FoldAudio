@@ -3,6 +3,47 @@ import pytest
 
 from foldcrypt import realdata as rd
 
+REQUIRE_ENV = "FOLDCRYPT_REQUIRE_CWRU"
+
+
+def _need_cwru_cache():
+    """Skip the measured-data tests when SciPy or the CWRU cache is missing,
+    unless FOLDCRYPT_REQUIRE_CWRU=1, in which case a missing input is a test
+    failure (used by scripts/local_check.sh --full so the gate cannot pass
+    with these tests silently skipped)."""
+    import os
+
+    required = os.environ.get(REQUIRE_ENV) == "1"
+    try:
+        import scipy  # noqa: F401
+    except ImportError:
+        if required:
+            pytest.fail(f"{REQUIRE_ENV}=1 but scipy is not installed")
+        pytest.skip("scipy not installed (pip install '.[real]')")
+    try:
+        for fid in rd.CWRU_FILES:
+            rd.fetch(fid, download=False)
+    except FileNotFoundError as e:
+        if required:
+            pytest.fail(f"{REQUIRE_ENV}=1 but CWRU cache incomplete: {e}")
+        pytest.skip(
+            "CWRU files not cached (run python -m foldcrypt shockdaq-real once)"
+        )
+
+
+def test_cache_dir_env_override(monkeypatch, tmp_path):
+    monkeypatch.setenv(rd.CACHE_ENV, str(tmp_path))
+    assert rd.default_cache() == tmp_path
+    monkeypatch.setenv(rd.CACHE_ENV, "  ")
+    assert rd.default_cache().parts[-3:] == (".cache", "foldcrypt", "cwru")
+
+
+def test_offline_fetch_rejects_bad_checksum(tmp_path):
+    fid = next(iter(rd.CWRU_FILES))
+    (tmp_path / f"{fid}.mat").write_bytes(b"not the real file")
+    with pytest.raises(FileNotFoundError):
+        rd.fetch(fid, tmp_path, download=False)
+
 
 def _ring(sr, f=3000.0, n=24000, seed=0):
     """Bearing-like impact train: decaying 3 kHz rings + sensor noise (g)."""
@@ -51,14 +92,7 @@ def test_same_event_subsampled_fails_and_is_flagged():
 
 
 def test_cached_cwru_sweep_has_no_silent_failures():
-    pytest.importorskip("scipy")
-    try:
-        for fid in rd.CWRU_FILES:
-            rd.fetch(fid, download=False)
-    except FileNotFoundError:
-        pytest.skip(
-            "CWRU files not cached (run python -m foldcrypt shockdaq-real once)"
-        )
+    _need_cwru_cache()
     s = rd.run_real_sweep(download=False)["summary"]
     assert s["cells"] == 120
     assert s["rule_correct"] == 120
@@ -90,14 +124,7 @@ def test_nonideal_eval_keeps_good_unwrap_and_falls_back_honestly():
 
 def test_cached_cwru_nonideal_fallback_has_no_silent_slip_or_uncovered_sample():
     """Backs docs/shockdaq-realdata.md and whitepaper §6.6 (Table 12) numbers."""
-    pytest.importorskip("scipy")
-    try:
-        for fid in rd.CWRU_FILES:
-            rd.fetch(fid, download=False)
-    except FileNotFoundError:
-        pytest.skip(
-            "CWRU files not cached (run python -m foldcrypt shockdaq-real once)"
-        )
+    _need_cwru_cache()
     s = rd.run_real_nonideal_sweep(download=False)["summary"]
     t = s["total"]
     assert t["cells"] == 3000 and t["fallback"] == 2492 and t["kept_unwrap"] == 508
@@ -140,14 +167,7 @@ def test_calibration_removes_unflagged_gain_and_inl_error_on_impact_train():
 
 def test_cached_cwru_nonideal_calibrated_has_no_invisible_error():
     """Backs whitepaper §6.6 Table 12 calibrated column (v1.7, NOTES #8d)."""
-    pytest.importorskip("scipy")
-    try:
-        for fid in rd.CWRU_FILES:
-            rd.fetch(fid, download=False)
-    except FileNotFoundError:
-        pytest.skip(
-            "CWRU files not cached (run python -m foldcrypt shockdaq-real once)"
-        )
+    _need_cwru_cache()
     sweep = rd.run_real_nonideal_sweep(download=False, calibrate=True)
     assert sweep["calibrated"] and sweep["cal_snr_db"] == 60.0
     t = sweep["summary"]["total"]

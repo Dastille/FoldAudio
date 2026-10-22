@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import urllib.request
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -118,7 +119,16 @@ RATIOS = (0.8, 0.6, 0.5, 0.4, 0.33, 0.25)
 EXACT_TOL = 1e-6
 
 
+#: Environment variable that overrides the CWRU cache directory.
+CACHE_ENV = "FOLDCRYPT_CWRU_CACHE"
+
+
 def default_cache() -> Path:
+    """CWRU cache directory: ``$FOLDCRYPT_CWRU_CACHE`` if set, else
+    ``~/.cache/foldcrypt/cwru``. Files are still SHA-256 checked on use."""
+    env = os.environ.get(CACHE_ENV, "").strip()
+    if env:
+        return Path(env).expanduser()
     return Path.home() / ".cache" / "foldcrypt" / "cwru"
 
 
