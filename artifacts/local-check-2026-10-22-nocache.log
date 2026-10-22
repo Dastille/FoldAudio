@@ -1,0 +1,377 @@
+# FoldCrypt local check (full), 2026-10-22 08:54 EDT
+# code = 75ab9bd + uncommitted changes
+# Python 3.13.5; numpy 2.5.4
+# scipy 1.18.1
+# ruff 0.17.1; pip-audit 2.10.1
+# CWRU cache = /tmp/empty-cwru
+
+## lint: ruff check .
+[1;32mAll checks passed![0m
+## lint: PASS
+
+## format: ruff format --check .
+45 files already formatted
+## format: PASS
+
+## audit: pip-audit --skip-editable
+Found 12 known vulnerabilities in 1 package
+Name Version ID              Fix Versions
+---- ------- --------------- ------------
+pip  25.1.1  PYSEC-2026-1795 25.3
+pip  25.1.1  PYSEC-2026-1796 26.0
+pip  25.1.1  PYSEC-2026-2875 26.1
+pip  25.1.1  PYSEC-2026-2876 26.1
+pip  25.1.1  PYSEC-2026-196  26.1.2
+pip  25.1.1  PYSEC-2026-1795 25.3
+pip  25.1.1  PYSEC-2026-1796 26.0
+pip  25.1.1  PYSEC-2026-196  26.1.2
+pip  25.1.1  PYSEC-2026-2875 26.1
+pip  25.1.1  PYSEC-2026-2876 26.1
+pip  25.1.1  PYSEC-2026-3721 26.2
+pip  25.1.1  PYSEC-2026-3721 26.2.0
+
+Name      Skip Reason
+--------- -------------------------------
+foldcrypt distribution marked as editable
+## audit: FAIL (exit 1)
+
+## tests: env FOLDCRYPT_REQUIRE_CWRU=1 python -m pytest -q -rs
+........................................................................ [ 57%]
+................F.F.F................................                    [100%]
+=================================== FAILURES ===================================
+________________ test_cached_cwru_sweep_has_no_silent_failures _________________
+
+    def _need_cwru_cache():
+        """Skip the measured-data tests when SciPy or the CWRU cache is missing,
+        unless FOLDCRYPT_REQUIRE_CWRU=1, in which case a missing input is a test
+        failure (used by scripts/local_check.sh --full so the gate cannot pass
+        with these tests silently skipped)."""
+        import os
+    
+        required = os.environ.get(REQUIRE_ENV) == "1"
+        try:
+            import scipy  # noqa: F401
+        except ImportError:
+            if required:
+                pytest.fail(f"{REQUIRE_ENV}=1 but scipy is not installed")
+            pytest.skip("scipy not installed (pip install '.[real]')")
+        try:
+            for fid in rd.CWRU_FILES:
+>               rd.fetch(fid, download=False)
+
+tests/test_realdata.py:25: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+file_id = 97, cache = PosixPath('/tmp/empty-cwru'), download = False
+
+    def fetch(
+        file_id: int, cache: Path | str | None = None, *, download: bool = True
+    ) -> Path:
+        """Return a checksum-verified local copy of CWRU file `file_id`."""
+        sr, _label, digest = CWRU_FILES[file_id]
+        cache = Path(cache) if cache else default_cache()
+        cache.mkdir(parents=True, exist_ok=True)
+        path = cache / f"{file_id}.mat"
+        if path.exists() and _sha256(path) == digest:
+            return path
+        if not download:
+>           raise FileNotFoundError(
+                f"{path} missing or bad checksum (run without --offline)"
+            )
+E           FileNotFoundError: /tmp/empty-cwru/97.mat missing or bad checksum (run without --offline)
+
+foldcrypt/realdata.py:154: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+    def test_cached_cwru_sweep_has_no_silent_failures():
+>       _need_cwru_cache()
+
+tests/test_realdata.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _need_cwru_cache():
+        """Skip the measured-data tests when SciPy or the CWRU cache is missing,
+        unless FOLDCRYPT_REQUIRE_CWRU=1, in which case a missing input is a test
+        failure (used by scripts/local_check.sh --full so the gate cannot pass
+        with these tests silently skipped)."""
+        import os
+    
+        required = os.environ.get(REQUIRE_ENV) == "1"
+        try:
+            import scipy  # noqa: F401
+        except ImportError:
+            if required:
+                pytest.fail(f"{REQUIRE_ENV}=1 but scipy is not installed")
+            pytest.skip("scipy not installed (pip install '.[real]')")
+        try:
+            for fid in rd.CWRU_FILES:
+                rd.fetch(fid, download=False)
+        except FileNotFoundError as e:
+            if required:
+>               pytest.fail(f"{REQUIRE_ENV}=1 but CWRU cache incomplete: {e}")
+E               Failed: FOLDCRYPT_REQUIRE_CWRU=1 but CWRU cache incomplete: /tmp/empty-cwru/97.mat missing or bad checksum (run without --offline)
+
+tests/test_realdata.py:28: Failed
+__ test_cached_cwru_nonideal_fallback_has_no_silent_slip_or_uncovered_sample ___
+
+    def _need_cwru_cache():
+        """Skip the measured-data tests when SciPy or the CWRU cache is missing,
+        unless FOLDCRYPT_REQUIRE_CWRU=1, in which case a missing input is a test
+        failure (used by scripts/local_check.sh --full so the gate cannot pass
+        with these tests silently skipped)."""
+        import os
+    
+        required = os.environ.get(REQUIRE_ENV) == "1"
+        try:
+            import scipy  # noqa: F401
+        except ImportError:
+            if required:
+                pytest.fail(f"{REQUIRE_ENV}=1 but scipy is not installed")
+            pytest.skip("scipy not installed (pip install '.[real]')")
+        try:
+            for fid in rd.CWRU_FILES:
+>               rd.fetch(fid, download=False)
+
+tests/test_realdata.py:25: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+file_id = 97, cache = PosixPath('/tmp/empty-cwru'), download = False
+
+    def fetch(
+        file_id: int, cache: Path | str | None = None, *, download: bool = True
+    ) -> Path:
+        """Return a checksum-verified local copy of CWRU file `file_id`."""
+        sr, _label, digest = CWRU_FILES[file_id]
+        cache = Path(cache) if cache else default_cache()
+        cache.mkdir(parents=True, exist_ok=True)
+        path = cache / f"{file_id}.mat"
+        if path.exists() and _sha256(path) == digest:
+            return path
+        if not download:
+>           raise FileNotFoundError(
+                f"{path} missing or bad checksum (run without --offline)"
+            )
+E           FileNotFoundError: /tmp/empty-cwru/97.mat missing or bad checksum (run without --offline)
+
+foldcrypt/realdata.py:154: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+    def test_cached_cwru_nonideal_fallback_has_no_silent_slip_or_uncovered_sample():
+        """Backs docs/shockdaq-realdata.md and whitepaper §6.6 (Table 12) numbers."""
+>       _need_cwru_cache()
+
+tests/test_realdata.py:127: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _need_cwru_cache():
+        """Skip the measured-data tests when SciPy or the CWRU cache is missing,
+        unless FOLDCRYPT_REQUIRE_CWRU=1, in which case a missing input is a test
+        failure (used by scripts/local_check.sh --full so the gate cannot pass
+        with these tests silently skipped)."""
+        import os
+    
+        required = os.environ.get(REQUIRE_ENV) == "1"
+        try:
+            import scipy  # noqa: F401
+        except ImportError:
+            if required:
+                pytest.fail(f"{REQUIRE_ENV}=1 but scipy is not installed")
+            pytest.skip("scipy not installed (pip install '.[real]')")
+        try:
+            for fid in rd.CWRU_FILES:
+                rd.fetch(fid, download=False)
+        except FileNotFoundError as e:
+            if required:
+>               pytest.fail(f"{REQUIRE_ENV}=1 but CWRU cache incomplete: {e}")
+E               Failed: FOLDCRYPT_REQUIRE_CWRU=1 but CWRU cache incomplete: /tmp/empty-cwru/97.mat missing or bad checksum (run without --offline)
+
+tests/test_realdata.py:28: Failed
+_________ test_cached_cwru_nonideal_calibrated_has_no_invisible_error __________
+
+    def _need_cwru_cache():
+        """Skip the measured-data tests when SciPy or the CWRU cache is missing,
+        unless FOLDCRYPT_REQUIRE_CWRU=1, in which case a missing input is a test
+        failure (used by scripts/local_check.sh --full so the gate cannot pass
+        with these tests silently skipped)."""
+        import os
+    
+        required = os.environ.get(REQUIRE_ENV) == "1"
+        try:
+            import scipy  # noqa: F401
+        except ImportError:
+            if required:
+                pytest.fail(f"{REQUIRE_ENV}=1 but scipy is not installed")
+            pytest.skip("scipy not installed (pip install '.[real]')")
+        try:
+            for fid in rd.CWRU_FILES:
+>               rd.fetch(fid, download=False)
+
+tests/test_realdata.py:25: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+file_id = 97, cache = PosixPath('/tmp/empty-cwru'), download = False
+
+    def fetch(
+        file_id: int, cache: Path | str | None = None, *, download: bool = True
+    ) -> Path:
+        """Return a checksum-verified local copy of CWRU file `file_id`."""
+        sr, _label, digest = CWRU_FILES[file_id]
+        cache = Path(cache) if cache else default_cache()
+        cache.mkdir(parents=True, exist_ok=True)
+        path = cache / f"{file_id}.mat"
+        if path.exists() and _sha256(path) == digest:
+            return path
+        if not download:
+>           raise FileNotFoundError(
+                f"{path} missing or bad checksum (run without --offline)"
+            )
+E           FileNotFoundError: /tmp/empty-cwru/97.mat missing or bad checksum (run without --offline)
+
+foldcrypt/realdata.py:154: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+    def test_cached_cwru_nonideal_calibrated_has_no_invisible_error():
+        """Backs whitepaper §6.6 Table 12 calibrated column (v1.7, NOTES #8d)."""
+>       _need_cwru_cache()
+
+tests/test_realdata.py:170: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _need_cwru_cache():
+        """Skip the measured-data tests when SciPy or the CWRU cache is missing,
+        unless FOLDCRYPT_REQUIRE_CWRU=1, in which case a missing input is a test
+        failure (used by scripts/local_check.sh --full so the gate cannot pass
+        with these tests silently skipped)."""
+        import os
+    
+        required = os.environ.get(REQUIRE_ENV) == "1"
+        try:
+            import scipy  # noqa: F401
+        except ImportError:
+            if required:
+                pytest.fail(f"{REQUIRE_ENV}=1 but scipy is not installed")
+            pytest.skip("scipy not installed (pip install '.[real]')")
+        try:
+            for fid in rd.CWRU_FILES:
+                rd.fetch(fid, download=False)
+        except FileNotFoundError as e:
+            if required:
+>               pytest.fail(f"{REQUIRE_ENV}=1 but CWRU cache incomplete: {e}")
+E               Failed: FOLDCRYPT_REQUIRE_CWRU=1 but CWRU cache incomplete: /tmp/empty-cwru/97.mat missing or bad checksum (run without --offline)
+
+tests/test_realdata.py:28: Failed
+3 failed, 122 passed in 35.37s
+## tests: FAIL (exit 1)
+
+## cwru-recompute: python scripts/check_cwru_numbers.py --recompute
+## Tables 10-11 (metrics.json)
+  OK   cells: run=120 doc=120
+  OK   rule correct: run=120 doc=120
+  OK   recovered: run=26 doc=26
+  OK   failed: run=94 doc=94
+  OK   failures flagged: run=94 doc=94
+  OK   silent failures: run=0 doc=0
+  OK   slip false alarms: run=0 doc=0
+  OK   edge conservative: run=3 doc=3
+  OK   48 kHz recovered: run=(26, 42) doc=(26, 42)
+  OK   12 kHz failed: run=(78, 78) doc=(78, 78)
+  OK   every cell overloaded: run=True doc=True
+  OK   edge on recovered: run=[('109@48k', 0.4), ('213@48k', 0.4), ('226@48k', 0.33)] doc=[('109@48k', 0.4), ('213@48k', 0.4), ('226@48k', 0.33)]
+  OK   48 kHz step/peak: run=(0.32, 0.42) doc=(0.32, 0.42)
+  OK   12 kHz step/peak: run=(1.03, 1.61) doc=(1.03, 1.61)
+  OK   48 kHz extra range dB: run=(7.5, 9.8) doc=(7.5, 9.8)
+  OK   Table 11 row 97: run=(0.42, 7.5, 0.5, 23.2, 2.8, 2.5, 4.2, 2.2) doc=(0.42, 7.5, 0.5, 23.2, 2.8, 2.5, 4.2, 2.2)
+  OK     97: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 109: run=(0.38, 8.3, 0.4, 19.5, 6.0, 4.7, 6.1, 3.2) doc=(0.38, 8.3, 0.4, 19.5, 6.0, 4.7, 6.1, 3.2)
+  OK     109: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 122: run=(0.35, 9.0, 0.4, 24.6, 3.1, 2.8, 4.9, 2.5) doc=(0.35, 9.0, 0.4, 24.6, 3.1, 2.8, 4.9, 2.5)
+  OK     122: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 135: run=(0.4, 7.9, 0.5, 15.8, 6.7, 4.9, 5.2, 2.8) doc=(0.4, 7.9, 0.5, 15.8, 6.7, 4.9, 5.2, 2.8)
+  OK     135: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 213: run=(0.37, 8.7, 0.4, 21.0, 4.2, 3.4, 5.3, 2.7) doc=(0.37, 8.7, 0.4, 21.0, 4.2, 3.4, 5.3, 2.7)
+  OK     213: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 226: run=(0.32, 9.8, 0.33, 29.7, 3.2, 3.0, 5.6, 2.8) doc=(0.32, 9.8, 0.33, 29.7, 3.2, 3.0, 5.6, 2.8)
+  OK     226: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 238: run=(0.4, 7.9, 0.5, 19.6, 20.8, 15.9, 11.5, 6.0) doc=(0.4, 7.9, 0.5, 19.6, 20.8, 15.9, 11.5, 6.0)
+  OK     238: fold-recovered kurtosis/crest exact: run=True doc=True
+## Table 12 (nonideal-metrics.json)
+  OK   cells: run=3000 doc=3000
+  OK   configurations: run=25 doc=25
+  OK   fallback: run=2492 doc=2492
+  OK   ideal front end fallback: run=(97, 120) doc=(97, 120)
+  OK   kept reconstruction: run=508 doc=508
+  OK   kept cells all at 48 kHz: run=True doc=True
+  OK   silent slip: run=0 doc=0
+  OK   uncovered samples (event | rail mask): run=0 doc=0
+  OK   fallback cells uncovered: run=0 doc=0
+  OK   bad kept: run=145 doc=145
+  OK   invisible: run=57 doc=57
+  OK   invisible by config: run={'gain -5.0%': 16, 'gain -1.0%': 16, 'inl 2%': 11, 'inl 5%': 14} doc={'gain -1.0%': 16, 'gain -5.0%': 16, 'inl 2%': 11, 'inl 5%': 14}
+  OK   bad fallback: run=50 doc=50
+  OK   bad fallback by config: run={'inl 2%': 7, 'inl 5%': 43} doc={'inl 2%': 7, 'inl 5%': 43}
+  OK   largest trusted error on fallback (% of peak, 1 dp): run=3.9 doc=3.9
+  OK   largest trusted error (% of peak): run=8.0 doc=8.0
+  OK   uncalibrated error at |g| = 1 / 5 %, INL 5 % (% of peak): run=(1.6, 8.0, 4.0) doc=(1.6, 8.0, 4.0)
+  OK   median masked on fallback, every config: run=True doc=True
+  OK   lowest masked fallback cell: run=(6.2, '238@48k') doc=(6.2, '238@48k')
+  OK   Table 13 uncalibrated row: run=(None, 2492, 0, 0, 145, 50, 57, 8.0) doc=(None, 2492, 0, 0, 145, 50, 57, 8.0)
+## Table 13, committed 60 dB gated run (nonideal-cal-metrics.json)
+  OK   calibrated: run=True doc=True
+  OK   cal SNR dB: run=60.0 doc=60.0
+  OK   cells: run=3000 doc=3000
+  OK   Table 13 row 60 dB gate on: run=(0, 2489, 0, 0, 0, 0, 0, 0.037) doc=(0, 2489, 0, 0, 0, 0, 0, 0.037)
+## CWRU cache SHA-256 (pinned in foldcrypt/realdata.py)
+  missing  /tmp/empty-cwru/97.mat
+  DIFF 97.mat sha256 matches pin: run=False doc=True
+  missing  /tmp/empty-cwru/105.mat
+  DIFF 105.mat sha256 matches pin: run=False doc=True
+  missing  /tmp/empty-cwru/109.mat
+  DIFF 109.mat sha256 matches pin: run=False doc=True
+  missing  /tmp/empty-cwru/118.mat
+  DIFF 118.mat sha256 matches pin: run=False doc=True
+  missing  /tmp/empty-cwru/122.mat
+  DIFF 122.mat sha256 matches pin: run=False doc=True
+  missing  /tmp/empty-cwru/130.mat
+  DIFF 130.mat sha256 matches pin: run=False doc=True
+  missing  /tmp/empty-cwru/135.mat
+  DIFF 135.mat sha256 matches pin: run=False doc=True
+  missing  /tmp/empty-cwru/209.mat
+  DIFF 209.mat sha256 matches pin: run=False doc=True
+  missing  /tmp/empty-cwru/213.mat
+  DIFF 213.mat sha256 matches pin: run=False doc=True
+  missing  /tmp/empty-cwru/222.mat
+  DIFF 222.mat sha256 matches pin: run=False doc=True
+  missing  /tmp/empty-cwru/226.mat
+  DIFF 226.mat sha256 matches pin: run=False doc=True
+  missing  /tmp/empty-cwru/234.mat
+  DIFF 234.mat sha256 matches pin: run=False doc=True
+  missing  /tmp/empty-cwru/238.mat
+  DIFF 238.mat sha256 matches pin: run=False doc=True
+## recompute metrics.json from the .mat files
+Traceback (most recent call last):
+  File "/workspace/foldcrypt/scripts/check_cwru_numbers.py", line 347, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/workspace/foldcrypt/scripts/check_cwru_numbers.py", line 336, in main
+    recompute(chk, committed, a.table13_all)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/foldcrypt/scripts/check_cwru_numbers.py", line 296, in recompute
+    fresh = json_roundtrip(write, run(), tmp)
+                                  ~~~^^
+  File "/workspace/foldcrypt/scripts/check_cwru_numbers.py", line 281, in <lambda>
+    lambda: rd.run_real_sweep(download=False),
+            ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/workspace/foldcrypt/foldcrypt/realdata.py", line 291, in run_real_sweep
+    x = load_de(fetch(fid, cache, download=download))
+                ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/foldcrypt/foldcrypt/realdata.py", line 154, in fetch
+    raise FileNotFoundError(
+        f"{path} missing or bad checksum (run without --offline)"
+    )
+FileNotFoundError: /tmp/empty-cwru/97.mat missing or bad checksum (run without --offline)
+## cwru-recompute: FAIL (exit 1)
+
+# RESULT: FAIL
