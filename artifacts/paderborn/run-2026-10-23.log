@@ -1,0 +1,31 @@
+K001/N15_M07_F10@64k       64000 Hz  peak  4.929  Δ/peak 1.014  headroom  -0.12 dB  kurt  13.1  spikes 176
+K001/N15_M07_F10@64→16k    16000 Hz  peak  4.391  Δ/peak 1.541  headroom  -3.75 dB  kurt  12.9  spikes 246
+K001/N09_M07_F10@64k       64000 Hz  peak  4.880  Δ/peak 0.999  headroom  +0.01 dB  kurt  20.2  spikes 350
+K001/N09_M07_F10@64→16k    16000 Hz  peak  4.593  Δ/peak 1.585  headroom  -4.00 dB  kurt  20.1  spikes 207
+K001/N15_M01_F10@64k       64000 Hz  peak  4.968  Δ/peak 1.027  headroom  -0.23 dB  kurt  14.9  spikes 238
+K001/N15_M01_F10@64→16k    16000 Hz  peak  4.068  Δ/peak 1.635  headroom  -4.27 dB  kurt  14.2  spikes 322
+K001/N15_M07_F04@64k       64000 Hz  peak  4.242  Δ/peak 0.999  headroom  +0.01 dB  kurt  14.7  spikes 845
+K001/N15_M07_F04@64→16k    16000 Hz  peak  4.156  Δ/peak 1.410  headroom  -2.99 dB  kurt  15.0  spikes 314
+KA04/N15_M07_F10@64k       64000 Hz  peak  3.220  Δ/peak 0.682  headroom  +3.32 dB  kurt   5.6  spikes 0
+KA04/N15_M07_F10@64→16k    16000 Hz  peak  3.082  Δ/peak 1.548  headroom  -3.79 dB  kurt   5.6  spikes 602
+KA04/N09_M07_F10@64k       64000 Hz  peak  1.889  Δ/peak 0.619  headroom  +4.17 dB  kurt   9.0  spikes 2
+KA04/N09_M07_F10@64→16k    16000 Hz  peak  1.889  Δ/peak 1.136  headroom  -1.11 dB  kurt   8.8  spikes 68
+KA04/N15_M01_F10@64k       64000 Hz  peak  3.906  Δ/peak 0.645  headroom  +3.82 dB  kurt   6.7  spikes 0
+KA04/N15_M01_F10@64→16k    16000 Hz  peak  3.439  Δ/peak 1.594  headroom  -4.05 dB  kurt   6.7  spikes 962
+KA04/N15_M07_F04@64k       64000 Hz  peak  2.545  Δ/peak 0.691  headroom  +3.21 dB  kurt   4.8  spikes 0
+KA04/N15_M07_F04@64→16k    16000 Hz  peak  2.386  Δ/peak 1.645  headroom  -4.32 dB  kurt   4.8  spikes 1182
+KI04/N15_M07_F10@64k       64000 Hz  peak  3.256  Δ/peak 0.950  headroom  +0.44 dB  kurt   5.2  spikes 147
+KI04/N15_M07_F10@64→16k    16000 Hz  peak  2.625  Δ/peak 1.578  headroom  -3.96 dB  kurt   5.1  spikes 234
+KI04/N09_M07_F10@64k       64000 Hz  peak  3.156  Δ/peak 0.963  headroom  +0.33 dB  kurt  16.5  spikes 194
+KI04/N09_M07_F10@64→16k    16000 Hz  peak  2.606  Δ/peak 1.786  headroom  -5.04 dB  kurt  16.8  spikes 138
+KI04/N15_M01_F10@64k       64000 Hz  peak  4.001  Δ/peak 0.917  headroom  +0.75 dB  kurt   5.6  spikes 49
+KI04/N15_M01_F10@64→16k    16000 Hz  peak  3.854  Δ/peak 1.632  headroom  -4.25 dB  kurt   5.8  spikes 40
+KI04/N15_M07_F04@64k       64000 Hz  peak  3.119  Δ/peak 1.071  headroom  -0.60 dB  kurt   6.0  spikes 189
+KI04/N15_M07_F04@64→16k    16000 Hz  peak  2.829  Δ/peak 1.505  headroom  -3.55 dB  kurt   5.9  spikes 155
+summary: {'cells': 144, 'rule_correct': 144, 'recovered': 4, 'failed': 140, 'failed_flagged': 140, 'silent_fail': 0, 'slip_false_alarm': 0, 'edge_conservative': 0}
+     HELD  P1 rule predicts every cell: 144/144
+     HELD  P2 zero silent failures: 0 silent
+FALSIFIED  P3 all 64 kHz records have headroom, median >= 7.5 dB: 9/12 positive, median +0.38 dB
+     HELD  P4 >= 7 of 12 records at 16 kHz have none: 12/12 none
+wrote artifacts/paderborn/metrics.json
+CWRU 48 kHz isolated_spikes: {97: 0, 109: 0, 122: 0, 135: 0, 213: 0, 226: 0, 238: 0}
