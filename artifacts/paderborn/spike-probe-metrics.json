@@ -1,0 +1,2154 @@
+{
+  "source": "Paderborn KAt via Zenodo 15845309 (CC BY 4.0); vibration_1 + phase_current_1/2, 64 kHz",
+  "prereg": "artifacts/paderborn/prereg-2026-10-25.md",
+  "verdicts": {
+    "spiky_records": 8,
+    "h1_evidence": 8,
+    "h2_evidence": 1,
+    "decoy_contaminated": 6,
+    "h1a_pwm_band": 8,
+    "h1b_current": 1,
+    "h2_ignoring_decoys": 2,
+    "H1": "HELD",
+    "H2": "FALSIFIED",
+    "filters": {
+      "LP10": {
+        "headroom_ok": 8,
+        "silent_fail": 0,
+        "rule_all_correct": true,
+        "lines_testable": 8,
+        "lines_lost": [],
+        "verdict": "HELD"
+      },
+      "LP5": {
+        "headroom_ok": 8,
+        "silent_fail": 0,
+        "rule_all_correct": true,
+        "lines_testable": 8,
+        "lines_lost": [
+          "KI04/N15_M07_F04_KI04_1.mat"
+        ],
+        "verdict": "FALSIFIED"
+      },
+      "MED3": {
+        "headroom_ok": 0,
+        "silent_fail": 0,
+        "rule_all_correct": true,
+        "lines_testable": 8,
+        "lines_lost": [],
+        "verdict": "FALSIFIED"
+      }
+    },
+    "H3": "HELD"
+  },
+  "records": [
+    {
+      "record": "K001/N15_M07_F10_K001_1.mat",
+      "bearing": "K001",
+      "condition": "N15_M07_F10",
+      "n_spikes": 176,
+      "fr_hz": 25.0,
+      "spiky": true,
+      "current": {
+        "frac": 0.3068181818181818,
+        "null_frac": 0.0565,
+        "evidence": false
+      },
+      "shape": {
+        "pos": 73,
+        "neg": 103,
+        "height_over_neighbour_med": 16.521600796871006
+      },
+      "current_spikes": {
+        "phase_current_1": {
+          "count": 0,
+          "same_sample": 0
+        },
+        "phase_current_2": {
+          "count": 0,
+          "same_sample": 0
+        }
+      },
+      "filters": {
+        "LP10": {
+          "headroom_db": 5.1952630990441175,
+          "kurtosis": 5.00266852958228,
+          "spikes_left": 0,
+          "line_snr_db": null,
+          "cells": 6,
+          "recovered": 2,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "LP5": {
+          "headroom_db": 10.446900738725871,
+          "kurtosis": 5.239176480728925,
+          "spikes_left": 0,
+          "line_snr_db": null,
+          "cells": 6,
+          "recovered": 5,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "MED3": {
+          "headroom_db": 0.9384363925556207,
+          "kurtosis": 10.290637204197374,
+          "spikes_left": 337,
+          "line_snr_db": null,
+          "cells": 6,
+          "recovered": 0,
+          "silent_fail": 0,
+          "rule_correct": 6
+        }
+      },
+      "raw": {
+        "headroom_db": -0.11752305489639438,
+        "kurtosis": 13.10081387276089,
+        "line_snr_db": null
+      },
+      "bands": {
+        "pwm16k": {
+          "name": "pwm16k",
+          "lo_hz": 15840.0,
+          "hi_hz": 16160.0,
+          "n": 176,
+          "r_max": 0.5398075296334465,
+          "f_at_max": 15844.710000000103,
+          "m_eff": 1281,
+          "p": 6.835136284314547e-20,
+          "significant": true
+        },
+        "fr": {
+          "name": "fr",
+          "lo_hz": 24.25,
+          "hi_hz": 25.75,
+          "n": 176,
+          "r_max": 0.13063375291611945,
+          "f_at_max": 24.670000000000066,
+          "m_eff": 7,
+          "p": 0.3473018218434271,
+          "significant": false
+        },
+        "bpfo": {
+          "name": "bpfo",
+          "lo_hz": 74.06654991243433,
+          "hi_hz": 78.64798598949211,
+          "n": 176,
+          "r_max": 0.16536110097918139,
+          "f_at_max": 77.22654991243594,
+          "m_eff": 19,
+          "p": 0.15440801763777898,
+          "significant": false
+        },
+        "bpfi": {
+          "name": "bpfi",
+          "lo_hz": 119.93345008756567,
+          "hi_hz": 127.35201401050789,
+          "n": 176,
+          "r_max": 0.1455521365815532,
+          "f_at_max": 126.16345008756886,
+          "m_eff": 30,
+          "p": 0.7207684648119681,
+          "significant": false
+        },
+        "decoy1": {
+          "name": "decoy1",
+          "lo_hz": 33.2225,
+          "hi_hz": 35.2775,
+          "n": 176,
+          "r_max": 0.15499365231243176,
+          "f_at_max": 33.7124999999999,
+          "m_eff": 9,
+          "p": 0.13122667600618368,
+          "significant": false
+        },
+        "decoy2": {
+          "name": "decoy2",
+          "lo_hz": 89.9675,
+          "hi_hz": 95.5325,
+          "n": 176,
+          "r_max": 0.22988585769455436,
+          "f_at_max": 94.67750000000241,
+          "m_eff": 23,
+          "p": 0.0021003167421483077,
+          "significant": false
+        },
+        "decoy3": {
+          "name": "decoy3",
+          "lo_hz": 134.1025,
+          "hi_hz": 142.3975,
+          "n": 176,
+          "r_max": 0.16310726218538213,
+          "f_at_max": 135.0924999999991,
+          "m_eff": 34,
+          "p": 0.3147615926493345,
+          "significant": false
+        },
+        "fe": {
+          "name": "fe",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 176,
+          "r_max": 0.7429707557106126,
+          "f_at_max": 99.9300000000015,
+          "m_eff": 25,
+          "p": 1.6030193129732709e-41,
+          "significant": true
+        },
+        "6fe": {
+          "name": "6fe",
+          "lo_hz": 582.0,
+          "hi_hz": 618.0,
+          "n": 176,
+          "r_max": 0.6649551101666675,
+          "f_at_max": 599.8199999999838,
+          "m_eff": 145,
+          "p": 2.3125809050485727e-32,
+          "significant": true
+        }
+      },
+      "exploratory_post_hoc": {
+        "mains50": {
+          "name": "mains50",
+          "lo_hz": 48.5,
+          "hi_hz": 51.5,
+          "n": 176,
+          "r_max": 0.13504798012999436,
+          "f_at_max": 51.489999999999405,
+          "m_eff": 13,
+          "p": 0.524698711760938,
+          "significant": false
+        },
+        "mains100": {
+          "name": "mains100",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 176,
+          "r_max": 0.7429707557106126,
+          "f_at_max": 99.9300000000015,
+          "m_eff": 25,
+          "p": 1.6030193129732709e-41,
+          "significant": true
+        },
+        "ctl8k": {
+          "name": "ctl8k",
+          "lo_hz": 7920.0,
+          "hi_hz": 8080.0,
+          "n": 176,
+          "r_max": 0.16731586527728534,
+          "f_at_max": 8067.7700000032255,
+          "m_eff": 641,
+          "p": 1.0,
+          "significant": false
+        },
+        "ctl12k": {
+          "name": "ctl12k",
+          "lo_hz": 11880.0,
+          "hi_hz": 12120.0,
+          "n": 176,
+          "r_max": 0.2713417788196647,
+          "f_at_max": 12092.300000004634,
+          "m_eff": 961,
+          "p": 0.0022648083999897875,
+          "significant": false
+        },
+        "ctl20k": {
+          "name": "ctl20k",
+          "lo_hz": 19800.0,
+          "hi_hz": 20200.0,
+          "n": 176,
+          "r_max": 0.26989839894932083,
+          "f_at_max": 19933.99999997855,
+          "m_eff": 1601,
+          "p": 0.004329245766762454,
+          "significant": false
+        },
+        "ctl24k": {
+          "name": "ctl24k",
+          "lo_hz": 23760.0,
+          "hi_hz": 24240.0,
+          "n": 176,
+          "r_max": 0.16484077456502702,
+          "f_at_max": 23807.269999992433,
+          "m_eff": 1921,
+          "p": 1.0,
+          "significant": false
+        },
+        "mod4": [
+          38,
+          47,
+          41,
+          50
+        ]
+      },
+      "h1_evidence": true,
+      "h2_evidence": false,
+      "decoy_contaminated": false
+    },
+    {
+      "record": "K001/N09_M07_F10_K001_1.mat",
+      "bearing": "K001",
+      "condition": "N09_M07_F10",
+      "n_spikes": 350,
+      "fr_hz": 15.0,
+      "spiky": true,
+      "current": {
+        "frac": 0.3742857142857143,
+        "null_frac": 0.054,
+        "evidence": false
+      },
+      "shape": {
+        "pos": 164,
+        "neg": 186,
+        "height_over_neighbour_med": 39.319880084968624
+      },
+      "current_spikes": {
+        "phase_current_1": {
+          "count": 0,
+          "same_sample": 0
+        },
+        "phase_current_2": {
+          "count": 0,
+          "same_sample": 0
+        }
+      },
+      "filters": {
+        "LP10": {
+          "headroom_db": 4.311731737372591,
+          "kurtosis": 8.537268828188026,
+          "spikes_left": 0,
+          "line_snr_db": null,
+          "cells": 6,
+          "recovered": 1,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "LP5": {
+          "headroom_db": 10.066799114655232,
+          "kurtosis": 8.714056313126695,
+          "spikes_left": 0,
+          "line_snr_db": null,
+          "cells": 6,
+          "recovered": 5,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "MED3": {
+          "headroom_db": 0.0811771295373514,
+          "kurtosis": 38.73142324113322,
+          "spikes_left": 372,
+          "line_snr_db": null,
+          "cells": 6,
+          "recovered": 0,
+          "silent_fail": 0,
+          "rule_correct": 6
+        }
+      },
+      "raw": {
+        "headroom_db": 0.005433775365243427,
+        "kurtosis": 20.16506543534376,
+        "line_snr_db": null
+      },
+      "bands": {
+        "pwm16k": {
+          "name": "pwm16k",
+          "lo_hz": 15840.0,
+          "hi_hz": 16160.0,
+          "n": 350,
+          "r_max": 0.5752919193357771,
+          "f_at_max": 15859.510000000426,
+          "m_eff": 1285,
+          "p": 6.336465383407006e-48,
+          "significant": true
+        },
+        "fr": {
+          "name": "fr",
+          "lo_hz": 14.549999999999999,
+          "hi_hz": 15.450000000000001,
+          "n": 350,
+          "r_max": 0.10676431658608106,
+          "f_at_max": 14.789999999999994,
+          "m_eff": 4,
+          "p": 0.07403462479962691,
+          "significant": false
+        },
+        "bpfo": {
+          "name": "bpfo",
+          "lo_hz": 44.4399299474606,
+          "hi_hz": 47.18879159369527,
+          "n": 350,
+          "r_max": 0.3260442701868936,
+          "f_at_max": 47.18992994746005,
+          "m_eff": 12,
+          "p": 8.327514190160437e-16,
+          "significant": true
+        },
+        "bpfi": {
+          "name": "bpfi",
+          "lo_hz": 71.96007005253941,
+          "hi_hz": 76.41120840630472,
+          "n": 350,
+          "r_max": 0.11346571681420263,
+          "f_at_max": 75.57007005254125,
+          "m_eff": 18,
+          "p": 0.19875301527652728,
+          "significant": false
+        },
+        "decoy1": {
+          "name": "decoy1",
+          "lo_hz": 19.9335,
+          "hi_hz": 21.166500000000003,
+          "n": 350,
+          "r_max": 0.09019565493462724,
+          "f_at_max": 20.733500000000124,
+          "m_eff": 5,
+          "p": 0.28999205679287976,
+          "significant": false
+        },
+        "decoy2": {
+          "name": "decoy2",
+          "lo_hz": 53.9805,
+          "hi_hz": 57.3195,
+          "n": 350,
+          "r_max": 0.16644316869778547,
+          "f_at_max": 54.84049999999983,
+          "m_eff": 14,
+          "p": 0.0008612656086577375,
+          "significant": true
+        },
+        "decoy3": {
+          "name": "decoy3",
+          "lo_hz": 80.4615,
+          "hi_hz": 85.4385,
+          "n": 350,
+          "r_max": 0.1690592382182017,
+          "f_at_max": 82.19150000000089,
+          "m_eff": 20,
+          "p": 0.0009049536456362905,
+          "significant": true
+        },
+        "fe": {
+          "name": "fe",
+          "lo_hz": 58.199999999999996,
+          "hi_hz": 61.800000000000004,
+          "n": 350,
+          "r_max": 0.11923294426081459,
+          "f_at_max": 59.959999999999646,
+          "m_eff": 15,
+          "p": 0.10354768498512738,
+          "significant": false
+        },
+        "6fe": {
+          "name": "6fe",
+          "lo_hz": 349.2,
+          "hi_hz": 370.8,
+          "n": 350,
+          "r_max": 0.4994445258915,
+          "f_at_max": 359.8799999999903,
+          "m_eff": 87,
+          "p": 1.0547243059417272e-36,
+          "significant": true
+        }
+      },
+      "exploratory_post_hoc": {
+        "mains50": {
+          "name": "mains50",
+          "lo_hz": 48.5,
+          "hi_hz": 51.5,
+          "n": 350,
+          "r_max": 0.16817595023020834,
+          "f_at_max": 49.56999999999979,
+          "m_eff": 13,
+          "p": 0.0006528564887280033,
+          "significant": true
+        },
+        "mains100": {
+          "name": "mains100",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 350,
+          "r_max": 0.7926863650025424,
+          "f_at_max": 99.91000000000149,
+          "m_eff": 25,
+          "p": 7.701183497109669e-95,
+          "significant": true
+        },
+        "ctl8k": {
+          "name": "ctl8k",
+          "lo_hz": 7920.0,
+          "hi_hz": 8080.0,
+          "n": 350,
+          "r_max": 0.13668264316344444,
+          "f_at_max": 7956.330000000793,
+          "m_eff": 643,
+          "p": 0.9299671597888682,
+          "significant": false
+        },
+        "ctl12k": {
+          "name": "ctl12k",
+          "lo_hz": 11880.0,
+          "hi_hz": 12120.0,
+          "n": 350,
+          "r_max": 0.15402989455601077,
+          "f_at_max": 11931.440000001123,
+          "m_eff": 964,
+          "p": 0.23865610575059684,
+          "significant": false
+        },
+        "ctl20k": {
+          "name": "ctl20k",
+          "lo_hz": 19800.0,
+          "hi_hz": 20200.0,
+          "n": 350,
+          "r_max": 0.15158500012805806,
+          "f_at_max": 19818.209999997085,
+          "m_eff": 1606,
+          "p": 0.5164367804425883,
+          "significant": false
+        },
+        "ctl24k": {
+          "name": "ctl24k",
+          "lo_hz": 23760.0,
+          "hi_hz": 24240.0,
+          "n": 350,
+          "r_max": 0.14970387718472583,
+          "f_at_max": 23954.72999996883,
+          "m_eff": 1927,
+          "p": 0.7556189025680793,
+          "significant": false
+        },
+        "mod4": [
+          88,
+          93,
+          97,
+          72
+        ]
+      },
+      "h1_evidence": true,
+      "h2_evidence": false,
+      "decoy_contaminated": true
+    },
+    {
+      "record": "K001/N15_M01_F10_K001_1.mat",
+      "bearing": "K001",
+      "condition": "N15_M01_F10",
+      "n_spikes": 238,
+      "fr_hz": 25.0,
+      "spiky": true,
+      "current": {
+        "frac": 0.31512605042016806,
+        "null_frac": 0.063,
+        "evidence": false
+      },
+      "shape": {
+        "pos": 139,
+        "neg": 99,
+        "height_over_neighbour_med": 18.076079384351523
+      },
+      "current_spikes": {
+        "phase_current_1": {
+          "count": 0,
+          "same_sample": 0
+        },
+        "phase_current_2": {
+          "count": 0,
+          "same_sample": 0
+        }
+      },
+      "filters": {
+        "LP10": {
+          "headroom_db": 3.131051322011202,
+          "kurtosis": 5.3016198485395485,
+          "spikes_left": 0,
+          "line_snr_db": null,
+          "cells": 6,
+          "recovered": 1,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "LP5": {
+          "headroom_db": 10.859475824266926,
+          "kurtosis": 5.290779620115049,
+          "spikes_left": 0,
+          "line_snr_db": null,
+          "cells": 6,
+          "recovered": 5,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "MED3": {
+          "headroom_db": 0.43148965342309953,
+          "kurtosis": 11.037429614627499,
+          "spikes_left": 276,
+          "line_snr_db": null,
+          "cells": 6,
+          "recovered": 0,
+          "silent_fail": 0,
+          "rule_correct": 6
+        }
+      },
+      "raw": {
+        "headroom_db": -0.23163745099630195,
+        "kurtosis": 14.915306370340948,
+        "line_snr_db": null
+      },
+      "bands": {
+        "pwm16k": {
+          "name": "pwm16k",
+          "lo_hz": 15840.0,
+          "hi_hz": 16160.0,
+          "n": 238,
+          "r_max": 0.43181130161213765,
+          "f_at_max": 16134.300000006424,
+          "m_eff": 1281,
+          "p": 6.832050411578754e-17,
+          "significant": true
+        },
+        "fr": {
+          "name": "fr",
+          "lo_hz": 24.25,
+          "hi_hz": 25.75,
+          "n": 238,
+          "r_max": 0.08055857858200367,
+          "f_at_max": 24.56000000000005,
+          "m_eff": 7,
+          "p": 1.0,
+          "significant": false
+        },
+        "bpfo": {
+          "name": "bpfo",
+          "lo_hz": 74.06654991243433,
+          "hi_hz": 78.64798598949211,
+          "n": 238,
+          "r_max": 0.09944637683541416,
+          "f_at_max": 75.376549912435,
+          "m_eff": 19,
+          "p": 1.0,
+          "significant": false
+        },
+        "bpfi": {
+          "name": "bpfi",
+          "lo_hz": 119.93345008756567,
+          "hi_hz": 127.35201401050789,
+          "n": 238,
+          "r_max": 0.14814549055486037,
+          "f_at_max": 120.46345008756595,
+          "m_eff": 30,
+          "p": 0.16166820281458538,
+          "significant": false
+        },
+        "decoy1": {
+          "name": "decoy1",
+          "lo_hz": 33.2225,
+          "hi_hz": 35.2775,
+          "n": 238,
+          "r_max": 0.08451573694227343,
+          "f_at_max": 34.80249999999968,
+          "m_eff": 9,
+          "p": 1.0,
+          "significant": false
+        },
+        "decoy2": {
+          "name": "decoy2",
+          "lo_hz": 89.9675,
+          "hi_hz": 95.5325,
+          "n": 238,
+          "r_max": 0.3019043957820867,
+          "f_at_max": 94.68750000000242,
+          "m_eff": 23,
+          "p": 8.72287752643601e-09,
+          "significant": true
+        },
+        "decoy3": {
+          "name": "decoy3",
+          "lo_hz": 134.1025,
+          "hi_hz": 142.3975,
+          "n": 238,
+          "r_max": 0.132504689864312,
+          "f_at_max": 138.85249999999567,
+          "m_eff": 34,
+          "p": 0.5208345915009601,
+          "significant": false
+        },
+        "fe": {
+          "name": "fe",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 238,
+          "r_max": 0.7884907914893212,
+          "f_at_max": 99.9200000000015,
+          "m_eff": 25,
+          "p": 1.3674085193290798e-63,
+          "significant": true
+        },
+        "6fe": {
+          "name": "6fe",
+          "lo_hz": 582.0,
+          "hi_hz": 618.0,
+          "n": 238,
+          "r_max": 0.5498713812649386,
+          "f_at_max": 599.8399999999838,
+          "m_eff": 145,
+          "p": 8.10884125926048e-30,
+          "significant": true
+        }
+      },
+      "exploratory_post_hoc": {
+        "mains50": {
+          "name": "mains50",
+          "lo_hz": 48.5,
+          "hi_hz": 51.5,
+          "n": 238,
+          "r_max": 0.13552091785928133,
+          "f_at_max": 51.17999999999947,
+          "m_eff": 13,
+          "p": 0.1642871599924356,
+          "significant": false
+        },
+        "mains100": {
+          "name": "mains100",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 238,
+          "r_max": 0.7884907914893212,
+          "f_at_max": 99.9200000000015,
+          "m_eff": 25,
+          "p": 1.3674085193290798e-63,
+          "significant": true
+        },
+        "ctl8k": {
+          "name": "ctl8k",
+          "lo_hz": 7920.0,
+          "hi_hz": 8080.0,
+          "n": 238,
+          "r_max": 0.15223878259121626,
+          "f_at_max": 8029.690000002394,
+          "m_eff": 641,
+          "p": 1.0,
+          "significant": false
+        },
+        "ctl12k": {
+          "name": "ctl12k",
+          "lo_hz": 11880.0,
+          "hi_hz": 12120.0,
+          "n": 238,
+          "r_max": 0.17731552782152943,
+          "f_at_max": 12055.170000003824,
+          "m_eff": 961,
+          "p": 0.540675964682016,
+          "significant": false
+        },
+        "ctl20k": {
+          "name": "ctl20k",
+          "lo_hz": 19800.0,
+          "hi_hz": 20200.0,
+          "n": 238,
+          "r_max": 0.17095870788161233,
+          "f_at_max": 19971.10999997261,
+          "m_eff": 1601,
+          "p": 1.0,
+          "significant": false
+        },
+        "ctl24k": {
+          "name": "ctl24k",
+          "lo_hz": 23760.0,
+          "hi_hz": 24240.0,
+          "n": 238,
+          "r_max": 0.1686742541236825,
+          "f_at_max": 23769.17999999853,
+          "m_eff": 1921,
+          "p": 1.0,
+          "significant": false
+        },
+        "mod4": [
+          51,
+          59,
+          68,
+          60
+        ]
+      },
+      "h1_evidence": true,
+      "h2_evidence": false,
+      "decoy_contaminated": true
+    },
+    {
+      "record": "K001/N15_M07_F04_K001_1.mat",
+      "bearing": "K001",
+      "condition": "N15_M07_F04",
+      "n_spikes": 845,
+      "fr_hz": 25.0,
+      "spiky": true,
+      "current": {
+        "frac": 0.27928994082840236,
+        "null_frac": 0.0535,
+        "evidence": false
+      },
+      "shape": {
+        "pos": 418,
+        "neg": 427,
+        "height_over_neighbour_med": 16.212796951340884
+      },
+      "current_spikes": {
+        "phase_current_1": {
+          "count": 0,
+          "same_sample": 0
+        },
+        "phase_current_2": {
+          "count": 0,
+          "same_sample": 0
+        }
+      },
+      "filters": {
+        "LP10": {
+          "headroom_db": 4.464703176933765,
+          "kurtosis": 5.6343776198408415,
+          "spikes_left": 0,
+          "line_snr_db": null,
+          "cells": 6,
+          "recovered": 2,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "LP5": {
+          "headroom_db": 9.441370991443616,
+          "kurtosis": 5.369857138523437,
+          "spikes_left": 0,
+          "line_snr_db": null,
+          "cells": 6,
+          "recovered": 4,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "MED3": {
+          "headroom_db": 0.06881895363115612,
+          "kurtosis": 15.406797008939005,
+          "spikes_left": 323,
+          "line_snr_db": null,
+          "cells": 6,
+          "recovered": 0,
+          "silent_fail": 0,
+          "rule_correct": 6
+        }
+      },
+      "raw": {
+        "headroom_db": 0.006251090329589866,
+        "kurtosis": 14.694592722857125,
+        "line_snr_db": null
+      },
+      "bands": {
+        "pwm16k": {
+          "name": "pwm16k",
+          "lo_hz": 15840.0,
+          "hi_hz": 16160.0,
+          "n": 845,
+          "r_max": 0.2964557235761646,
+          "f_at_max": 16086.840000005388,
+          "m_eff": 1294,
+          "p": 7.238251054664529e-30,
+          "significant": true
+        },
+        "fr": {
+          "name": "fr",
+          "lo_hz": 24.25,
+          "hi_hz": 25.75,
+          "n": 845,
+          "r_max": 0.07011435236836314,
+          "f_at_max": 25.20000000000015,
+          "m_eff": 7,
+          "p": 0.10990611410909815,
+          "significant": false
+        },
+        "bpfo": {
+          "name": "bpfo",
+          "lo_hz": 74.06654991243433,
+          "hi_hz": 78.64798598949211,
+          "n": 845,
+          "r_max": 0.08088487798247661,
+          "f_at_max": 78.20654991243644,
+          "m_eff": 19,
+          "p": 0.07548221852380413,
+          "significant": false
+        },
+        "bpfi": {
+          "name": "bpfi",
+          "lo_hz": 119.93345008756567,
+          "hi_hz": 127.35201401050789,
+          "n": 845,
+          "r_max": 0.07992224012636981,
+          "f_at_max": 126.84345008756921,
+          "m_eff": 30,
+          "p": 0.13583768579796127,
+          "significant": false
+        },
+        "decoy1": {
+          "name": "decoy1",
+          "lo_hz": 33.2225,
+          "hi_hz": 35.2775,
+          "n": 845,
+          "r_max": 0.0705635505282327,
+          "f_at_max": 34.892499999999664,
+          "m_eff": 9,
+          "p": 0.1339602971276583,
+          "significant": false
+        },
+        "decoy2": {
+          "name": "decoy2",
+          "lo_hz": 89.9675,
+          "hi_hz": 95.5325,
+          "n": 845,
+          "r_max": 0.2611313353749561,
+          "f_at_max": 94.80750000000248,
+          "m_eff": 23,
+          "p": 2.1756906445452375e-24,
+          "significant": true
+        },
+        "decoy3": {
+          "name": "decoy3",
+          "lo_hz": 134.1025,
+          "hi_hz": 142.3975,
+          "n": 845,
+          "r_max": 0.13635350601946442,
+          "f_at_max": 142.25249999999258,
+          "m_eff": 34,
+          "p": 5.111002977583565e-06,
+          "significant": true
+        },
+        "fe": {
+          "name": "fe",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 845,
+          "r_max": 0.8239619170915254,
+          "f_at_max": 99.95000000000151,
+          "m_eff": 25,
+          "p": 1.7829876225026011e-248,
+          "significant": true
+        },
+        "6fe": {
+          "name": "6fe",
+          "lo_hz": 582.0,
+          "hi_hz": 618.0,
+          "n": 845,
+          "r_max": 0.227567033833843,
+          "f_at_max": 604.9899999999791,
+          "m_eff": 146,
+          "p": 1.44447411678415e-17,
+          "significant": true
+        }
+      },
+      "exploratory_post_hoc": {
+        "mains50": {
+          "name": "mains50",
+          "lo_hz": 48.5,
+          "hi_hz": 51.5,
+          "n": 845,
+          "r_max": 0.07364839752204926,
+          "f_at_max": 50.71999999999956,
+          "m_eff": 13,
+          "p": 0.13286739221232519,
+          "significant": false
+        },
+        "mains100": {
+          "name": "mains100",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 845,
+          "r_max": 0.8239619170915254,
+          "f_at_max": 99.95000000000151,
+          "m_eff": 25,
+          "p": 1.7829876225026011e-248,
+          "significant": true
+        },
+        "ctl8k": {
+          "name": "ctl8k",
+          "lo_hz": 7920.0,
+          "hi_hz": 8080.0,
+          "n": 845,
+          "r_max": 0.07664104293886295,
+          "f_at_max": 8079.400000003479,
+          "m_eff": 647,
+          "p": 1.0,
+          "significant": false
+        },
+        "ctl12k": {
+          "name": "ctl12k",
+          "lo_hz": 11880.0,
+          "hi_hz": 12120.0,
+          "n": 845,
+          "r_max": 0.0953972847628912,
+          "f_at_max": 11903.510000000513,
+          "m_eff": 971,
+          "p": 0.4440953572091243,
+          "significant": false
+        },
+        "ctl20k": {
+          "name": "ctl20k",
+          "lo_hz": 19800.0,
+          "hi_hz": 20200.0,
+          "n": 845,
+          "r_max": 0.08984871833175134,
+          "f_at_max": 19898.869999984174,
+          "m_eff": 1617,
+          "p": 1.0,
+          "significant": false
+        },
+        "ctl24k": {
+          "name": "ctl24k",
+          "lo_hz": 23760.0,
+          "hi_hz": 24240.0,
+          "n": 845,
+          "r_max": 0.08807053274590021,
+          "f_at_max": 23786.209999995805,
+          "m_eff": 1941,
+          "p": 1.0,
+          "significant": false
+        },
+        "mod4": [
+          222,
+          193,
+          223,
+          207
+        ]
+      },
+      "h1_evidence": true,
+      "h2_evidence": false,
+      "decoy_contaminated": true
+    },
+    {
+      "record": "KA04/N15_M07_F10_KA04_1.mat",
+      "bearing": "KA04",
+      "condition": "N15_M07_F10",
+      "n_spikes": 0,
+      "fr_hz": 25.0,
+      "spiky": false,
+      "current": null,
+      "shape": null,
+      "current_spikes": null,
+      "filters": {
+        "LP10": {
+          "headroom_db": 4.552108514241832,
+          "kurtosis": 5.093692325871048,
+          "spikes_left": 0,
+          "line_snr_db": 36.46942017702871
+        },
+        "LP5": {
+          "headroom_db": 12.80893254561622,
+          "kurtosis": 5.52363254070436,
+          "spikes_left": 0,
+          "line_snr_db": 37.92955136022617
+        },
+        "MED3": {
+          "headroom_db": 2.939777547027482,
+          "kurtosis": 5.476874428799085,
+          "spikes_left": 0,
+          "line_snr_db": 36.86311233934884
+        }
+      },
+      "raw": {
+        "headroom_db": 3.318399264048862,
+        "kurtosis": 5.6056402480079015,
+        "line_snr_db": 36.92513223409012
+      },
+      "bands": {},
+      "exploratory_post_hoc": {},
+      "h1_evidence": false,
+      "h2_evidence": false,
+      "decoy_contaminated": null
+    },
+    {
+      "record": "KA04/N09_M07_F10_KA04_1.mat",
+      "bearing": "KA04",
+      "condition": "N09_M07_F10",
+      "n_spikes": 2,
+      "fr_hz": 15.0,
+      "spiky": false,
+      "current": null,
+      "shape": null,
+      "current_spikes": null,
+      "filters": {
+        "LP10": {
+          "headroom_db": 6.421603270679135,
+          "kurtosis": 8.729110947994034,
+          "spikes_left": 0,
+          "line_snr_db": 31.540807137177342
+        },
+        "LP5": {
+          "headroom_db": 16.139298769226475,
+          "kurtosis": 10.154950116324557,
+          "spikes_left": 0,
+          "line_snr_db": 32.544072298969695
+        },
+        "MED3": {
+          "headroom_db": 4.6477348211252885,
+          "kurtosis": 9.487289333913191,
+          "spikes_left": 0,
+          "line_snr_db": 31.608326151457128
+        }
+      },
+      "raw": {
+        "headroom_db": 4.169837501029904,
+        "kurtosis": 8.95540260923958,
+        "line_snr_db": 31.325169001916034
+      },
+      "bands": {},
+      "exploratory_post_hoc": {},
+      "h1_evidence": false,
+      "h2_evidence": false,
+      "decoy_contaminated": null
+    },
+    {
+      "record": "KA04/N15_M01_F10_KA04_1.mat",
+      "bearing": "KA04",
+      "condition": "N15_M01_F10",
+      "n_spikes": 0,
+      "fr_hz": 25.0,
+      "spiky": false,
+      "current": null,
+      "shape": null,
+      "current_spikes": null,
+      "filters": {
+        "LP10": {
+          "headroom_db": 4.454815124088664,
+          "kurtosis": 5.964537117627528,
+          "spikes_left": 0,
+          "line_snr_db": 33.36806558532331
+        },
+        "LP5": {
+          "headroom_db": 11.847114738843658,
+          "kurtosis": 5.594597845200222,
+          "spikes_left": 0,
+          "line_snr_db": 34.2885098560025
+        },
+        "MED3": {
+          "headroom_db": 2.193411363910504,
+          "kurtosis": 6.487813090010289,
+          "spikes_left": 0,
+          "line_snr_db": 33.3925179784466
+        }
+      },
+      "raw": {
+        "headroom_db": 3.815120421958867,
+        "kurtosis": 6.702798140107932,
+        "line_snr_db": 32.901269666873986
+      },
+      "bands": {},
+      "exploratory_post_hoc": {},
+      "h1_evidence": false,
+      "h2_evidence": false,
+      "decoy_contaminated": null
+    },
+    {
+      "record": "KA04/N15_M07_F04_KA04_1.mat",
+      "bearing": "KA04",
+      "condition": "N15_M07_F04",
+      "n_spikes": 0,
+      "fr_hz": 25.0,
+      "spiky": false,
+      "current": null,
+      "shape": null,
+      "current_spikes": null,
+      "filters": {
+        "LP10": {
+          "headroom_db": 3.330461011593056,
+          "kurtosis": 4.724105788025114,
+          "spikes_left": 0,
+          "line_snr_db": 39.03759637604962
+        },
+        "LP5": {
+          "headroom_db": 9.633824028211182,
+          "kurtosis": 4.6486606097553596,
+          "spikes_left": 0,
+          "line_snr_db": 37.51740735419209
+        },
+        "MED3": {
+          "headroom_db": 1.8289423461310836,
+          "kurtosis": 4.7878812781395865,
+          "spikes_left": 0,
+          "line_snr_db": 38.78150972659314
+        }
+      },
+      "raw": {
+        "headroom_db": 3.2148713442905335,
+        "kurtosis": 4.829279972237434,
+        "line_snr_db": 38.15395528722246
+      },
+      "bands": {},
+      "exploratory_post_hoc": {},
+      "h1_evidence": false,
+      "h2_evidence": false,
+      "decoy_contaminated": null
+    },
+    {
+      "record": "KI04/N15_M07_F10_KI04_1.mat",
+      "bearing": "KI04",
+      "condition": "N15_M07_F10",
+      "n_spikes": 147,
+      "fr_hz": 25.0,
+      "spiky": true,
+      "current": {
+        "frac": 0.3741496598639456,
+        "null_frac": 0.047,
+        "evidence": false
+      },
+      "shape": {
+        "pos": 68,
+        "neg": 79,
+        "height_over_neighbour_med": 7.019428026183299
+      },
+      "current_spikes": {
+        "phase_current_1": {
+          "count": 0,
+          "same_sample": 0
+        },
+        "phase_current_2": {
+          "count": 0,
+          "same_sample": 0
+        }
+      },
+      "filters": {
+        "LP10": {
+          "headroom_db": 6.298229158775647,
+          "kurtosis": 3.918340774983817,
+          "spikes_left": 0,
+          "line_snr_db": 22.96840992877238,
+          "cells": 6,
+          "recovered": 3,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "LP5": {
+          "headroom_db": 8.577785142472385,
+          "kurtosis": 4.247443478278353,
+          "spikes_left": 0,
+          "line_snr_db": 22.20508432626902,
+          "cells": 6,
+          "recovered": 4,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "MED3": {
+          "headroom_db": 2.243757820063145,
+          "kurtosis": 4.057140196122183,
+          "spikes_left": 23,
+          "line_snr_db": 23.476127769403888,
+          "cells": 6,
+          "recovered": 1,
+          "silent_fail": 0,
+          "rule_correct": 6
+        }
+      },
+      "raw": {
+        "headroom_db": 0.44252928854305384,
+        "kurtosis": 5.197873975635448,
+        "line_snr_db": 22.924002468309084
+      },
+      "bands": {
+        "pwm16k": {
+          "name": "pwm16k",
+          "lo_hz": 15840.0,
+          "hi_hz": 16160.0,
+          "n": 147,
+          "r_max": 0.3249229742009108,
+          "f_at_max": 15929.040000001944,
+          "m_eff": 1281,
+          "p": 0.00023308211184068926,
+          "significant": true
+        },
+        "fr": {
+          "name": "fr",
+          "lo_hz": 24.25,
+          "hi_hz": 25.75,
+          "n": 147,
+          "r_max": 0.1503547890487246,
+          "f_at_max": 24.520000000000042,
+          "m_eff": 7,
+          "p": 0.2522701979844048,
+          "significant": false
+        },
+        "bpfo": {
+          "name": "bpfo",
+          "lo_hz": 74.06654991243433,
+          "hi_hz": 78.64798598949211,
+          "n": 147,
+          "r_max": 0.1603123507798068,
+          "f_at_max": 74.9965499124348,
+          "m_eff": 19,
+          "p": 0.4345395373876381,
+          "significant": false
+        },
+        "bpfi": {
+          "name": "bpfi",
+          "lo_hz": 119.93345008756567,
+          "hi_hz": 127.35201401050789,
+          "n": 147,
+          "r_max": 0.17940776626008692,
+          "f_at_max": 125.28345008756841,
+          "m_eff": 30,
+          "p": 0.26439444852682653,
+          "significant": false
+        },
+        "decoy1": {
+          "name": "decoy1",
+          "lo_hz": 33.2225,
+          "hi_hz": 35.2775,
+          "n": 147,
+          "r_max": 0.1456344119880561,
+          "f_at_max": 34.2124999999998,
+          "m_eff": 9,
+          "p": 0.39829809562473145,
+          "significant": false
+        },
+        "decoy2": {
+          "name": "decoy2",
+          "lo_hz": 89.9675,
+          "hi_hz": 95.5325,
+          "n": 147,
+          "r_max": 0.43353217123471793,
+          "f_at_max": 94.72750000000244,
+          "m_eff": 23,
+          "p": 2.3054114067832203e-11,
+          "significant": true
+        },
+        "decoy3": {
+          "name": "decoy3",
+          "lo_hz": 134.1025,
+          "hi_hz": 142.3975,
+          "n": 147,
+          "r_max": 0.18616913148353986,
+          "f_at_max": 136.20249999999808,
+          "m_eff": 34,
+          "p": 0.20835655368596404,
+          "significant": false
+        },
+        "fe": {
+          "name": "fe",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 147,
+          "r_max": 0.9268237748339114,
+          "f_at_max": 99.9200000000015,
+          "m_eff": 25,
+          "p": 3.6151427234545254e-54,
+          "significant": true
+        },
+        "6fe": {
+          "name": "6fe",
+          "lo_hz": 582.0,
+          "hi_hz": 618.0,
+          "n": 147,
+          "r_max": 0.3472510222740013,
+          "f_at_max": 605.139999999979,
+          "m_eff": 145,
+          "p": 2.9052029415023936e-06,
+          "significant": true
+        }
+      },
+      "exploratory_post_hoc": {
+        "mains50": {
+          "name": "mains50",
+          "lo_hz": 48.5,
+          "hi_hz": 51.5,
+          "n": 147,
+          "r_max": 0.15894555299414867,
+          "f_at_max": 49.30999999999984,
+          "m_eff": 13,
+          "p": 0.3170128725294232,
+          "significant": false
+        },
+        "mains100": {
+          "name": "mains100",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 147,
+          "r_max": 0.9268237748339114,
+          "f_at_max": 99.9200000000015,
+          "m_eff": 25,
+          "p": 3.6151427234545254e-54,
+          "significant": true
+        },
+        "ctl8k": {
+          "name": "ctl8k",
+          "lo_hz": 7920.0,
+          "hi_hz": 8080.0,
+          "n": 147,
+          "r_max": 0.2252974380922335,
+          "f_at_max": 7967.390000001034,
+          "m_eff": 641,
+          "p": 0.36841911924623133,
+          "significant": false
+        },
+        "ctl12k": {
+          "name": "ctl12k",
+          "lo_hz": 11880.0,
+          "hi_hz": 12120.0,
+          "n": 147,
+          "r_max": 0.19730114168228344,
+          "f_at_max": 11971.890000002006,
+          "m_eff": 961,
+          "p": 1.0,
+          "significant": false
+        },
+        "ctl20k": {
+          "name": "ctl20k",
+          "lo_hz": 19800.0,
+          "hi_hz": 20200.0,
+          "n": 147,
+          "r_max": 0.2368340061887221,
+          "f_at_max": 20054.37999995928,
+          "m_eff": 1601,
+          "p": 0.42025348222373554,
+          "significant": false
+        },
+        "ctl24k": {
+          "name": "ctl24k",
+          "lo_hz": 23760.0,
+          "hi_hz": 24240.0,
+          "n": 147,
+          "r_max": 0.21582832168963167,
+          "f_at_max": 24183.019999932287,
+          "m_eff": 1921,
+          "p": 1.0,
+          "significant": false
+        },
+        "mod4": [
+          35,
+          45,
+          29,
+          38
+        ]
+      },
+      "h1_evidence": true,
+      "h2_evidence": false,
+      "decoy_contaminated": true
+    },
+    {
+      "record": "KI04/N09_M07_F10_KI04_1.mat",
+      "bearing": "KI04",
+      "condition": "N09_M07_F10",
+      "n_spikes": 194,
+      "fr_hz": 15.0,
+      "spiky": true,
+      "current": {
+        "frac": 0.44329896907216493,
+        "null_frac": 0.04,
+        "evidence": false
+      },
+      "shape": {
+        "pos": 109,
+        "neg": 85,
+        "height_over_neighbour_med": 15.197745672800067
+      },
+      "current_spikes": {
+        "phase_current_1": {
+          "count": 0,
+          "same_sample": 0
+        },
+        "phase_current_2": {
+          "count": 0,
+          "same_sample": 0
+        }
+      },
+      "filters": {
+        "LP10": {
+          "headroom_db": 5.517743426668203,
+          "kurtosis": 5.194767310629132,
+          "spikes_left": 0,
+          "line_snr_db": 23.515839244964532,
+          "cells": 6,
+          "recovered": 2,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "LP5": {
+          "headroom_db": 9.078603305460977,
+          "kurtosis": 5.031377767032015,
+          "spikes_left": 0,
+          "line_snr_db": 23.09301270386679,
+          "cells": 6,
+          "recovered": 4,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "MED3": {
+          "headroom_db": -0.4074531096708029,
+          "kurtosis": 6.727418656859388,
+          "spikes_left": 63,
+          "line_snr_db": 23.974891280425922,
+          "cells": 6,
+          "recovered": 0,
+          "silent_fail": 0,
+          "rule_correct": 6
+        }
+      },
+      "raw": {
+        "headroom_db": 0.32522400668449963,
+        "kurtosis": 16.450461287923098,
+        "line_snr_db": 21.499571501652678
+      },
+      "bands": {
+        "pwm16k": {
+          "name": "pwm16k",
+          "lo_hz": 15840.0,
+          "hi_hz": 16160.0,
+          "n": 194,
+          "r_max": 0.48255171101578886,
+          "f_at_max": 16119.400000006099,
+          "m_eff": 1281,
+          "p": 3.080984056339161e-17,
+          "significant": true
+        },
+        "fr": {
+          "name": "fr",
+          "lo_hz": 14.549999999999999,
+          "hi_hz": 15.450000000000001,
+          "n": 194,
+          "r_max": 0.1523294253302817,
+          "f_at_max": 14.849999999999993,
+          "m_eff": 4,
+          "p": 0.04436382560534704,
+          "significant": false
+        },
+        "bpfo": {
+          "name": "bpfo",
+          "lo_hz": 44.4399299474606,
+          "hi_hz": 47.18879159369527,
+          "n": 194,
+          "r_max": 0.2230837104647397,
+          "f_at_max": 44.68992994746055,
+          "m_eff": 11,
+          "p": 0.0007053791834352695,
+          "significant": true
+        },
+        "bpfi": {
+          "name": "bpfi",
+          "lo_hz": 71.96007005253941,
+          "hi_hz": 76.41120840630472,
+          "n": 194,
+          "r_max": 0.15969989980074753,
+          "f_at_max": 74.8700700525409,
+          "m_eff": 18,
+          "p": 0.12778380156375424,
+          "significant": false
+        },
+        "decoy1": {
+          "name": "decoy1",
+          "lo_hz": 19.9335,
+          "hi_hz": 21.166500000000003,
+          "n": 194,
+          "r_max": 0.14688785571207183,
+          "f_at_max": 20.493500000000086,
+          "m_eff": 5,
+          "p": 0.07605380217729991,
+          "significant": false
+        },
+        "decoy2": {
+          "name": "decoy2",
+          "lo_hz": 53.9805,
+          "hi_hz": 57.3195,
+          "n": 194,
+          "r_max": 0.20853896742951744,
+          "f_at_max": 57.120499999999375,
+          "m_eff": 14,
+          "p": 0.003034490170084452,
+          "significant": false
+        },
+        "decoy3": {
+          "name": "decoy3",
+          "lo_hz": 80.4615,
+          "hi_hz": 85.4385,
+          "n": 194,
+          "r_max": 0.16037586592002562,
+          "f_at_max": 82.34150000000096,
+          "m_eff": 20,
+          "p": 0.13614580252131256,
+          "significant": false
+        },
+        "fe": {
+          "name": "fe",
+          "lo_hz": 58.199999999999996,
+          "hi_hz": 61.800000000000004,
+          "n": 194,
+          "r_max": 0.14813534373112686,
+          "f_at_max": 60.89999999999946,
+          "m_eff": 15,
+          "p": 0.21243880023496872,
+          "significant": false
+        },
+        "6fe": {
+          "name": "6fe",
+          "lo_hz": 349.2,
+          "hi_hz": 370.8,
+          "n": 194,
+          "r_max": 0.30787775865289996,
+          "f_at_max": 364.95999999998565,
+          "m_eff": 87,
+          "p": 8.979939998632621e-07,
+          "significant": true
+        }
+      },
+      "exploratory_post_hoc": {
+        "mains50": {
+          "name": "mains50",
+          "lo_hz": 48.5,
+          "hi_hz": 51.5,
+          "n": 194,
+          "r_max": 0.1670978016956182,
+          "f_at_max": 49.83999999999973,
+          "m_eff": 13,
+          "p": 0.05773708119530913,
+          "significant": false
+        },
+        "mains100": {
+          "name": "mains100",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 194,
+          "r_max": 0.9078615647956817,
+          "f_at_max": 99.9400000000015,
+          "m_eff": 25,
+          "p": 9.025002667657119e-69,
+          "significant": true
+        },
+        "ctl8k": {
+          "name": "ctl8k",
+          "lo_hz": 7920.0,
+          "hi_hz": 8080.0,
+          "n": 194,
+          "r_max": 0.17092487264661752,
+          "f_at_max": 8006.620000001891,
+          "m_eff": 641,
+          "p": 1.0,
+          "significant": false
+        },
+        "ctl12k": {
+          "name": "ctl12k",
+          "lo_hz": 11880.0,
+          "hi_hz": 12120.0,
+          "n": 194,
+          "r_max": 0.19134982606672765,
+          "f_at_max": 11992.440000002454,
+          "m_eff": 961,
+          "p": 0.7903430062951156,
+          "significant": false
+        },
+        "ctl20k": {
+          "name": "ctl20k",
+          "lo_hz": 19800.0,
+          "hi_hz": 20200.0,
+          "n": 194,
+          "r_max": 0.1945022400827538,
+          "f_at_max": 19816.74999999732,
+          "m_eff": 1601,
+          "p": 1.0,
+          "significant": false
+        },
+        "ctl24k": {
+          "name": "ctl24k",
+          "lo_hz": 23760.0,
+          "hi_hz": 24240.0,
+          "n": 194,
+          "r_max": 0.18682365423807717,
+          "f_at_max": 24126.929999941265,
+          "m_eff": 1921,
+          "p": 1.0,
+          "significant": false
+        },
+        "mod4": [
+          57,
+          43,
+          50,
+          44
+        ]
+      },
+      "h1_evidence": true,
+      "h2_evidence": true,
+      "decoy_contaminated": false
+    },
+    {
+      "record": "KI04/N15_M01_F10_KI04_1.mat",
+      "bearing": "KI04",
+      "condition": "N15_M01_F10",
+      "n_spikes": 49,
+      "fr_hz": 25.0,
+      "spiky": true,
+      "current": {
+        "frac": 0.40816326530612246,
+        "null_frac": 0.054,
+        "evidence": false
+      },
+      "shape": {
+        "pos": 29,
+        "neg": 20,
+        "height_over_neighbour_med": 7.600778914077
+      },
+      "current_spikes": {
+        "phase_current_1": {
+          "count": 1,
+          "same_sample": 0
+        },
+        "phase_current_2": {
+          "count": 0,
+          "same_sample": 0
+        }
+      },
+      "filters": {
+        "LP10": {
+          "headroom_db": 5.112129333003635,
+          "kurtosis": 4.0216860360830395,
+          "spikes_left": 0,
+          "line_snr_db": 26.406701792643478,
+          "cells": 6,
+          "recovered": 2,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "LP5": {
+          "headroom_db": 9.515985157920978,
+          "kurtosis": 4.316819362617913,
+          "spikes_left": 0,
+          "line_snr_db": 25.041090855072703,
+          "cells": 6,
+          "recovered": 4,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "MED3": {
+          "headroom_db": 0.770969628731518,
+          "kurtosis": 4.053613393009815,
+          "spikes_left": 36,
+          "line_snr_db": 26.60069089729566,
+          "cells": 6,
+          "recovered": 0,
+          "silent_fail": 0,
+          "rule_correct": 6
+        }
+      },
+      "raw": {
+        "headroom_db": 0.7539644804672706,
+        "kurtosis": 5.562282658315554,
+        "line_snr_db": 25.447587923554813
+      },
+      "bands": {
+        "pwm16k": {
+          "name": "pwm16k",
+          "lo_hz": 15840.0,
+          "hi_hz": 16160.0,
+          "n": 49,
+          "r_max": 0.8858950039243335,
+          "f_at_max": 15886.910000001024,
+          "m_eff": 1284,
+          "p": 2.5554768626427467e-14,
+          "significant": true
+        },
+        "fr": {
+          "name": "fr",
+          "lo_hz": 24.25,
+          "hi_hz": 25.75,
+          "n": 49,
+          "r_max": 0.2334474787799924,
+          "f_at_max": 24.38000000000002,
+          "m_eff": 7,
+          "p": 0.4845772619224402,
+          "significant": false
+        },
+        "bpfo": {
+          "name": "bpfo",
+          "lo_hz": 74.06654991243433,
+          "hi_hz": 78.64798598949211,
+          "n": 49,
+          "r_max": 0.3239482695152371,
+          "f_at_max": 76.80654991243573,
+          "m_eff": 19,
+          "p": 0.11105356732024674,
+          "significant": false
+        },
+        "bpfi": {
+          "name": "bpfi",
+          "lo_hz": 119.93345008756567,
+          "hi_hz": 127.35201401050789,
+          "n": 49,
+          "r_max": 0.33398831392568756,
+          "f_at_max": 123.15345008756732,
+          "m_eff": 30,
+          "p": 0.12686089390073596,
+          "significant": false
+        },
+        "decoy1": {
+          "name": "decoy1",
+          "lo_hz": 33.2225,
+          "hi_hz": 35.2775,
+          "n": 49,
+          "r_max": 0.2169832315739483,
+          "f_at_max": 33.64249999999991,
+          "m_eff": 9,
+          "p": 0.896031384664609,
+          "significant": false
+        },
+        "decoy2": {
+          "name": "decoy2",
+          "lo_hz": 89.9675,
+          "hi_hz": 95.5325,
+          "n": 49,
+          "r_max": 0.5104811863638112,
+          "f_at_max": 95.06750000000261,
+          "m_eff": 23,
+          "p": 6.549958023237359e-05,
+          "significant": true
+        },
+        "decoy3": {
+          "name": "decoy3",
+          "lo_hz": 134.1025,
+          "hi_hz": 142.3975,
+          "n": 49,
+          "r_max": 0.30552996228675844,
+          "f_at_max": 137.74249999999668,
+          "m_eff": 34,
+          "p": 0.3507369347087829,
+          "significant": false
+        },
+        "fe": {
+          "name": "fe",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 49,
+          "r_max": 0.9584322283279391,
+          "f_at_max": 99.97000000000152,
+          "m_eff": 25,
+          "p": 7.077835305678992e-19,
+          "significant": true
+        },
+        "6fe": {
+          "name": "6fe",
+          "lo_hz": 582.0,
+          "hi_hz": 618.0,
+          "n": 49,
+          "r_max": 0.5821510311250593,
+          "f_at_max": 604.8399999999792,
+          "m_eff": 145,
+          "p": 8.900905128747929e-06,
+          "significant": true
+        }
+      },
+      "exploratory_post_hoc": {
+        "mains50": {
+          "name": "mains50",
+          "lo_hz": 48.5,
+          "hi_hz": 51.5,
+          "n": 49,
+          "r_max": 0.2602635396703961,
+          "f_at_max": 49.15999999999987,
+          "m_eff": 13,
+          "p": 0.47040133869107525,
+          "significant": false
+        },
+        "mains100": {
+          "name": "mains100",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 49,
+          "r_max": 0.9584322283279391,
+          "f_at_max": 99.97000000000152,
+          "m_eff": 25,
+          "p": 7.077835305678992e-19,
+          "significant": true
+        },
+        "ctl8k": {
+          "name": "ctl8k",
+          "lo_hz": 7920.0,
+          "hi_hz": 8080.0,
+          "n": 49,
+          "r_max": 0.40453211198617317,
+          "f_at_max": 7958.590000000842,
+          "m_eff": 642,
+          "p": 0.21138441140272451,
+          "significant": false
+        },
+        "ctl12k": {
+          "name": "ctl12k",
+          "lo_hz": 11880.0,
+          "hi_hz": 12120.0,
+          "n": 49,
+          "r_max": 0.3559588176594049,
+          "f_at_max": 12009.950000002837,
+          "m_eff": 963,
+          "p": 1.0,
+          "significant": false
+        },
+        "ctl20k": {
+          "name": "ctl20k",
+          "lo_hz": 19800.0,
+          "hi_hz": 20200.0,
+          "n": 49,
+          "r_max": 0.36143107454928125,
+          "f_at_max": 19963.80999997378,
+          "m_eff": 1605,
+          "p": 1.0,
+          "significant": false
+        },
+        "ctl24k": {
+          "name": "ctl24k",
+          "lo_hz": 23760.0,
+          "hi_hz": 24240.0,
+          "n": 49,
+          "r_max": 0.39056307906427623,
+          "f_at_max": 23915.199999975157,
+          "m_eff": 1926,
+          "p": 1.0,
+          "significant": false
+        },
+        "mod4": [
+          16,
+          11,
+          13,
+          9
+        ]
+      },
+      "h1_evidence": true,
+      "h2_evidence": false,
+      "decoy_contaminated": true
+    },
+    {
+      "record": "KI04/N15_M07_F04_KI04_1.mat",
+      "bearing": "KI04",
+      "condition": "N15_M07_F04",
+      "n_spikes": 189,
+      "fr_hz": 25.0,
+      "spiky": true,
+      "current": {
+        "frac": 0.5555555555555556,
+        "null_frac": 0.039,
+        "evidence": true
+      },
+      "shape": {
+        "pos": 106,
+        "neg": 83,
+        "height_over_neighbour_med": 7.19334299644998
+      },
+      "current_spikes": {
+        "phase_current_1": {
+          "count": 0,
+          "same_sample": 0
+        },
+        "phase_current_2": {
+          "count": 0,
+          "same_sample": 0
+        }
+      },
+      "filters": {
+        "LP10": {
+          "headroom_db": 4.012810296203421,
+          "kurtosis": 3.9263941826492794,
+          "spikes_left": 0,
+          "line_snr_db": 24.01673198427977,
+          "cells": 6,
+          "recovered": 1,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "LP5": {
+          "headroom_db": 8.779497409039879,
+          "kurtosis": 3.646254262078147,
+          "spikes_left": 0,
+          "line_snr_db": 21.114396812860367,
+          "cells": 6,
+          "recovered": 4,
+          "silent_fail": 0,
+          "rule_correct": 6
+        },
+        "MED3": {
+          "headroom_db": 0.4121087809332146,
+          "kurtosis": 4.2131120636672925,
+          "spikes_left": 29,
+          "line_snr_db": 24.045435977199038,
+          "cells": 6,
+          "recovered": 0,
+          "silent_fail": 0,
+          "rule_correct": 6
+        }
+      },
+      "raw": {
+        "headroom_db": -0.5992644675488632,
+        "kurtosis": 5.988333496958724,
+        "line_snr_db": 24.20059605718579
+      },
+      "bands": {
+        "pwm16k": {
+          "name": "pwm16k",
+          "lo_hz": 15840.0,
+          "hi_hz": 16160.0,
+          "n": 189,
+          "r_max": 0.3093338612255536,
+          "f_at_max": 16139.430000006536,
+          "m_eff": 1281,
+          "p": 1.7921142022078397e-05,
+          "significant": true
+        },
+        "fr": {
+          "name": "fr",
+          "lo_hz": 24.25,
+          "hi_hz": 25.75,
+          "n": 189,
+          "r_max": 0.19393757202618908,
+          "f_at_max": 25.100000000000133,
+          "m_eff": 7,
+          "p": 0.005726122840946088,
+          "significant": false
+        },
+        "bpfo": {
+          "name": "bpfo",
+          "lo_hz": 74.06654991243433,
+          "hi_hz": 78.64798598949211,
+          "n": 189,
+          "r_max": 0.18985573119444968,
+          "f_at_max": 77.62654991243615,
+          "m_eff": 19,
+          "p": 0.02089796341603508,
+          "significant": false
+        },
+        "bpfi": {
+          "name": "bpfi",
+          "lo_hz": 119.93345008756567,
+          "hi_hz": 127.35201401050789,
+          "n": 189,
+          "r_max": 0.23340442372900774,
+          "f_at_max": 119.9834500875657,
+          "m_eff": 30,
+          "p": 0.0010127622841937878,
+          "significant": false
+        },
+        "decoy1": {
+          "name": "decoy1",
+          "lo_hz": 33.2225,
+          "hi_hz": 35.2775,
+          "n": 189,
+          "r_max": 0.1130533420689339,
+          "f_at_max": 34.47249999999975,
+          "m_eff": 9,
+          "p": 0.8038075424080373,
+          "significant": false
+        },
+        "decoy2": {
+          "name": "decoy2",
+          "lo_hz": 89.9675,
+          "hi_hz": 95.5325,
+          "n": 189,
+          "r_max": 0.47751846535298215,
+          "f_at_max": 94.93750000000254,
+          "m_eff": 23,
+          "p": 4.417225002754245e-18,
+          "significant": true
+        },
+        "decoy3": {
+          "name": "decoy3",
+          "lo_hz": 134.1025,
+          "hi_hz": 142.3975,
+          "n": 189,
+          "r_max": 0.3099903234932248,
+          "f_at_max": 142.40249999999244,
+          "m_eff": 34,
+          "p": 4.404778837344364e-07,
+          "significant": true
+        },
+        "fe": {
+          "name": "fe",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 189,
+          "r_max": 0.9188771060425028,
+          "f_at_max": 99.97000000000152,
+          "m_eff": 25,
+          "p": 1.2402605056500523e-68,
+          "significant": true
+        },
+        "6fe": {
+          "name": "6fe",
+          "lo_hz": 582.0,
+          "hi_hz": 618.0,
+          "n": 189,
+          "r_max": 0.36932194938527135,
+          "f_at_max": 604.9899999999791,
+          "m_eff": 145,
+          "p": 9.237118054032264e-10,
+          "significant": true
+        }
+      },
+      "exploratory_post_hoc": {
+        "mains50": {
+          "name": "mains50",
+          "lo_hz": 48.5,
+          "hi_hz": 51.5,
+          "n": 189,
+          "r_max": 0.15959120742433747,
+          "f_at_max": 51.41999999999942,
+          "m_eff": 13,
+          "p": 0.10553016406633431,
+          "significant": false
+        },
+        "mains100": {
+          "name": "mains100",
+          "lo_hz": 97.0,
+          "hi_hz": 103.0,
+          "n": 189,
+          "r_max": 0.9188771060425028,
+          "f_at_max": 99.97000000000152,
+          "m_eff": 25,
+          "p": 1.2402605056500523e-68,
+          "significant": true
+        },
+        "ctl8k": {
+          "name": "ctl8k",
+          "lo_hz": 7920.0,
+          "hi_hz": 8080.0,
+          "n": 189,
+          "r_max": 0.20378759974581387,
+          "f_at_max": 8062.0900000031015,
+          "m_eff": 641,
+          "p": 0.2500674840866436,
+          "significant": false
+        },
+        "ctl12k": {
+          "name": "ctl12k",
+          "lo_hz": 11880.0,
+          "hi_hz": 12120.0,
+          "n": 189,
+          "r_max": 0.20865215273666315,
+          "f_at_max": 12072.4400000042,
+          "m_eff": 961,
+          "p": 0.2565897353585859,
+          "significant": false
+        },
+        "ctl20k": {
+          "name": "ctl20k",
+          "lo_hz": 19800.0,
+          "hi_hz": 20200.0,
+          "n": 189,
+          "r_max": 0.20099567132876944,
+          "f_at_max": 20115.839999949443,
+          "m_eff": 1601,
+          "p": 0.7733091254618827,
+          "significant": false
+        },
+        "ctl24k": {
+          "name": "ctl24k",
+          "lo_hz": 23760.0,
+          "hi_hz": 24240.0,
+          "n": 189,
+          "r_max": 0.19380367526805345,
+          "f_at_max": 24175.299999933522,
+          "m_eff": 1921,
+          "p": 1.0,
+          "significant": false
+        },
+        "mod4": [
+          48,
+          54,
+          45,
+          42
+        ]
+      },
+      "h1_evidence": true,
+      "h2_evidence": false,
+      "decoy_contaminated": true
+    }
+  ]
+}

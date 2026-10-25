@@ -158,3 +158,44 @@ def test_cached_spike_probe_matches_committed_metrics():
         for p in spiky
         for k in ("ctl8k", "ctl12k", "ctl20k", "ctl24k")
     )
+
+
+def test_doc_numbers_match_committed_probe():
+    """Key ranges quoted in docs/shockdaq-paderborn.md and the whitepaper are
+    recomputed from the committed spike-probe-metrics.json (no data cache)."""
+    m = json.loads((ROOT / "artifacts/paderborn/spike-probe-metrics.json").read_text())
+    recs = m["records"]
+    spiky = [r for r in recs if r["spiky"]]
+    lined = [r for r in recs if r["raw"]["line_snr_db"] is not None]
+    docs = [
+        (ROOT / "docs/shockdaq-paderborn.md").read_text(encoding="utf-8"),
+        (ROOT / "docs/foldaudio-whitepaper.md").read_text(encoding="utf-8"),
+    ]
+
+    def sgn(v):
+        return f"{v:+.2f}".replace("-", "−")
+
+    def head(name):
+        v = [r["filters"][name]["headroom_db"] for r in spiky]
+        return f"{min(v):.2f}–{max(v):.2f} dB"
+
+    def line_change(name):
+        d = [r["filters"][name]["line_snr_db"] - r["raw"]["line_snr_db"] for r in lined]
+        return f"{sgn(min(d))} to {sgn(max(d))} dB"
+
+    def rec(name):
+        return f"{sum(r['filters'][name]['recovered'] for r in spiky)}/48"
+
+    m100 = [r["exploratory_post_hoc"]["mains100"]["r_max"] for r in spiky]
+    pwm = [r["bands"]["pwm16k"]["r_max"] for r in spiky]
+    for doc in docs:
+        assert head("LP10") in doc and head("LP5") in doc
+        assert rec("LP10") in doc and rec("LP5") in doc
+        assert f"{min(m100):.2f}–{max(m100):.2f}" in doc
+        assert line_change("LP10") in doc, line_change("LP10")
+    paderborn_doc = docs[0]
+    assert f"R 0.296–{max(pwm):.3f}" in paderborn_doc and min(pwm) == pytest.approx(
+        0.296, abs=5e-4
+    )
+    v = m["verdicts"]
+    assert (v["H1"], v["H2"], v["H3"]) == ("HELD", "FALSIFIED", "HELD")

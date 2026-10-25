@@ -1,0 +1,114 @@
+# Paderborn spike-origin probe, 2026-10-25 18:23 EDT, code 7bdc494, prereg artifacts/paderborn/prereg-2026-10-25.md (commit 6fe7fc6)
+# python scripts/probe_paderborn_spikes.py  (cache /home/box/.cache/foldcrypt/paderborn, 12 SHA-256-pinned records)
+bands: pwm16k = 16000 Hz ±1%; kinematic ±3%; BPFO = 3.0543 f_r, BPFI = 4.9457 f_r; decoys (1.37, 3.71, 5.53) f_r; alpha 0.001
+
+K001/N15_M07_F10_K001_1.mat  spikes 176  f_r 25.00 Hz  raw headroom -0.12 dB  kurt 13.1
+  pwm16k* R=0.540@15844.71Hz p=6.8e-20  fr  R=0.131@24.67Hz p=3.5e-01  bpfo  R=0.165@77.23Hz p=1.5e-01  bpfi  R=0.146@126.16Hz p=7.2e-01
+  decoy1  R=0.155@33.71Hz p=1.3e-01  decoy2  R=0.230@94.68Hz p=2.1e-03  decoy3  R=0.163@135.09Hz p=3.1e-01  fe* R=0.743@99.93Hz p=1.6e-41  6fe* R=0.665@599.82Hz p=2.3e-32
+  EXPLORATORY (post hoc): mains50  R=0.135@51.49Hz p=5.2e-01  mains100* R=0.743@99.93Hz p=1.6e-41  ctl8k  R=0.167@8067.77Hz p=1.0e+00  ctl12k  R=0.271@12092.30Hz p=2.3e-03  ctl20k  R=0.270@19934.00Hz p=4.3e-03  ctl24k  R=0.165@23807.27Hz p=1.0e+00  index mod 4 [38, 47, 41, 50]
+  current coincidence 0.307 (null 0.057) evidence=False  shape {'pos': 73, 'neg': 103, 'height_over_neighbour_med': 16.521600796871006}  current spikes {'phase_current_1': {'count': 0, 'same_sample': 0}, 'phase_current_2': {'count': 0, 'same_sample': 0}}
+  H1 evidence=True  H2 evidence=False  decoy-contaminated=False
+  LP10 headroom +5.20 dB  kurt 5.0  spikes left 0  cells 6 rec 2 silent 0 rule 6/6
+  LP5  headroom +10.45 dB  kurt 5.2  spikes left 0  cells 6 rec 5 silent 0 rule 6/6
+  MED3 headroom +0.94 dB  kurt 10.3  spikes left 337  cells 6 rec 0 silent 0 rule 6/6
+
+K001/N09_M07_F10_K001_1.mat  spikes 350  f_r 15.00 Hz  raw headroom +0.01 dB  kurt 20.2
+  pwm16k* R=0.575@15859.51Hz p=6.3e-48  fr  R=0.107@14.79Hz p=7.4e-02  bpfo* R=0.326@47.19Hz p=8.3e-16  bpfi  R=0.113@75.57Hz p=2.0e-01
+  decoy1  R=0.090@20.73Hz p=2.9e-01  decoy2* R=0.166@54.84Hz p=8.6e-04  decoy3* R=0.169@82.19Hz p=9.0e-04  fe  R=0.119@59.96Hz p=1.0e-01  6fe* R=0.499@359.88Hz p=1.1e-36
+  EXPLORATORY (post hoc): mains50* R=0.168@49.57Hz p=6.5e-04  mains100* R=0.793@99.91Hz p=7.7e-95  ctl8k  R=0.137@7956.33Hz p=9.3e-01  ctl12k  R=0.154@11931.44Hz p=2.4e-01  ctl20k  R=0.152@19818.21Hz p=5.2e-01  ctl24k  R=0.150@23954.73Hz p=7.6e-01  index mod 4 [88, 93, 97, 72]
+  current coincidence 0.374 (null 0.054) evidence=False  shape {'pos': 164, 'neg': 186, 'height_over_neighbour_med': 39.319880084968624}  current spikes {'phase_current_1': {'count': 0, 'same_sample': 0}, 'phase_current_2': {'count': 0, 'same_sample': 0}}
+  H1 evidence=True  H2 evidence=False  decoy-contaminated=True
+  LP10 headroom +4.31 dB  kurt 8.5  spikes left 0  cells 6 rec 1 silent 0 rule 6/6
+  LP5  headroom +10.07 dB  kurt 8.7  spikes left 0  cells 6 rec 5 silent 0 rule 6/6
+  MED3 headroom +0.08 dB  kurt 38.7  spikes left 372  cells 6 rec 0 silent 0 rule 6/6
+
+K001/N15_M01_F10_K001_1.mat  spikes 238  f_r 25.00 Hz  raw headroom -0.23 dB  kurt 14.9
+  pwm16k* R=0.432@16134.30Hz p=6.8e-17  fr  R=0.081@24.56Hz p=1.0e+00  bpfo  R=0.099@75.38Hz p=1.0e+00  bpfi  R=0.148@120.46Hz p=1.6e-01
+  decoy1  R=0.085@34.80Hz p=1.0e+00  decoy2* R=0.302@94.69Hz p=8.7e-09  decoy3  R=0.133@138.85Hz p=5.2e-01  fe* R=0.788@99.92Hz p=1.4e-63  6fe* R=0.550@599.84Hz p=8.1e-30
+  EXPLORATORY (post hoc): mains50  R=0.136@51.18Hz p=1.6e-01  mains100* R=0.788@99.92Hz p=1.4e-63  ctl8k  R=0.152@8029.69Hz p=1.0e+00  ctl12k  R=0.177@12055.17Hz p=5.4e-01  ctl20k  R=0.171@19971.11Hz p=1.0e+00  ctl24k  R=0.169@23769.18Hz p=1.0e+00  index mod 4 [51, 59, 68, 60]
+  current coincidence 0.315 (null 0.063) evidence=False  shape {'pos': 139, 'neg': 99, 'height_over_neighbour_med': 18.076079384351523}  current spikes {'phase_current_1': {'count': 0, 'same_sample': 0}, 'phase_current_2': {'count': 0, 'same_sample': 0}}
+  H1 evidence=True  H2 evidence=False  decoy-contaminated=True
+  LP10 headroom +3.13 dB  kurt 5.3  spikes left 0  cells 6 rec 1 silent 0 rule 6/6
+  LP5  headroom +10.86 dB  kurt 5.3  spikes left 0  cells 6 rec 5 silent 0 rule 6/6
+  MED3 headroom +0.43 dB  kurt 11.0  spikes left 276  cells 6 rec 0 silent 0 rule 6/6
+
+K001/N15_M07_F04_K001_1.mat  spikes 845  f_r 25.00 Hz  raw headroom +0.01 dB  kurt 14.7
+  pwm16k* R=0.296@16086.84Hz p=7.2e-30  fr  R=0.070@25.20Hz p=1.1e-01  bpfo  R=0.081@78.21Hz p=7.5e-02  bpfi  R=0.080@126.84Hz p=1.4e-01
+  decoy1  R=0.071@34.89Hz p=1.3e-01  decoy2* R=0.261@94.81Hz p=2.2e-24  decoy3* R=0.136@142.25Hz p=5.1e-06  fe* R=0.824@99.95Hz p=1.8e-248  6fe* R=0.228@604.99Hz p=1.4e-17
+  EXPLORATORY (post hoc): mains50  R=0.074@50.72Hz p=1.3e-01  mains100* R=0.824@99.95Hz p=1.8e-248  ctl8k  R=0.077@8079.40Hz p=1.0e+00  ctl12k  R=0.095@11903.51Hz p=4.4e-01  ctl20k  R=0.090@19898.87Hz p=1.0e+00  ctl24k  R=0.088@23786.21Hz p=1.0e+00  index mod 4 [222, 193, 223, 207]
+  current coincidence 0.279 (null 0.053) evidence=False  shape {'pos': 418, 'neg': 427, 'height_over_neighbour_med': 16.212796951340884}  current spikes {'phase_current_1': {'count': 0, 'same_sample': 0}, 'phase_current_2': {'count': 0, 'same_sample': 0}}
+  H1 evidence=True  H2 evidence=False  decoy-contaminated=True
+  LP10 headroom +4.46 dB  kurt 5.6  spikes left 0  cells 6 rec 2 silent 0 rule 6/6
+  LP5  headroom +9.44 dB  kurt 5.4  spikes left 0  cells 6 rec 4 silent 0 rule 6/6
+  MED3 headroom +0.07 dB  kurt 15.4  spikes left 323  cells 6 rec 0 silent 0 rule 6/6
+
+KA04/N15_M07_F10_KA04_1.mat  spikes 0  f_r 25.00 Hz  raw headroom +3.32 dB  kurt 5.6  fault line 36.9 dB
+  LP10 headroom +4.55 dB  kurt 5.1  spikes left 0  line 36.5 dB
+  LP5  headroom +12.81 dB  kurt 5.5  spikes left 0  line 37.9 dB
+  MED3 headroom +2.94 dB  kurt 5.5  spikes left 0  line 36.9 dB
+
+KA04/N09_M07_F10_KA04_1.mat  spikes 2  f_r 15.00 Hz  raw headroom +4.17 dB  kurt 9.0  fault line 31.3 dB
+  LP10 headroom +6.42 dB  kurt 8.7  spikes left 0  line 31.5 dB
+  LP5  headroom +16.14 dB  kurt 10.2  spikes left 0  line 32.5 dB
+  MED3 headroom +4.65 dB  kurt 9.5  spikes left 0  line 31.6 dB
+
+KA04/N15_M01_F10_KA04_1.mat  spikes 0  f_r 25.00 Hz  raw headroom +3.82 dB  kurt 6.7  fault line 32.9 dB
+  LP10 headroom +4.45 dB  kurt 6.0  spikes left 0  line 33.4 dB
+  LP5  headroom +11.85 dB  kurt 5.6  spikes left 0  line 34.3 dB
+  MED3 headroom +2.19 dB  kurt 6.5  spikes left 0  line 33.4 dB
+
+KA04/N15_M07_F04_KA04_1.mat  spikes 0  f_r 25.00 Hz  raw headroom +3.21 dB  kurt 4.8  fault line 38.2 dB
+  LP10 headroom +3.33 dB  kurt 4.7  spikes left 0  line 39.0 dB
+  LP5  headroom +9.63 dB  kurt 4.6  spikes left 0  line 37.5 dB
+  MED3 headroom +1.83 dB  kurt 4.8  spikes left 0  line 38.8 dB
+
+KI04/N15_M07_F10_KI04_1.mat  spikes 147  f_r 25.00 Hz  raw headroom +0.44 dB  kurt 5.2  fault line 22.9 dB
+  pwm16k* R=0.325@15929.04Hz p=2.3e-04  fr  R=0.150@24.52Hz p=2.5e-01  bpfo  R=0.160@75.00Hz p=4.3e-01  bpfi  R=0.179@125.28Hz p=2.6e-01
+  decoy1  R=0.146@34.21Hz p=4.0e-01  decoy2* R=0.434@94.73Hz p=2.3e-11  decoy3  R=0.186@136.20Hz p=2.1e-01  fe* R=0.927@99.92Hz p=3.6e-54  6fe* R=0.347@605.14Hz p=2.9e-06
+  EXPLORATORY (post hoc): mains50  R=0.159@49.31Hz p=3.2e-01  mains100* R=0.927@99.92Hz p=3.6e-54  ctl8k  R=0.225@7967.39Hz p=3.7e-01  ctl12k  R=0.197@11971.89Hz p=1.0e+00  ctl20k  R=0.237@20054.38Hz p=4.2e-01  ctl24k  R=0.216@24183.02Hz p=1.0e+00  index mod 4 [35, 45, 29, 38]
+  current coincidence 0.374 (null 0.047) evidence=False  shape {'pos': 68, 'neg': 79, 'height_over_neighbour_med': 7.019428026183299}  current spikes {'phase_current_1': {'count': 0, 'same_sample': 0}, 'phase_current_2': {'count': 0, 'same_sample': 0}}
+  H1 evidence=True  H2 evidence=False  decoy-contaminated=True
+  LP10 headroom +6.30 dB  kurt 3.9  spikes left 0  line 23.0 dB  cells 6 rec 3 silent 0 rule 6/6
+  LP5  headroom +8.58 dB  kurt 4.2  spikes left 0  line 22.2 dB  cells 6 rec 4 silent 0 rule 6/6
+  MED3 headroom +2.24 dB  kurt 4.1  spikes left 23  line 23.5 dB  cells 6 rec 1 silent 0 rule 6/6
+
+KI04/N09_M07_F10_KI04_1.mat  spikes 194  f_r 15.00 Hz  raw headroom +0.33 dB  kurt 16.5  fault line 21.5 dB
+  pwm16k* R=0.483@16119.40Hz p=3.1e-17  fr  R=0.152@14.85Hz p=4.4e-02  bpfo* R=0.223@44.69Hz p=7.1e-04  bpfi  R=0.160@74.87Hz p=1.3e-01
+  decoy1  R=0.147@20.49Hz p=7.6e-02  decoy2  R=0.209@57.12Hz p=3.0e-03  decoy3  R=0.160@82.34Hz p=1.4e-01  fe  R=0.148@60.90Hz p=2.1e-01  6fe* R=0.308@364.96Hz p=9.0e-07
+  EXPLORATORY (post hoc): mains50  R=0.167@49.84Hz p=5.8e-02  mains100* R=0.908@99.94Hz p=9.0e-69  ctl8k  R=0.171@8006.62Hz p=1.0e+00  ctl12k  R=0.191@11992.44Hz p=7.9e-01  ctl20k  R=0.195@19816.75Hz p=1.0e+00  ctl24k  R=0.187@24126.93Hz p=1.0e+00  index mod 4 [57, 43, 50, 44]
+  current coincidence 0.443 (null 0.040) evidence=False  shape {'pos': 109, 'neg': 85, 'height_over_neighbour_med': 15.197745672800067}  current spikes {'phase_current_1': {'count': 0, 'same_sample': 0}, 'phase_current_2': {'count': 0, 'same_sample': 0}}
+  H1 evidence=True  H2 evidence=True  decoy-contaminated=False
+  LP10 headroom +5.52 dB  kurt 5.2  spikes left 0  line 23.5 dB  cells 6 rec 2 silent 0 rule 6/6
+  LP5  headroom +9.08 dB  kurt 5.0  spikes left 0  line 23.1 dB  cells 6 rec 4 silent 0 rule 6/6
+  MED3 headroom -0.41 dB  kurt 6.7  spikes left 63  line 24.0 dB  cells 6 rec 0 silent 0 rule 6/6
+
+KI04/N15_M01_F10_KI04_1.mat  spikes 49  f_r 25.00 Hz  raw headroom +0.75 dB  kurt 5.6  fault line 25.4 dB
+  pwm16k* R=0.886@15886.91Hz p=2.6e-14  fr  R=0.233@24.38Hz p=4.8e-01  bpfo  R=0.324@76.81Hz p=1.1e-01  bpfi  R=0.334@123.15Hz p=1.3e-01
+  decoy1  R=0.217@33.64Hz p=9.0e-01  decoy2* R=0.510@95.07Hz p=6.5e-05  decoy3  R=0.306@137.74Hz p=3.5e-01  fe* R=0.958@99.97Hz p=7.1e-19  6fe* R=0.582@604.84Hz p=8.9e-06
+  EXPLORATORY (post hoc): mains50  R=0.260@49.16Hz p=4.7e-01  mains100* R=0.958@99.97Hz p=7.1e-19  ctl8k  R=0.405@7958.59Hz p=2.1e-01  ctl12k  R=0.356@12009.95Hz p=1.0e+00  ctl20k  R=0.361@19963.81Hz p=1.0e+00  ctl24k  R=0.391@23915.20Hz p=1.0e+00  index mod 4 [16, 11, 13, 9]
+  current coincidence 0.408 (null 0.054) evidence=False  shape {'pos': 29, 'neg': 20, 'height_over_neighbour_med': 7.600778914077}  current spikes {'phase_current_1': {'count': 1, 'same_sample': 0}, 'phase_current_2': {'count': 0, 'same_sample': 0}}
+  H1 evidence=True  H2 evidence=False  decoy-contaminated=True
+  LP10 headroom +5.11 dB  kurt 4.0  spikes left 0  line 26.4 dB  cells 6 rec 2 silent 0 rule 6/6
+  LP5  headroom +9.52 dB  kurt 4.3  spikes left 0  line 25.0 dB  cells 6 rec 4 silent 0 rule 6/6
+  MED3 headroom +0.77 dB  kurt 4.1  spikes left 36  line 26.6 dB  cells 6 rec 0 silent 0 rule 6/6
+
+KI04/N15_M07_F04_KI04_1.mat  spikes 189  f_r 25.00 Hz  raw headroom -0.60 dB  kurt 6.0  fault line 24.2 dB
+  pwm16k* R=0.309@16139.43Hz p=1.8e-05  fr  R=0.194@25.10Hz p=5.7e-03  bpfo  R=0.190@77.63Hz p=2.1e-02  bpfi  R=0.233@119.98Hz p=1.0e-03
+  decoy1  R=0.113@34.47Hz p=8.0e-01  decoy2* R=0.478@94.94Hz p=4.4e-18  decoy3* R=0.310@142.40Hz p=4.4e-07  fe* R=0.919@99.97Hz p=1.2e-68  6fe* R=0.369@604.99Hz p=9.2e-10
+  EXPLORATORY (post hoc): mains50  R=0.160@51.42Hz p=1.1e-01  mains100* R=0.919@99.97Hz p=1.2e-68  ctl8k  R=0.204@8062.09Hz p=2.5e-01  ctl12k  R=0.209@12072.44Hz p=2.6e-01  ctl20k  R=0.201@20115.84Hz p=7.7e-01  ctl24k  R=0.194@24175.30Hz p=1.0e+00  index mod 4 [48, 54, 45, 42]
+  current coincidence 0.556 (null 0.039) evidence=True  shape {'pos': 106, 'neg': 83, 'height_over_neighbour_med': 7.19334299644998}  current spikes {'phase_current_1': {'count': 0, 'same_sample': 0}, 'phase_current_2': {'count': 0, 'same_sample': 0}}
+  H1 evidence=True  H2 evidence=False  decoy-contaminated=True
+  LP10 headroom +4.01 dB  kurt 3.9  spikes left 0  line 24.0 dB  cells 6 rec 1 silent 0 rule 6/6
+  LP5  headroom +8.78 dB  kurt 3.6  spikes left 0  line 21.1 dB  cells 6 rec 4 silent 0 rule 6/6
+  MED3 headroom +0.41 dB  kurt 4.2  spikes left 29  line 24.0 dB  cells 6 rec 0 silent 0 rule 6/6
+
+spiky records 8; H1 evidence 8/8, H2 evidence 1/8, decoy-contaminated 6/8
+  breakdown: H1a 16 kHz band 8/8, H1b current 1/8, H2 ignoring decoy rule 2/8
+  LP10: {'headroom_ok': 8, 'silent_fail': 0, 'rule_all_correct': True, 'lines_testable': 8, 'lines_lost': [], 'verdict': 'HELD'}
+  LP5: {'headroom_ok': 8, 'silent_fail': 0, 'rule_all_correct': True, 'lines_testable': 8, 'lines_lost': ['KI04/N15_M07_F04_KI04_1.mat'], 'verdict': 'FALSIFIED'}
+  MED3: {'headroom_ok': 0, 'silent_fail': 0, 'rule_all_correct': True, 'lines_testable': 8, 'lines_lost': [], 'verdict': 'FALSIFIED'}
+        HELD  H1
+   FALSIFIED  H2
+        HELD  H3
+EXPLORATORY (post hoc): 100 Hz locked in 8/8 (R 0.74-0.96); HF control bands significant 0/32 (min p 2.3e-03)
+wrote artifacts/paderborn/spike-probe-metrics.json
