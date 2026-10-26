@@ -317,10 +317,10 @@ def fault_target(bearing: str, fr: float) -> float | None:
 
 
 def probe_record(
-    bearing: str, condition: str, cache=None, *, download=False
+    bearing: str, condition: str, cache=None, *, download=False, meas: int = 1
 ) -> RecordProbe:
-    """Run every pre-registered measurement on one record."""
-    path = pb.fetch(bearing, condition, cache, download=download)
+    """Run every pre-registered measurement on one record (measurement ``meas``)."""
+    path = pb.fetch(bearing, condition, cache, download=download, meas=meas)
     ch = load_channels(path, ("vibration_1", *CURRENT_CHANNELS))
     x = ch["vibration_1"]
     sr = pb.SR
@@ -328,7 +328,7 @@ def probe_record(
     fr = shaft_hz(condition)
     dur = len(x) / sr
     p = RecordProbe(
-        record=pb.member(bearing, condition),
+        record=pb.member(bearing, condition, meas),
         bearing=bearing,
         condition=condition,
         n_spikes=int(len(idx)),
@@ -443,4 +443,122 @@ def run_probe(cache=None, *, download=False) -> list[RecordProbe]:
         probe_record(b, c, cache, download=download)
         for b in pb.BEARINGS
         for c in pb.CONDITIONS
+    ]
+
+
+# --- held-out confirmation (prereg-2026-10-26-heldout.md, NOTES #8i) ---------
+
+#: R1/R1b/R2 "replicates" bar and "fails" bar, as fractions of spiky records
+REPL_HELD_FRAC = 0.90
+REPL_FAIL_FRAC = 0.50
+#: R1b: motor band (f_e) must be significant on at most this fraction to hold,
+#: and at least FE_FAIL_FRAC falsifies
+FE_HELD_FRAC = 0.25
+FE_FAIL_FRAC = 0.50
+R1B_MIN_RECORDS = 4
+#: R3: H2 evidence fraction that keeps / overturns the 10-25 verdict
+H2_ABSENT_FRAC = 0.25
+H2_PRESENT_FRAC = 0.75
+#: R4: LP10 headroom pass fraction (the 7-of-8 bar) and fail fraction
+LP_HELD_FRAC = 7 / 8
+LP_FAIL_FRAC = 0.50
+
+
+def _frac_verdict(k: int, n: int, held: float, fail: float) -> str:
+    if n == 0:
+        return "UNTESTABLE"
+    if k >= held * n:
+        return "HELD"
+    if k <= fail * n:
+        return "FALSIFIED"
+    return "INCONCLUSIVE"
+
+
+def _fe_band(p: RecordProbe) -> BandTest:
+    return p.bands["fe"]
+
+
+def heldout_verdicts(probes: list[RecordProbe]) -> dict:
+    """Apply the 2026-10-26 held-out decision rules (R1, R1b, R2, R3, R4)."""
+    spiky = [p for p in probes if p.spiky]
+    s = len(spiky)
+    m100 = sum(p.exploratory["mains100"].significant for p in spiky)
+    pwm = sum(p.bands["pwm16k"].significant for p in spiky)
+    h2 = sum(p.h2_evidence for p in spiky)
+    n09 = [p for p in spiky if p.condition.startswith("N09")]
+    n09_100 = sum(p.exploratory["mains100"].significant for p in n09)
+    n09_fe = sum(_fe_band(p).significant for p in n09)
+    if len(n09) < R1B_MIN_RECORDS:
+        r1b = "UNTESTABLE"
+    elif n09_100 >= REPL_HELD_FRAC * len(n09) and n09_fe <= FE_HELD_FRAC * len(n09):
+        r1b = "HELD"
+    elif n09_100 <= REPL_FAIL_FRAC * len(n09) or n09_fe >= FE_FAIL_FRAC * len(n09):
+        r1b = "FALSIFIED"
+    else:
+        r1b = "INCONCLUSIVE"
+    if s == 0:
+        r3 = "UNTESTABLE"
+    elif h2 <= H2_ABSENT_FRAC * s:
+        r3 = "HELD"
+    elif h2 >= H2_PRESENT_FRAC * s:
+        r3 = "FALSIFIED"
+    else:
+        r3 = "INCONCLUSIVE"
+    filters = {}
+    for name in FILTERS:
+        good = sum(p.filters[name]["headroom_db"] >= HEADROOM_TARGET_DB for p in spiky)
+        silent = sum(p.filters[name]["silent_fail"] for p in spiky)
+        rule_ok = all(
+            p.filters[name]["rule_correct"] == p.filters[name]["cells"] for p in spiky
+        )
+        lost, testable = [], 0
+        for p in probes:
+            raw = p.raw["line_snr_db"]
+            if raw is None or raw < LINE_MIN_DB:
+                continue
+            testable += 1
+            if p.filters[name]["line_snr_db"] < raw - LINE_DROP_DB:
+                lost.append(p.record)
+        if s == 0:
+            v = "UNTESTABLE"
+        elif good <= LP_FAIL_FRAC * s or lost or silent:
+            v = "FALSIFIED"
+        elif good >= LP_HELD_FRAC * s and rule_ok:
+            v = "HELD"
+        else:
+            v = "INCONCLUSIVE"
+        filters[name] = {
+            "headroom_ok": good,
+            "silent_fail": silent,
+            "rule_all_correct": rule_ok,
+            "lines_testable": testable,
+            "lines_lost": lost,
+            "verdict": v if name == "LP10" else f"descriptive ({v} under R4 bars)",
+        }
+    return {
+        "records": len(probes),
+        "spiky_records": s,
+        "mains100_locked": m100,
+        "pwm16k_locked": pwm,
+        "h2_evidence": h2,
+        "decoy_contaminated": sum(p.decoy_contaminated for p in spiky),
+        "n09_spiky": len(n09),
+        "n09_mains100_locked": n09_100,
+        "n09_fe_locked": n09_fe,
+        "R1": _frac_verdict(m100, s, REPL_HELD_FRAC, REPL_FAIL_FRAC),
+        "R1b": r1b,
+        "R2": _frac_verdict(pwm, s, REPL_HELD_FRAC, REPL_FAIL_FRAC),
+        "R3": r3,
+        "R4": filters["LP10"]["verdict"],
+        "filters": filters,
+    }
+
+
+def run_heldout(cache=None, *, download=False) -> list[RecordProbe]:
+    """Probe the 48 held-out records (BEARINGS × CONDITIONS × measurements 2–5)."""
+    return [
+        probe_record(b, c, cache, download=download, meas=m)
+        for b in pb.BEARINGS
+        for c in pb.CONDITIONS
+        for m in pb.HELDOUT_MEASUREMENTS
     ]

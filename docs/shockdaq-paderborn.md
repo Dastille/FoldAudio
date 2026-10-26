@@ -66,6 +66,30 @@ On KA04 (control, spike-free) LP10 gives 3.33–6.42 dB (raw 3.21–4.17 dB) and
 
 **Conclusion.** The spikes are electrical in origin to the standard set in advance: locked to the 16 kHz inverter switching frequency on every spiky record, not locked to shaft speed or bearing kinematics, and (exploratory) gated at 100 Hz, independent of shaft speed. They are a property of this rig's electrical environment, not of the bearing vibration. The mechanism (radiated or conducted switching EMI, ground loop, rectifier-related bursts) is not determined. For a fold front end the practical consequence is that the anti-alias stage matters: a causal 10 kHz 4th-order low-pass ahead of the fold restored 3.1–6.3 dB of headroom on every spiky record without losing the envelope fault lines; 5 kHz bought 8.58–10.86 dB but cost one inner-ring line 3.09 dB. A real front end must also keep the EMI out of the analog path; filtering only helps because the spike energy is broadband and short.
 
+## Held-out confirmation (NOTES #8i, 2026-10-26)
+
+**Question.** Do the 2026-10-25 findings hold on measurements that played no part in forming them? Measurement `_1` generated the hypotheses (including the post hoc 100 Hz observation); this step re-runs the unchanged probe on measurements `_2`…`_5` of the same 12 bearing × condition cells (48 records, extracted from the MD5-verified archives already cached, SHA-256 pinned in `foldcrypt/paderborn.py` before analysis).
+
+**Pre-registration.** [`artifacts/paderborn/prereg-2026-10-26-heldout.md`](../artifacts/paderborn/prereg-2026-10-26-heldout.md), committed (3b4c938) before any held-out number was computed. Methods, bands, α = 10⁻³ and seed are those of 10-25. R1: 100 Hz locked on ≥ 90 % of spiky records. R1b: on the 900 rpm spiky records (motor electrical frequency f_e = 60 Hz), 100 Hz locked on ≥ 90 % and f_e locked on ≤ 25 % (supply, not motor). R2: 16 kHz locked on ≥ 90 %. R3: mechanical evidence (same H2 rule) on ≤ 25 %. R4: LP10 gives ≥ 3.0 dB headroom on ≥ 87.5 % of spiky records, loses no testable fault line, 0 silent failures, rule agrees in every cell.
+
+**Method.** `ps.run_heldout` / `ps.heldout_verdicts`, `python scripts/heldout_paderborn.py` → [`artifacts/paderborn/heldout-metrics.json`](../artifacts/paderborn/heldout-metrics.json), log [`artifacts/paderborn/heldout-2026-10-26.log`](../artifacts/paderborn/heldout-2026-10-26.log) (about 75 s CPU).
+
+**Results (pre-registered).** 32 of 48 records are spiky (all 16 K001 and all 16 KI04; 24–493 spikes); KA04 again has none (0–1).
+
+| Rule | Verdict | Key numbers |
+|---|---|---|
+| R1 100 Hz lock | **held** | 32/32 (R 0.40–0.98, every p ≤ 9.2·10⁻⁹) |
+| R1b supply, not motor | **held** | 900 rpm spiky records: 100 Hz 8/8, f_e (60 Hz) 1/8 (K001 N09 `_5`, p 3.2·10⁻⁵) |
+| R2 16 kHz lock | **held** | 30/32; not locked on KI04 N15_M01_F10 `_2` (p 0.15) and `_5` (p 0.015) |
+| R3 mechanical absent | **held** | 3/32, all healthy K001 at 900 rpm (`_3`, `_4`, `_5`), each in the BPFO band with the peak at 47.19 Hz, the band's upper edge |
+| R4 LP10 rule | **inconclusive** | headroom ≥ 3.0 dB on 27/32 (84 %, bar 87.5 %); range 2.13–6.58 dB (raw −0.60 to +1.16 dB); 32 fault lines testable, 0 lost, change −1.79 to +1.55 dB; 50/192 fold cells recovered, 0 silent, rule 192/192 |
+
+The five LP10 shortfalls are 2.13–2.99 dB (four K001 records and KI04 N09 `_4`). Described, not judged: LP5 reached ≥ 3 dB on 32/32 (8.46–11.48 dB) but again lost the BPFI line on KI04 N15_M07_F04, now on `_2` (22.4 → 18.5 dB) and `_3` (22.3 → 19.0 dB), the same condition where it failed on `_1`; MED3 reached 3 dB on 1/32.
+
+**Exploratory (post hoc, not pre-registered).** (i) The 3.0 dB bar was taken from the spike-free KA04 `_1` records. On the held-out KA04 records, which have no spikes, raw headroom is 1.60–5.04 dB and 5 of 16 are below 3.0 dB, so the bar is not a property of spike-free data on this rig; LP10's 27/32 should be read against that. (ii) The three R3 hits sit at the BPFO band edge on a healthy bearing, which looks like leakage from a line just above the band rather than bearing kinematics; this is a reading, not a test. (iii) At 900 rpm the 6 f_e band (360 Hz) is strongly locked on the K001 records (p ≤ 1.9·10⁻²⁸), consistent with a motor-drive electrical source but not separated from it here.
+
+**Conclusion.** The electrical origin replicates on held-out data: 16 kHz switching lock 30/32, 100 Hz lock 32/32, and at 900 rpm the lock follows the supply (100 Hz) rather than the motor (60 Hz, 1/8). The 100 Hz gating is now a confirmed (pre-registered, held-out) result rather than exploratory. Mechanical origin stays absent (3/32). The LP10 design rule is weaker than `_1` suggested: it keeps every fault line and never fails silently, but clears 3 dB on 84 % of spiky records, short of the pre-registered 87.5 %, so it is recorded as inconclusive, not held. The `_1` "3.13–6.30 dB on 8/8" result should not be quoted without this.
+
 ## Interpretation
 
 1. The safety result transfers: on a second rig and sensor chain, the recovery condition predicted every cell and no failure was silent.
@@ -74,7 +98,7 @@ On KA04 (control, spike-free) LP10 gives 3.33–6.42 dB (raw 3.21–4.17 dB) and
 
 ## Limitations
 
-- 12 records from 3 bearings, one measurement per operating condition; not the full 32-bearing set.
+- 12 records from 3 bearings, one measurement per operating condition (spike probe re-tested on 4 more measurements per condition, 2026-10-26); not the full 32-bearing set.
 - Overload applied in software to records captured within range, as with CWRU.
 - The spike count threshold (half the peak) is a chosen convention.
 - Spike origin (2026-10-25): electrical by the pre-registered criteria, but the physical coupling path is not identified, the 100 Hz gating result is exploratory (post hoc), and the probe used one measurement per condition from two bearings. The filter study applies a modelled filter to recorded data after the rig's own 30 kHz charge-amplifier filter and 64 kHz digitiser; a real filter in front of a modulo ADC would see the analog signal, including any content above 32 kHz that this recording cannot show.
