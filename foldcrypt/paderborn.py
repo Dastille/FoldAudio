@@ -66,6 +66,55 @@ MAT_SHA256: dict[str, str] = {
     "KI04/N15_M01_F10_KI04_1.mat": "24cd3f08730e2ffe0117e77ef8eb14433b6131bddf6508d2ea50bae950f936b3",
     "KI04/N15_M07_F04_KI04_1.mat": "935c1b56751894110c6256fa3d06b0cc9e526417d0b7eee92abeaea1dce0617f",
     "KI04/N15_M07_F10_KI04_1.mat": "d77409dca95d03986b5957b73c2219f42f7bbfd8080ebbf6f5b9f11571476f9c",
+    # held-out measurements _2.._5 (NOTES #8i), pinned 2026-10-26 before analysis
+    "K001/N15_M07_F10_K001_2.mat": "9ed50c2cf9b280e65471ee9dde35b280b5deb43a6fc861fabd7935bd772f969a",
+    "K001/N15_M07_F10_K001_3.mat": "721a04849ea72d90bcf623f80b2d6ca8126f3b13910f34319495af0554795549",
+    "K001/N15_M07_F10_K001_4.mat": "d4ee7fef3b3f2b1f310324034ee22894a84163d7b078c63210f77ffa589f9dc0",
+    "K001/N15_M07_F10_K001_5.mat": "f47c9c9de878ba24479b7f8c1cb48c813354ec71a57112d35b1d87986124fe55",
+    "K001/N09_M07_F10_K001_2.mat": "353451b91afc757be1883b4af2ba36724d58534a24b310662be7cd93dba156bb",
+    "K001/N09_M07_F10_K001_3.mat": "6c4d86af80479b864b57966669574a00b218370b1e75f75411bbc50599e60dd3",
+    "K001/N09_M07_F10_K001_4.mat": "8396cebc4fe63ee49b4282ae6e4f6989ed5f9fdd65dcec9b89c13a6ff4ab201e",
+    "K001/N09_M07_F10_K001_5.mat": "44c8d4df1c288ba321c10795122da1cacb37471302aa41183b131f655d90088d",
+    "K001/N15_M01_F10_K001_2.mat": "a47179a2266ebb83132ccd844cc6b685cdfd5355c9d6fd53a13f1744d9e05304",
+    "K001/N15_M01_F10_K001_3.mat": "2f385585e485962b0563651cae9c72c4ff178ceec5938950e0d87e2b754b9d94",
+    "K001/N15_M01_F10_K001_4.mat": "12746ba1bf85716ac7ae5c8e182792b412de83d82bf8daa0aef3ccf1ada3ad32",
+    "K001/N15_M01_F10_K001_5.mat": "19e5d6b775a3a810640adaef02354bced5f5dcb70f93b351f299ed92f1d96e91",
+    "K001/N15_M07_F04_K001_2.mat": "b0eea67e384a64b4585273a81dc48fd6093c57a98e2e25966187b6c914e73b72",
+    "K001/N15_M07_F04_K001_3.mat": "be5b0d6ec89ab7d6fbbe72a7600148fe5a11b489e3a9865c0717d82374418898",
+    "K001/N15_M07_F04_K001_4.mat": "c83b69d9d725bb53ff59eff2f43c7a29316a01f6f449db29036c0a4edc0054c3",
+    "K001/N15_M07_F04_K001_5.mat": "c9baa4c611ef25d37abd2ead35caf0f655cb9da111e915b187f1ccb2c1226501",
+    "KA04/N15_M07_F10_KA04_2.mat": "22210c904d75338060e03859cab6c6c55c1f509ff250e266f178eb198b210017",
+    "KA04/N15_M07_F10_KA04_3.mat": "6ae0d36410a6dd32ac307ab8ffae4d81b867b433b01ab24dcc1a12172dff2f31",
+    "KA04/N15_M07_F10_KA04_4.mat": "700369d50867284ed9969d730354d4fe9e60b29d7e90e568359fcbee26615e07",
+    "KA04/N15_M07_F10_KA04_5.mat": "c6dc56d18a2704193756e502b656ca21781b6ec983e4b36c5a2ef7c939d1cbfa",
+    "KA04/N09_M07_F10_KA04_2.mat": "4e66934fe250625318364b3973468faedd555b66156f8d9212f5f14a2fd1f4a5",
+    "KA04/N09_M07_F10_KA04_3.mat": "2e543cbd0d246ac0eff03b95f4d9e0e94a72c39000d70c93d6608239ab03d259",
+    "KA04/N09_M07_F10_KA04_4.mat": "09426652f1cd315bc515fe78efda2b990c8c6b89bcf1e77db721bbfe638e5638",
+    "KA04/N09_M07_F10_KA04_5.mat": "8bd04b23789c5f09a360c144784223f857c462ac7df113450061ecef66ebd9db",
+    "KA04/N15_M01_F10_KA04_2.mat": "c0d941668d8f08ab37c3d2c248a43abbed2faea28b7823e1a3efeec29eb139dc",
+    "KA04/N15_M01_F10_KA04_3.mat": "35c5de1a76b9016de9efda509006d91d9446e25765f6478a4d46914b4c8f4d98",
+    "KA04/N15_M01_F10_KA04_4.mat": "51aeb6a22b9d40bf7ef5e42e71fd6b4034374cf51f0b782ecb440dbfbbca81db",
+    "KA04/N15_M01_F10_KA04_5.mat": "e2b542b321ecfb15233795903eae2b45bc2d72c42d7cb5066952213e77f87ac9",
+    "KA04/N15_M07_F04_KA04_2.mat": "e9186aefeb54f3ed36e59160b0cd5f38d63c6516ebd412948e92b924a0fcdc52",
+    "KA04/N15_M07_F04_KA04_3.mat": "fe7426500684250bf32bce968b79d0e254bf3b56792745790386e7f3ccef04e6",
+    "KA04/N15_M07_F04_KA04_4.mat": "fbf129ea0e125092f5e82c853840e63876f2e0a4368f5088267c4efbceba458b",
+    "KA04/N15_M07_F04_KA04_5.mat": "7d3cc4032c59523404faf152596cd6b9c6f97b93b88938f49f617ab4b5b9abc6",
+    "KI04/N15_M07_F10_KI04_2.mat": "21e8db6824fb887c13ac5fefcd678d81b70c51734d6fc9a24fb580a9acf3d2dc",
+    "KI04/N15_M07_F10_KI04_3.mat": "160e9630ad5c2d9c8378eed1ee5d596177d85d31aad1bbb3f396b8305aadb5bd",
+    "KI04/N15_M07_F10_KI04_4.mat": "6c8cf4dc8f8df64561c9ad653f6d2bf0c48fd9d1a534276a22ebc13fa2d5b27d",
+    "KI04/N15_M07_F10_KI04_5.mat": "65844dfbaf87208e490960fb0f7ae9c8f69dc6d85a171becf76abfa5629213bb",
+    "KI04/N09_M07_F10_KI04_2.mat": "c993511853ff0a4326896586e0d21e06e0f3ad56be2c08f7a3e204a4e00ab9e9",
+    "KI04/N09_M07_F10_KI04_3.mat": "dfb89ba32084c6563b11569c6413368e5cf24f907f9dc9711dcb5e11a20f75ca",
+    "KI04/N09_M07_F10_KI04_4.mat": "3921cd85b2c14e36124fe83434ed742455d1ece94db4997e7af753888e96421a",
+    "KI04/N09_M07_F10_KI04_5.mat": "bcb8337e6cac324c82712abf92d2a48184fc6bcbd07aaa99cee0423cfe99da00",
+    "KI04/N15_M01_F10_KI04_2.mat": "12ba66b4a46a7e80edda7bf1488cd466b6d1f6e74764b98ea54cdcfc407e0293",
+    "KI04/N15_M01_F10_KI04_3.mat": "925ed9eb060749da30e696e1b5e1fabf3504fc4c3aaf81803e6762c832672659",
+    "KI04/N15_M01_F10_KI04_4.mat": "bf5097d71828555e329fc66fe4f93742154ac50c50c7efa296207a79ff399631",
+    "KI04/N15_M01_F10_KI04_5.mat": "12b7c250d7ea6581701d2222610a0ddd12af9aa79ab93be96c97e994924c7149",
+    "KI04/N15_M07_F04_KI04_2.mat": "4c3bb2a4c26da6655fdc75678b3d744058b05aaf19ee96c49a301971f5a5fd0d",
+    "KI04/N15_M07_F04_KI04_3.mat": "bc4020a6282482aad661690b204ad133dcee45d6b6c36073a26beb94050ddb28",
+    "KI04/N15_M07_F04_KI04_4.mat": "cdbfa5ea85ab3befa445d83e8787635b796da9fe6b6b7ad9f43fcefb0d0ae39c",
+    "KI04/N15_M07_F04_KI04_5.mat": "469c137ee402d25f97781110ff07338ca2f10191750fcdca82a7de2693dab6b0",
 }
 
 #: Environment variable that overrides the Paderborn cache directory.
@@ -80,9 +129,13 @@ def default_cache() -> Path:
     return Path.home() / ".cache" / "foldcrypt" / "paderborn"
 
 
-def member(bearing: str, condition: str) -> str:
+#: held-out measurement numbers used by the 2026-10-26 confirmation (NOTES #8i)
+HELDOUT_MEASUREMENTS = (2, 3, 4, 5)
+
+
+def member(bearing: str, condition: str, meas: int = 1) -> str:
     """Archive member path, e.g. ``K001/N15_M07_F10_K001_1.mat``."""
-    return f"{bearing}/{condition}_{bearing}_1.mat"
+    return f"{bearing}/{condition}_{bearing}_{meas}.mat"
 
 
 def _digest(path: Path, algo: str) -> str:
@@ -114,10 +167,14 @@ def fetch(
     cache: Path | str | None = None,
     *,
     download: bool = True,
+    meas: int = 1,
 ) -> Path:
-    """Checksum-verified local copy of one Paderborn measurement (.mat)."""
+    """Checksum-verified local copy of one Paderborn measurement (.mat).
+
+    ``meas`` selects the measurement number within the operating condition
+    (1 for the 2026-10-23 sweep; 2–5 for the held-out confirmation)."""
     cache = Path(cache) if cache else default_cache()
-    name = member(bearing, condition)
+    name = member(bearing, condition, meas)
     path = cache / name
     want = MAT_SHA256.get(name)
     if path.exists() and want is not None and _digest(path, "sha256") == want:

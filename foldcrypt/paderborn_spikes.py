@@ -317,10 +317,10 @@ def fault_target(bearing: str, fr: float) -> float | None:
 
 
 def probe_record(
-    bearing: str, condition: str, cache=None, *, download=False
+    bearing: str, condition: str, cache=None, *, download=False, meas: int = 1
 ) -> RecordProbe:
-    """Run every pre-registered measurement on one record."""
-    path = pb.fetch(bearing, condition, cache, download=download)
+    """Run every pre-registered measurement on one record (measurement ``meas``)."""
+    path = pb.fetch(bearing, condition, cache, download=download, meas=meas)
     ch = load_channels(path, ("vibration_1", *CURRENT_CHANNELS))
     x = ch["vibration_1"]
     sr = pb.SR
@@ -328,7 +328,7 @@ def probe_record(
     fr = shaft_hz(condition)
     dur = len(x) / sr
     p = RecordProbe(
-        record=pb.member(bearing, condition),
+        record=pb.member(bearing, condition, meas),
         bearing=bearing,
         condition=condition,
         n_spikes=int(len(idx)),
