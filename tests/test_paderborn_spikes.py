@@ -199,3 +199,198 @@ def test_doc_numbers_match_committed_probe():
     )
     v = m["verdicts"]
     assert (v["H1"], v["H2"], v["H3"]) == ("HELD", "FALSIFIED", "HELD")
+
+
+# --- held-out confirmation rules (prereg-2026-10-26-heldout.md) -------------
+
+
+def _bt(name: str, sig: bool) -> ps.BandTest:
+    return ps.BandTest(
+        name, 1.0, 2.0, 50, 0.9 if sig else 0.1, 1.5, 1, 1e-9 if sig else 0.5
+    )
+
+
+def _fake(
+    cond: str,
+    *,
+    m100=True,
+    pwm=True,
+    fe=False,
+    mech=False,
+    head=5.0,
+    line_drop=0.0,
+    silent=0,
+    bearing="KI04",
+) -> ps.RecordProbe:
+    p = ps.RecordProbe(
+        record=f"{bearing}/{cond}",
+        bearing=bearing,
+        condition=cond,
+        n_spikes=50,
+        fr_hz=ps.shaft_hz(cond),
+        spiky=True,
+    )
+    p.bands = {
+        k: _bt(k, False)
+        for k in (
+            "pwm16k",
+            "fr",
+            "bpfo",
+            "bpfi",
+            "decoy1",
+            "decoy2",
+            "decoy3",
+            "fe",
+            "6fe",
+        )
+    }
+    p.bands["pwm16k"] = _bt("pwm16k", pwm)
+    p.bands["fe"] = _bt("fe", fe)
+    p.bands["bpfi"] = _bt("bpfi", mech)
+    p.exploratory = {"mains100": _bt("mains100", m100)}
+    p.current = {"evidence": False}
+    p.raw = {"line_snr_db": 20.0}
+    p.filters = {
+        f: {
+            "headroom_db": head,
+            "silent_fail": silent,
+            "cells": 6,
+            "rule_correct": 6,
+            "line_snr_db": 20.0 - line_drop,
+        }
+        for f in ps.FILTERS
+    }
+    return p
+
+
+def _set(**kw) -> list[ps.RecordProbe]:
+    return [_fake(c, **kw) for c in ("N15_M07_F10", "N09_M07_F10") * 4]
+
+
+def test_heldout_all_held_on_clean_pattern():
+    v = ps.heldout_verdicts(_set())
+    assert (v["R1"], v["R1b"], v["R2"], v["R3"], v["R4"]) == ("HELD",) * 5
+    assert v["spiky_records"] == 8 and v["n09_spiky"] == 4
+
+
+def test_heldout_rules_fail_when_the_pattern_breaks():
+    v = ps.heldout_verdicts(_set(m100=False, pwm=False, mech=True))
+    assert (v["R1"], v["R2"], v["R3"]) == ("FALSIFIED",) * 3
+    # motor band locked at 900 rpm -> supply-vs-motor reading falsified
+    assert ps.heldout_verdicts(_set(fe=True))["R1b"] == "FALSIFIED"
+    # one lost fault line or one silent failure falsifies R4 even with headroom
+    lost = _set()
+    lost[0].filters["LP10"]["line_snr_db"] = 16.9
+    assert ps.heldout_verdicts(lost)["R4"] == "FALSIFIED"
+    assert ps.heldout_verdicts(_set(silent=1))["R4"] == "FALSIFIED"
+    assert ps.heldout_verdicts(_set(head=2.9))["R4"] == "FALSIFIED"
+    # 7 of 8 with headroom is the bar; 6 of 8 is inconclusive
+    probes = _set()
+    probes[0].filters["LP10"]["headroom_db"] = 1.0
+    assert ps.heldout_verdicts(probes)["R4"] == "HELD"
+    probes[1].filters["LP10"]["headroom_db"] = 1.0
+    assert ps.heldout_verdicts(probes)["R4"] == "INCONCLUSIVE"
+    # too few spiky 900 rpm records -> R1b untestable
+    few = [_fake("N15_M07_F10") for _ in range(6)] + [_fake("N09_M07_F10")] * 3
+    assert ps.heldout_verdicts(few)["R1b"] == "UNTESTABLE"
+    assert ps.heldout_verdicts([])["R1"] == "UNTESTABLE"
+
+
+def test_heldout_members_are_pinned_and_distinct():
+    names = [
+        pb.member(b, c, m)
+        for b in pb.BEARINGS
+        for c in pb.CONDITIONS
+        for m in pb.HELDOUT_MEASUREMENTS
+    ]
+    assert len(names) == 48 and pb.member("K001", "N15_M07_F10", 3).endswith(
+        "_K001_3.mat"
+    )
+    assert all(n in pb.MAT_SHA256 for n in names)
+    assert len(set(pb.MAT_SHA256.values())) == len(pb.MAT_SHA256) == 60
+
+
+def test_heldout_doc_numbers_match_committed_metrics():
+    """Table 15 / held-out section numbers are recomputed from the committed
+    heldout-metrics.json (no data cache)."""
+    m = json.loads((ROOT / "artifacts/paderborn/heldout-metrics.json").read_text())
+    v = m["verdicts"]
+    assert (v["R1"], v["R1b"], v["R2"], v["R3"], v["R4"]) == (
+        "HELD",
+        "HELD",
+        "HELD",
+        "HELD",
+        "INCONCLUSIVE",
+    )
+    assert (v["spiky_records"], v["mains100_locked"], v["pwm16k_locked"]) == (
+        32,
+        32,
+        30,
+    )
+    assert (
+        v["h2_evidence"],
+        v["n09_spiky"],
+        v["n09_mains100_locked"],
+        v["n09_fe_locked"],
+    ) == (3, 8, 8, 1)
+    f = v["filters"]
+    assert (
+        f["LP10"]["headroom_ok"],
+        f["LP10"]["lines_lost"],
+        f["LP10"]["silent_fail"],
+    ) == (27, [], 0)
+    assert f["LP5"]["lines_lost"] == [
+        "KI04/N15_M07_F04_KI04_2.mat",
+        "KI04/N15_M07_F04_KI04_3.mat",
+    ]
+    recs = m["records"]
+    spiky = [r for r in recs if r["spiky"]]
+    lined = [r for r in recs if r["raw_line_snr_db"] is not None]
+    ka = [r for r in recs if r["record"].startswith("KA04")]
+
+    def rng(vals, sign=False):
+        if sign:
+            return f"{min(vals):+.2f} to {max(vals):+.2f} dB".replace("-", "−")
+        return f"{min(vals):.2f}–{max(vals):.2f} dB"
+
+    lp10 = rng([r["lp10_headroom_db"] for r in spiky])
+    lines = rng([r["lp10_line_snr_db"] - r["raw_line_snr_db"] for r in lined], True)
+    ka_raw = rng([r["raw_headroom_db"] for r in ka])
+    cells = f"{sum(r['lp10_recovered'] for r in spiky)}/{sum(r['lp10_cells'] for r in spiky)}"
+    r100 = [r["mains100_r"] for r in spiky]
+    for name in ("docs/shockdaq-paderborn.md", "docs/foldaudio-whitepaper.md"):
+        doc = (ROOT / name).read_text(encoding="utf-8")
+        for s in (lp10, lines, ka_raw, cells, f"{min(r100):.2f}–{max(r100):.2f}"):
+            assert s in doc, (name, s)
+    assert sum(r["raw_headroom_db"] < 3.0 for r in ka) == 5
+    assert rng([r["raw_headroom_db"] for r in spiky], True) in (
+        ROOT / "docs/shockdaq-paderborn.md"
+    ).read_text(encoding="utf-8")
+
+
+def test_cached_heldout_records_match_committed_metrics():
+    """Re-probe two held-out records (one R2 miss, one R3 hit) and compare with
+    the committed JSON. Needs the held-out files in the Paderborn cache."""
+    _need_cache()
+    import os
+
+    try:
+        for b, c, k in (("KI04", "N15_M01_F10", 2), ("K001", "N09_M07_F10", 3)):
+            pb.fetch(b, c, download=False, meas=k)
+    except FileNotFoundError:
+        if os.environ.get("FOLDCRYPT_REQUIRE_PADERBORN") == "1":
+            pytest.fail("held-out Paderborn files not cached")
+        pytest.skip("held-out Paderborn files not cached")
+    m = json.loads((ROOT / "artifacts/paderborn/heldout-metrics.json").read_text())
+    by = {r["record"]: r for r in m["records"]}
+    for b, c, k in (("KI04", "N15_M01_F10", 2), ("K001", "N09_M07_F10", 3)):
+        p = ps.probe_record(b, c, meas=k)
+        r = by[p.record]
+        assert r["spikes"] == p.n_spikes
+        assert r["pwm16k_p"] == pytest.approx(p.bands["pwm16k"].p, rel=1e-9)
+        assert r["h2_evidence"] == p.h2_evidence
+        assert r["lp10_headroom_db"] == pytest.approx(
+            p.filters["LP10"]["headroom_db"], abs=1e-9
+        )
+    assert by["KI04/N15_M01_F10_KI04_2.mat"]["pwm16k_p"] > 1e-3
+    assert by["K001/N09_M07_F10_K001_3.mat"]["h2_evidence"] is True

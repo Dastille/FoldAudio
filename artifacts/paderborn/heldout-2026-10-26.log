@@ -1,0 +1,110 @@
+K001/N15_M07_F10_K001_2.mat      spikes  377  raw  -0.44 dB  LP10  +3.70  LP5  +9.43
+                                 100Hz R=0.83 p=1.6e-111  16k p=3.6e-19  fe p=1.6e-111  H2=False decoy=True  LP10 rec 1/6 silent 0 rule 6/6
+K001/N15_M07_F10_K001_3.mat      spikes  262  raw  -0.33 dB  LP10  +4.28  LP5 +11.48
+                                 100Hz R=0.82 p=2.0e-75  16k p=8.0e-34  fe p=2.0e-75  H2=False decoy=True  LP10 rec 1/6 silent 0 rule 6/6
+K001/N15_M07_F10_K001_4.mat      spikes  493  raw  -0.50 dB  LP10  +4.44  LP5 +10.91
+                                 100Hz R=0.80 p=3.4e-136  16k p=2.1e-24  fe p=3.4e-136  H2=False decoy=True  LP10 rec 2/6 silent 0 rule 6/6
+K001/N15_M07_F10_K001_5.mat      spikes  403  raw  -0.15 dB  LP10  +2.99  LP5 +10.70
+                                 100Hz R=0.82 p=3.0e-116  16k p=2.4e-24  fe p=3.0e-116  H2=False decoy=True  LP10 rec 1/6 silent 0 rule 6/6
+K001/N09_M07_F10_K001_2.mat      spikes  313  raw  +0.00 dB  LP10  +3.49  LP5 +10.00
+                                 100Hz R=0.76 p=1.8e-77  16k p=5.0e-31  fe p=2.2e-01  H2=False decoy=True  LP10 rec 1/6 silent 0 rule 6/6
+K001/N09_M07_F10_K001_3.mat      spikes  261  raw  -0.06 dB  LP10  +3.16  LP5 +10.18
+                                 100Hz R=0.76 p=1.6e-65  16k p=2.0e-40  fe p=1.8e-02  H2=True decoy=False  LP10 rec 1/6 silent 0 rule 6/6
+K001/N09_M07_F10_K001_4.mat      spikes  344  raw  -0.13 dB  LP10  +2.80  LP5  +8.98
+                                 100Hz R=0.78 p=2.8e-90  16k p=8.7e-32  fe p=1.8e-01  H2=True decoy=False  LP10 rec 1/6 silent 0 rule 6/6
+K001/N09_M07_F10_K001_5.mat      spikes  272  raw  -0.12 dB  LP10  +2.35  LP5 +10.76
+                                 100Hz R=0.76 p=2.6e-68  16k p=5.5e-31  fe p=3.2e-05  H2=True decoy=False  LP10 rec 1/6 silent 0 rule 6/6
+K001/N15_M01_F10_K001_2.mat      spikes  361  raw  -0.25 dB  LP10  +4.52  LP5 +10.00
+                                 100Hz R=0.81 p=2.7e-101  16k p=8.2e-27  fe p=2.7e-101  H2=False decoy=True  LP10 rec 2/6 silent 0 rule 6/6
+K001/N15_M01_F10_K001_3.mat      spikes  246  raw  -0.23 dB  LP10  +2.13  LP5  +8.96
+                                 100Hz R=0.74 p=1.6e-57  16k p=1.5e-22  fe p=1.6e-57  H2=False decoy=True  LP10 rec 1/6 silent 0 rule 6/6
+K001/N15_M01_F10_K001_4.mat      spikes  305  raw  +0.26 dB  LP10  +3.50  LP5  +9.38
+                                 100Hz R=0.73 p=5.2e-69  16k p=2.1e-18  fe p=5.2e-69  H2=False decoy=True  LP10 rec 1/6 silent 0 rule 6/6
+K001/N15_M01_F10_K001_5.mat      spikes  206  raw  -0.29 dB  LP10  +3.91  LP5  +9.26
+                                 100Hz R=0.77 p=9.4e-53  16k p=2.0e-15  fe p=9.4e-53  H2=False decoy=True  LP10 rec 1/6 silent 0 rule 6/6
+K001/N15_M07_F04_K001_2.mat      spikes  276  raw  +0.51 dB  LP10  +3.57  LP5 +10.96
+                                 100Hz R=0.76 p=3.3e-68  16k p=6.5e-26  fe p=3.3e-68  H2=False decoy=False  LP10 rec 1/6 silent 0 rule 6/6
+K001/N15_M07_F04_K001_3.mat      spikes  298  raw  -0.10 dB  LP10  +3.52  LP5  +8.90
+                                 100Hz R=0.82 p=1.1e-86  16k p=1.3e-25  fe p=1.1e-86  H2=False decoy=True  LP10 rec 1/6 silent 0 rule 6/6
+K001/N15_M07_F04_K001_4.mat      spikes  294  raw  +0.10 dB  LP10  +5.02  LP5 +10.63
+                                 100Hz R=0.87 p=1.1e-96  16k p=9.8e-16  fe p=1.1e-96  H2=False decoy=True  LP10 rec 2/6 silent 0 rule 6/6
+K001/N15_M07_F04_K001_5.mat      spikes  274  raw  -0.16 dB  LP10  +3.86  LP5  +9.03
+                                 100Hz R=0.82 p=4.4e-79  16k p=6.0e-10  fe p=4.4e-79  H2=False decoy=True  LP10 rec 1/6 silent 0 rule 6/6
+KA04/N15_M07_F10_KA04_2.mat      spikes    0  raw  +3.99 dB  LP10  +4.63  LP5 +10.97  line raw  32.9 LP10  32.8 LP5  33.8
+KA04/N15_M07_F10_KA04_3.mat      spikes    0  raw  +3.93 dB  LP10  +4.95  LP5 +12.10  line raw  33.3 LP10  32.9 LP5  32.5
+KA04/N15_M07_F10_KA04_4.mat      spikes    0  raw  +4.05 dB  LP10  +4.40  LP5 +12.05  line raw  36.0 LP10  36.2 LP5  36.6
+KA04/N15_M07_F10_KA04_5.mat      spikes    0  raw  +3.58 dB  LP10  +4.79  LP5 +13.00  line raw  36.2 LP10  36.1 LP5  38.1
+KA04/N09_M07_F10_KA04_2.mat      spikes    0  raw  +4.49 dB  LP10  +5.98  LP5 +16.17  line raw  32.4 LP10  32.4 LP5  33.0
+KA04/N09_M07_F10_KA04_3.mat      spikes    1  raw  +3.94 dB  LP10  +8.23  LP5 +16.07  line raw  32.6 LP10  32.4 LP5  33.7
+KA04/N09_M07_F10_KA04_4.mat      spikes    0  raw  +4.97 dB  LP10  +6.25  LP5 +16.59  line raw  31.3 LP10  31.5 LP5  33.0
+KA04/N09_M07_F10_KA04_5.mat      spikes    0  raw  +5.04 dB  LP10  +7.06  LP5 +15.70  line raw  31.2 LP10  31.0 LP5  33.3
+KA04/N15_M01_F10_KA04_2.mat      spikes    0  raw  +3.74 dB  LP10  +3.96  LP5 +11.45  line raw  37.6 LP10  37.6 LP5  36.8
+KA04/N15_M01_F10_KA04_3.mat      spikes    0  raw  +4.63 dB  LP10  +5.31  LP5 +11.57  line raw  36.9 LP10  36.4 LP5  39.2
+KA04/N15_M01_F10_KA04_4.mat      spikes    0  raw  +2.95 dB  LP10  +4.89  LP5 +11.74  line raw  35.0 LP10  34.9 LP5  34.3
+KA04/N15_M01_F10_KA04_5.mat      spikes    0  raw  +3.76 dB  LP10  +4.37  LP5 +12.44  line raw  37.5 LP10  37.6 LP5  37.9
+KA04/N15_M07_F04_KA04_2.mat      spikes    0  raw  +1.64 dB  LP10  +2.79  LP5  +9.41  line raw  33.3 LP10  33.6 LP5  33.3
+KA04/N15_M07_F04_KA04_3.mat      spikes    0  raw  +2.31 dB  LP10  +3.36  LP5  +9.28  line raw  35.4 LP10  35.7 LP5  35.6
+KA04/N15_M07_F04_KA04_4.mat      spikes    0  raw  +2.49 dB  LP10  +3.11  LP5  +9.52  line raw  35.3 LP10  36.1 LP5  36.0
+KA04/N15_M07_F04_KA04_5.mat      spikes    0  raw  +1.60 dB  LP10  +2.69  LP5  +9.13  line raw  32.6 LP10  33.7 LP5  33.2
+KI04/N15_M07_F10_KI04_2.mat      spikes  224  raw  -0.60 dB  LP10  +5.94  LP5  +9.90  line raw  24.9 LP10  24.4 LP5  23.5
+                                 100Hz R=0.67 p=3.0e-43  16k p=3.2e-11  fe p=3.0e-43  H2=False decoy=True  LP10 rec 2/6 silent 0 rule 6/6
+KI04/N15_M07_F10_KI04_3.mat      spikes  196  raw  +1.16 dB  LP10  +6.17  LP5  +8.88  line raw  22.4 LP10  23.0 LP5  22.2
+                                 100Hz R=0.40 p=7.9e-13  16k p=7.1e-18  fe p=7.9e-13  H2=False decoy=True  LP10 rec 3/6 silent 0 rule 6/6
+KI04/N15_M07_F10_KI04_4.mat      spikes  129  raw  +0.38 dB  LP10  +5.81  LP5 +10.34  line raw  27.5 LP10  27.1 LP5  26.2
+                                 100Hz R=0.93 p=1.3e-47  16k p=1.3e-10  fe p=1.3e-47  H2=False decoy=True  LP10 rec 2/6 silent 0 rule 6/6
+KI04/N15_M07_F10_KI04_5.mat      spikes  150  raw  +0.37 dB  LP10  +6.58  LP5  +9.45  line raw  22.9 LP10  23.0 LP5  23.0
+                                 100Hz R=0.92 p=4.0e-54  16k p=7.0e-05  fe p=4.0e-54  H2=False decoy=True  LP10 rec 3/6 silent 0 rule 6/6
+KI04/N09_M07_F10_KI04_2.mat      spikes   60  raw  +0.11 dB  LP10  +5.38  LP5 +10.28  line raw  23.1 LP10  24.1 LP5  24.5
+                                 100Hz R=0.96 p=4.2e-23  16k p=4.8e-13  fe p=1.0e-01  H2=False decoy=False  LP10 rec 2/6 silent 0 rule 6/6
+KI04/N09_M07_F10_KI04_3.mat      spikes  174  raw  +0.02 dB  LP10  +5.45  LP5 +10.00  line raw  23.2 LP10  24.0 LP5  23.3
+                                 100Hz R=0.92 p=1.6e-63  16k p=2.9e-15  fe p=4.3e-01  H2=False decoy=False  LP10 rec 2/6 silent 0 rule 6/6
+KI04/N09_M07_F10_KI04_4.mat      spikes   70  raw  -0.14 dB  LP10  +2.80  LP5  +9.24  line raw  21.9 LP10  22.7 LP5  22.0
+                                 100Hz R=0.92 p=6.1e-25  16k p=1.1e-11  fe p=1.6e-01  H2=False decoy=True  LP10 rec 1/6 silent 0 rule 6/6
+KI04/N09_M07_F10_KI04_5.mat      spikes  214  raw  +0.08 dB  LP10  +3.39  LP5 +10.35  line raw  19.7 LP10  21.2 LP5  21.5
+                                 100Hz R=0.93 p=3.4e-79  16k p=5.0e-06  fe p=1.0e-01  H2=False decoy=True  LP10 rec 1/6 silent 0 rule 6/6
+KI04/N15_M01_F10_KI04_2.mat      spikes  136  raw  +0.74 dB  LP10  +5.46  LP5  +9.34  line raw  23.1 LP10  23.8 LP5  23.6
+                                 100Hz R=0.93 p=4.9e-50  16k p=1.5e-01  fe p=4.9e-50  H2=False decoy=True  LP10 rec 2/6 silent 0 rule 6/6
+KI04/N15_M01_F10_KI04_3.mat      spikes  152  raw  +0.34 dB  LP10  +5.66  LP5  +8.46  line raw  22.4 LP10  22.2 LP5  21.0
+                                 100Hz R=0.95 p=2.6e-59  16k p=9.7e-32  fe p=2.6e-59  H2=False decoy=True  LP10 rec 2/6 silent 0 rule 6/6
+KI04/N15_M01_F10_KI04_4.mat      spikes  174  raw  -0.04 dB  LP10  +6.05  LP5  +8.89  line raw  24.3 LP10  25.1 LP5  23.8
+                                 100Hz R=0.94 p=1.2e-66  16k p=2.4e-28  fe p=1.2e-66  H2=False decoy=True  LP10 rec 3/6 silent 0 rule 6/6
+KI04/N15_M01_F10_KI04_5.mat      spikes   53  raw  +0.43 dB  LP10  +4.76  LP5  +9.53  line raw  24.1 LP10  24.2 LP5  23.4
+                                 100Hz R=0.92 p=1.1e-18  16k p=1.5e-02  fe p=1.1e-18  H2=False decoy=True  LP10 rec 2/6 silent 0 rule 6/6
+KI04/N15_M07_F04_KI04_2.mat      spikes   41  raw  +0.09 dB  LP10  +3.79  LP5  +8.70  line raw  22.4 LP10  20.6 LP5  18.5
+                                 100Hz R=0.98 p=2.7e-16  16k p=1.2e-13  fe p=2.7e-16  H2=False decoy=True  LP10 rec 1/6 silent 0 rule 6/6
+KI04/N15_M07_F04_KI04_3.mat      spikes   24  raw  +1.11 dB  LP10  +5.90  LP5  +9.25  line raw  22.3 LP10  21.6 LP5  19.0
+                                 100Hz R=0.95 p=9.2e-09  16k p=3.6e-04  fe p=9.2e-09  H2=False decoy=False  LP10 rec 2/6 silent 0 rule 6/6
+KI04/N15_M07_F04_KI04_4.mat      spikes  116  raw  -0.04 dB  LP10  +3.71  LP5  +8.68  line raw  23.6 LP10  23.4 LP5  21.3
+                                 100Hz R=0.95 p=1.8e-44  16k p=6.9e-23  fe p=1.8e-44  H2=False decoy=True  LP10 rec 1/6 silent 0 rule 6/6
+KI04/N15_M07_F04_KI04_5.mat      spikes   48  raw  +0.28 dB  LP10  +4.86  LP5  +8.75  line raw  25.1 LP10  25.0 LP5  22.2
+                                 100Hz R=0.94 p=1.4e-17  16k p=1.0e-08  fe p=1.4e-17  H2=False decoy=False  LP10 rec 2/6 silent 0 rule 6/6
+
+{
+ "records": 48,
+ "spiky_records": 32,
+ "mains100_locked": 32,
+ "pwm16k_locked": 30,
+ "h2_evidence": 3,
+ "decoy_contaminated": 24,
+ "n09_spiky": 8,
+ "n09_mains100_locked": 8,
+ "n09_fe_locked": 1,
+ "R1": "HELD",
+ "R1b": "HELD",
+ "R2": "HELD",
+ "R3": "HELD",
+ "R4": "INCONCLUSIVE"
+}
+  LP10: {'headroom_ok': 27, 'silent_fail': 0, 'rule_all_correct': True, 'lines_testable': 32, 'lines_lost': [], 'verdict': 'INCONCLUSIVE'}
+  LP5: {'headroom_ok': 32, 'silent_fail': 0, 'rule_all_correct': True, 'lines_testable': 32, 'lines_lost': ['KI04/N15_M07_F04_KI04_2.mat', 'KI04/N15_M07_F04_KI04_3.mat'], 'verdict': 'descriptive (FALSIFIED under R4 bars)'}
+  MED3: {'headroom_ok': 1, 'silent_fail': 0, 'rule_all_correct': True, 'lines_testable': 32, 'lines_lost': [], 'verdict': 'descriptive (FALSIFIED under R4 bars)'}
+         HELD  R1
+         HELD  R1b
+         HELD  R2
+         HELD  R3
+ INCONCLUSIVE  R4
+wrote artifacts/paderborn/heldout-metrics.json
+
+real	1m14.395s
+user	1m10.015s
+sys	0m5.903s
