@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import json
 import math
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -125,3 +127,71 @@ def test_too_few_valid_references_is_untestable():
     for r in recs[:2]:
         r.ref_valid = False
     assert ps.phase_verdicts(recs)["P1"] == "UNTESTABLE"
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def _metrics():
+    return json.loads(
+        (ROOT / "artifacts/paderborn/spike-phase-metrics.json").read_text()
+    )
+
+
+def test_phase_doc_numbers_match_committed_metrics():
+    """Table 16 / doc numbers recomputed from the committed metrics (no cache)."""
+    m = _metrics()
+    v, e = m["verdicts"], m["exploratory_post_hoc"]["E3_gate_removed"]
+    assert (v["P1"], v["P2"], v["P3"]) == ("UNTESTABLE",) * 3
+    assert (v["spiky"], v["valid_reference"], v["null_a_ok"]) == (32, 32, False)
+    assert (e["P1"], e["P2"], e["P3"]) == ("HELD", "HELD", "INCONCLUSIVE")
+    assert (e["burst_count"], e["spread_count"]) == (30, 1)
+    recs = m["records"]
+    over = [r for r in recs if r["null_a_r99"] > ps.NULL_A_MAX_R99]
+    assert len(over) == 7
+    n_over = [r["n_spikes_trimmed"] for r in over]
+    sub = m["exploratory_post_hoc"]["E2_pass_bar_subset"]
+    ratios = m["exploratory_post_hoc"]["E1_ratio_range"]
+    strs = [
+        f"{min(r['ref_line_db'] for r in recs):.1f}–{max(r['ref_line_db'] for r in recs):.1f} dB",
+        f"{100 * min(r['ripple_depth'] for r in recs):.2f}–"
+        f"{100 * max(r['ripple_depth'] for r in recs):.2f} %",
+        f"{min(n_over)}–{max(n_over)}",
+        f"{v['null_a_r99_max']:.3f}",
+        f"{ratios[0]:.3f}–{ratios[1]:.3f}",
+        f"{v['r_min']:.2f}–{v['r_max']:.2f}",
+        f"{v['r_between']:.3f}",
+        f"{v['grand_mean_deg']:.1f}°".replace("-", "−"),
+        f"{sub['grand_mean_deg']:.1f}°".replace("-", "−"),
+        f"{sub['r_between']:.3f}",
+        f"{m['n09_subset']['grand_mean_deg']:.1f}°".replace("-", "−"),
+    ]
+    assert f"{-v['grand_mean_deg'] / 36:.2f} ms" == "1.83 ms"
+    for name in ("docs/shockdaq-paderborn.md", "docs/foldaudio-whitepaper.md"):
+        doc = (ROOT / name).read_text(encoding="utf-8")
+        for s in strs:
+            assert s in doc, (name, s)
+
+
+def test_cached_phase_record_matches_committed_metrics():
+    """Re-run two held-out records from the pinned cache (needs the files)."""
+    import os
+
+    from foldcrypt import paderborn as pb
+
+    cases = (("KI04", "N15_M07_F10", 3), ("K001", "N09_M07_F10", 2))
+    try:
+        for b, c, k in cases:
+            pb.fetch(b, c, download=False, meas=k)
+    except FileNotFoundError:
+        if os.environ.get("FOLDCRYPT_REQUIRE_PADERBORN") == "1":
+            pytest.fail("held-out Paderborn files not cached")
+        pytest.skip("held-out Paderborn files not cached")
+    by = {r["record"]: r for r in _metrics()["records"]}
+    for b, c, k in cases:
+        r = ps.phase_record(b, c, k)
+        row = by[r.record]
+        assert row["n_spikes_trimmed"] == r.n_spikes
+        assert row["r_ref"] == pytest.approx(r.r, abs=1e-9)
+        assert row["mean_phase_deg"] == pytest.approx(math.degrees(r.mu), abs=1e-6)
+        assert row["ref_line_db"] == pytest.approx(r.ref_db, abs=1e-9)
