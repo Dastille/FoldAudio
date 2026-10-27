@@ -102,6 +102,36 @@ def main() -> int:
         caveat = d > 45.0
         print(f"N09 vs N15 grand-mean difference {d:.1f} deg -> caveat {caveat}")
 
+    print("\n== EXPLORATORY (post hoc, added after the pre-registered run) ==")
+    # E1: is the null-A bar failure a pipeline artefact or plain small-N noise?
+    # Rayleigh: P(R > r) ~ exp(-N r^2) -> analytic 99th percentile sqrt(ln 100 / N).
+    ratios = [r.null_r99 / math.sqrt(math.log(100) / r.n_spikes) for r in held]
+    over = [r for r in held if r.null_r99 > ps.NULL_A_MAX_R99]
+    print(
+        f"E1 null-A 99th pct / analytic sqrt(ln100/N): {min(ratios):.3f}-{max(ratios):.3f}; "
+        f"records over the 0.2 bar: {len(over)} (N {min(r.n_spikes for r in over)}-"
+        f"{max(r.n_spikes for r in over)}); records under it: N >= "
+        f"{min(r.n_spikes for r in held if r.null_r99 <= ps.NULL_A_MAX_R99)}"
+    )
+    ok = [r for r in held if r.null_r99 <= ps.NULL_A_MAX_R99]
+    e2 = ps.phase_verdicts(ok)
+    _summary(f"E2 rules on the {len(ok)} records that pass the 0.2 bar", e2)
+    e3 = ps.phase_verdicts(held, null_a_max_r99=math.inf)
+    _summary("E3 rules on all 32 with the null-A gate removed", e3)
+    for tag, vv in (("all 32", e3), ("E2 subset", e2)):
+        ms = -vv["grand_mean_deg"] / 360.0 * 10.0
+        print(
+            f"E4 {tag}: grand mean {vv['grand_mean_deg']:+.1f} deg = {ms:.2f} ms before the ripple maximum"
+        )
+    mus = [math.degrees(r.mu) for r in held]
+    print(f"E5 per-record mean phase range {min(mus):+.1f} to {max(mus):+.1f} deg")
+    exploratory = {
+        "E1_ratio_range": [min(ratios), max(ratios)],
+        "E1_over_bar": [r.record for r in over],
+        "E2_pass_bar_subset": e2,
+        "E3_gate_removed": e3,
+    }
+
     print("\n== EXPLORATORY (seen data): measurement _1, spiky records ==")
     seen, _ = _set((1,))
     vs = ps.phase_verdicts(seen)
@@ -117,6 +147,7 @@ def main() -> int:
         "n09_subset": v09,
         "n15_subset": v15,
         "n09_n15_caveat": caveat,
+        "exploratory_post_hoc": exploratory,
         "seen_meas1_exploratory": vs,
         "records": [_row(r) for r in held],
         "records_seen_meas1": [_row(r) for r in seen],

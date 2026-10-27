@@ -750,9 +750,17 @@ def null_shift_p(
     return float(p), float(np.percentile(null, 99))
 
 
-def phase_verdicts(recs: list[PhaseRecord], *, seed: int = PHASE_SEED) -> dict:
+def phase_verdicts(
+    recs: list[PhaseRecord],
+    *,
+    seed: int = PHASE_SEED,
+    null_a_max_r99: float = NULL_A_MAX_R99,
+) -> dict:
     """Apply the prereg-2026-10-27-phase.md rules (P1, P2, P3, null A/B) to the
-    confirmation records (non-spiky records must already be filtered out)."""
+    confirmation records (non-spiky records must already be filtered out).
+
+    ``null_a_max_r99`` is the pre-registered null-A pipeline bar (0.2); other
+    values are for clearly labelled exploratory re-reads only."""
     spiky = [r for r in recs if r.n_spikes >= SPIKY_MIN]
     use = [r for r in spiky if r.ref_valid]
     v = len(use)
@@ -760,7 +768,7 @@ def phase_verdicts(recs: list[PhaseRecord], *, seed: int = PHASE_SEED) -> dict:
     if v == 0 or v < 0.5 * len(spiky):
         out |= {"P1": "UNTESTABLE", "P2": "UNTESTABLE", "P3": "UNTESTABLE"}
         return out
-    null_a_ok = all(r.null_r99 <= NULL_A_MAX_R99 for r in use)
+    null_a_ok = all(r.null_r99 <= null_a_max_r99 for r in use)
     burst = sum(r.r >= R_BURST and r.p < ALPHA for r in use)
     spread = sum(r.r <= R_SPREAD for r in use)
     rb, mbar, pb_ = between_stats(use)
