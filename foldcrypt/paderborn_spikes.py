@@ -562,3 +562,262 @@ def run_heldout(cache=None, *, download=False) -> list[RecordProbe]:
         for c in pb.CONDITIONS
         for m in pb.HELDOUT_MEASUREMENTS
     ]
+
+
+# --- spike phase vs the 100 Hz current ripple (prereg-2026-10-27-phase.md, #8j) ---
+
+RIPPLE_BAND_HZ = (95.0, 105.0)
+REF_LINE_HZ = (98.0, 102.0)
+REF_BG_HZ = (80.0, 120.0)
+REF_MIN_DB = 10.0
+EDGE_TRIM_S = 0.1
+PHASE_SEED = 20261027
+PHASE_NULL_DRAWS = 2000
+#: R for spikes uniform within a ±90° window (half cycle)
+R_BURST = 2 / math.pi
+#: R ceiling for sinusoidal gating, probability ∝ 1 + a·cos θ with a ≤ 1
+R_SPREAD = 0.5
+P1_HELD_FRAC = 0.90
+P1_FAIL_FRAC = 0.50
+R_BETWEEN_HELD = 0.8
+R_BETWEEN_FAIL = 0.5
+P_BETWEEN_FAIL = 0.05
+NULL_B_MAX_P = 0.01
+NULL_A_MAX_R99 = 0.2
+P3_HELD_DEG = 45.0
+P3_FAIL_DEG = 90.0
+
+
+def current_magnitude(i1: np.ndarray, i2: np.ndarray) -> np.ndarray:
+    """Current space-vector magnitude |i_s| from two phase currents of a
+    3-wire machine (i3 = −i1 − i2), each with its record mean removed."""
+    a = np.asarray(i1, dtype=float) - float(np.mean(i1))
+    b = np.asarray(i2, dtype=float) - float(np.mean(i2))
+    beta = (a + 2 * b) / math.sqrt(3)
+    return np.hypot(a, beta)
+
+
+def ripple_line_db(m: np.ndarray, sr: float) -> float:
+    """100 Hz line of ``m`` (Hann-windowed amplitude spectrum, max over
+    REF_LINE_HZ) over the median of REF_BG_HZ outside that band, in dB."""
+    m = np.asarray(m, dtype=float)
+    spec = np.abs(np.fft.rfft((m - m.mean()) * np.hanning(len(m))))
+    f = np.fft.rfftfreq(len(m), 1.0 / sr)
+    in_line = (f >= REF_LINE_HZ[0]) & (f <= REF_LINE_HZ[1])
+    bg_sel = (f >= REF_BG_HZ[0]) & (f <= REF_BG_HZ[1]) & ~in_line
+    return float(20 * np.log10(spec[in_line].max() / np.median(spec[bg_sel])))
+
+
+def ripple_phase(m: np.ndarray, sr: float) -> tuple[np.ndarray, float]:
+    """Instantaneous phase (rad) of the zero-phase 95–105 Hz band-pass of
+    ``m``; phase 0 is the ripple maximum. Also returns the ripple amplitude
+    (median Hilbert envelope) over mean(m), i.e. the modulation depth."""
+    from scipy.signal import butter, hilbert, sosfiltfilt
+
+    m = np.asarray(m, dtype=float)
+    sos = butter(4, RIPPLE_BAND_HZ, btype="bandpass", fs=sr, output="sos")
+    r = sosfiltfilt(sos, m - m.mean())
+    z = hilbert(r)
+    depth = float(np.median(np.abs(z)) / max(float(np.mean(m)), 1e-12))
+    return np.angle(z), depth
+
+
+def circ_stats(theta: np.ndarray) -> tuple[float, float, float]:
+    """(R, mean phase in rad, Rayleigh p = exp(−N R²)) for angles ``theta``."""
+    theta = np.asarray(theta, dtype=float)
+    if len(theta) == 0:
+        return 0.0, 0.0, 1.0
+    z = np.exp(1j * theta).mean()
+    r = float(abs(z))
+    return r, float(np.angle(z)), float(math.exp(-len(theta) * r * r))
+
+
+def trim_indices(idx: np.ndarray, n: int, sr: float) -> tuple[np.ndarray, int, int]:
+    """Drop indices within EDGE_TRIM_S of either end; returns (kept, lo, hi)
+    with the usable window [lo, hi)."""
+    edge = int(round(EDGE_TRIM_S * sr))
+    lo, hi = edge, n - edge
+    idx = np.asarray(idx)
+    return idx[(idx >= lo) & (idx < hi)], lo, hi
+
+
+def null_random_r(
+    phase: np.ndarray, n_spk: int, lo: int, hi: int, rng, draws: int = PHASE_NULL_DRAWS
+) -> np.ndarray:
+    """Null A: R_ref for ``draws`` sets of ``n_spk`` uniform random indices in
+    [lo, hi) (without replacement within a draw)."""
+    out = np.empty(draws)
+    for d in range(draws):
+        k = rng.choice(hi - lo, size=n_spk, replace=False) + lo
+        out[d] = abs(np.exp(1j * phase[k]).mean())
+    return out
+
+
+@dataclass
+class PhaseRecord:
+    """Spike phase against the 100 Hz current-magnitude ripple, one record."""
+
+    record: str
+    condition: str
+    meas: int
+    n_spikes: int
+    ref_db: float
+    ref_valid: bool
+    depth: float
+    r: float = 0.0
+    mu: float = 0.0
+    p: float = 1.0
+    frac45: float = 0.0
+    null_r99: float = 0.0
+    #: phase of every kept spike (rad); used by the across-record shift null
+    theta: np.ndarray = field(default_factory=lambda: np.zeros(0), repr=False)
+    #: reference phase over the usable window and its offset, for null B
+    _phase: np.ndarray | None = field(default=None, repr=False)
+    _idx: np.ndarray | None = field(default=None, repr=False)
+    _lo: int = 0
+    _hi: int = 0
+
+    @property
+    def usable(self) -> bool:
+        return self.ref_valid and self.n_spikes >= SPIKY_MIN
+
+
+def phase_from_signals(
+    name: str,
+    condition: str,
+    meas: int,
+    x: np.ndarray,
+    i1: np.ndarray,
+    i2: np.ndarray,
+    sr: float = pb.SR,
+    *,
+    rng=None,
+) -> PhaseRecord | None:
+    """Spike phase statistics for one record from its vibration and phase
+    currents. Returns None if the record is not spiky (< SPIKY_MIN spikes)."""
+    idx = spike_indices(x)
+    if len(idx) < SPIKY_MIN:
+        return None
+    m = current_magnitude(i1, i2)
+    ref_db = ripple_line_db(m, sr)
+    phase, depth = ripple_phase(m, sr)
+    kept, lo, hi = trim_indices(idx, len(x), sr)
+    rec = PhaseRecord(
+        record=name,
+        condition=condition,
+        meas=meas,
+        n_spikes=int(len(kept)),
+        ref_db=ref_db,
+        ref_valid=ref_db >= REF_MIN_DB,
+        depth=depth,
+    )
+    if len(kept) == 0:
+        return rec
+    theta = phase[kept]
+    rec.r, rec.mu, rec.p = circ_stats(theta)
+    d = np.angle(np.exp(1j * (theta - rec.mu)))
+    rec.frac45 = float(np.mean(np.abs(d) <= math.pi / 4))
+    rec.theta = theta
+    rng = rng if rng is not None else np.random.default_rng(PHASE_SEED)
+    if len(kept) >= SPIKY_MIN:
+        rec.null_r99 = float(
+            np.percentile(null_random_r(phase, len(kept), lo, hi, rng), 99)
+        )
+    rec._phase, rec._idx, rec._lo, rec._hi = phase, kept, lo, hi
+    return rec
+
+
+def between_stats(recs: list[PhaseRecord]) -> tuple[float, float, float]:
+    """Second-order Rayleigh on per-record mean phases: (R_between, grand mean, p)."""
+    return circ_stats(np.array([r.mu for r in recs]))
+
+
+def null_shift_p(
+    recs: list[PhaseRecord], observed: float, rng, draws: int = PHASE_NULL_DRAWS
+) -> tuple[float, float]:
+    """Null B: independent circular shift of each record's spikes within its
+    usable window; returns (empirical p, 99th percentile of null R_between)."""
+    null = np.empty(draws)
+    for d in range(draws):
+        mus = []
+        for r in recs:
+            w = r._hi - r._lo
+            s = int(rng.integers(w))
+            k = r._lo + (r._idx - r._lo + s) % w
+            mus.append(np.angle(np.exp(1j * r._phase[k]).mean()))
+        null[d] = abs(np.exp(1j * np.array(mus)).mean())
+    p = (1 + int(np.count_nonzero(null >= observed))) / (draws + 1)
+    return float(p), float(np.percentile(null, 99))
+
+
+def phase_verdicts(recs: list[PhaseRecord], *, seed: int = PHASE_SEED) -> dict:
+    """Apply the prereg-2026-10-27-phase.md rules (P1, P2, P3, null A/B) to the
+    confirmation records (non-spiky records must already be filtered out)."""
+    spiky = [r for r in recs if r.n_spikes >= SPIKY_MIN]
+    use = [r for r in spiky if r.ref_valid]
+    v = len(use)
+    out: dict = {"spiky": len(spiky), "valid_reference": v}
+    if v == 0 or v < 0.5 * len(spiky):
+        out |= {"P1": "UNTESTABLE", "P2": "UNTESTABLE", "P3": "UNTESTABLE"}
+        return out
+    null_a_ok = all(r.null_r99 <= NULL_A_MAX_R99 for r in use)
+    burst = sum(r.r >= R_BURST and r.p < ALPHA for r in use)
+    spread = sum(r.r <= R_SPREAD for r in use)
+    rb, mbar, pb_ = between_stats(use)
+    rng = np.random.default_rng(seed + 1)
+    p_null, null99 = null_shift_p(use, rb, rng)
+    out |= {
+        "null_a_ok": null_a_ok,
+        "null_a_r99_max": max(r.null_r99 for r in use),
+        "burst_count": burst,
+        "spread_count": spread,
+        "r_min": min(r.r for r in use),
+        "r_max": max(r.r for r in use),
+        "r_between": rb,
+        "grand_mean_deg": math.degrees(mbar),
+        "p_between": pb_,
+        "null_b_p": p_null,
+        "null_b_r99": null99,
+    }
+    if not null_a_ok:
+        out |= {"P1": "UNTESTABLE", "P2": "UNTESTABLE", "P3": "UNTESTABLE"}
+        return out
+    if burst >= P1_HELD_FRAC * v:
+        out["P1"] = "HELD"
+    elif spread >= P1_FAIL_FRAC * v:
+        out["P1"] = "FALSIFIED"
+    else:
+        out["P1"] = "INCONCLUSIVE"
+    if rb >= R_BETWEEN_HELD and pb_ < ALPHA and p_null <= NULL_B_MAX_P:
+        out["P2"] = "HELD"
+    elif rb < R_BETWEEN_FAIL or pb_ >= P_BETWEEN_FAIL:
+        out["P2"] = "FALSIFIED"
+    else:
+        out["P2"] = "INCONCLUSIVE"
+    if out["P2"] != "HELD":
+        out["P3"] = "UNTESTABLE"
+    elif abs(out["grand_mean_deg"]) <= P3_HELD_DEG:
+        out["P3"] = "HELD"
+    elif abs(out["grand_mean_deg"]) > P3_FAIL_DEG:
+        out["P3"] = "FALSIFIED"
+    else:
+        out["P3"] = "INCONCLUSIVE"
+    return out
+
+
+def phase_record(
+    bearing: str, condition: str, meas: int, cache=None, *, rng=None
+) -> PhaseRecord | None:
+    """Load one pinned record (no download) and compute its spike phase stats."""
+    path = pb.fetch(bearing, condition, cache, download=False, meas=meas)
+    ch = load_channels(path, ("vibration_1", *CURRENT_CHANNELS))
+    return phase_from_signals(
+        pb.member(bearing, condition, meas),
+        condition,
+        meas,
+        ch["vibration_1"],
+        ch[CURRENT_CHANNELS[0]],
+        ch[CURRENT_CHANNELS[1]],
+        pb.SR,
+        rng=rng,
+    )
