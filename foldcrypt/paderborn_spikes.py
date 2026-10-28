@@ -829,3 +829,83 @@ def phase_record(
         pb.SR,
         rng=rng,
     )
+
+
+# --- Confirmatory phase re-run on fresh records (prereg-2026-10-28-phase-confirm.md, NOTES #8k)
+
+CONFIRM_SEED = 20261028
+#: null-A gate: 99th pct of random-time R ≤ NULL_A_SCALE · sqrt(ln 100 / N)
+NULL_A_SCALE = 1.2
+#: exploratory grand mean phase from 2026-10-27 (deg), the C3 target
+C3_TARGET_DEG = -65.7
+C1_HELD_FRAC = 0.80
+C3_HELD_DEG = 30.0
+C3_FAIL_DEG = 60.0
+
+
+def null_a_bar(n_spikes: int) -> float:
+    """N-scaled null-A pipeline bar, NULL_A_SCALE · sqrt(ln 100 / N)."""
+    if n_spikes <= 0:
+        return math.inf
+    return NULL_A_SCALE * math.sqrt(math.log(100.0) / n_spikes)
+
+
+def circ_dist_deg(a_deg: float, b_deg: float) -> float:
+    """Absolute circular distance between two angles in degrees (0…180)."""
+    return abs(math.degrees(np.angle(np.exp(1j * math.radians(a_deg - b_deg)))))
+
+
+def confirm_verdicts(recs: list[PhaseRecord], *, seed: int = CONFIRM_SEED) -> dict:
+    """Apply the prereg-2026-10-28-phase-confirm.md rules (C1, C2, C3) to
+    spike-phase records. Non-spiky records (None) must already be removed."""
+    spiky = [r for r in recs if r.n_spikes >= SPIKY_MIN]
+    use = [r for r in spiky if r.ref_valid]
+    v = len(use)
+    out: dict = {"spiky": len(spiky), "valid_reference": v}
+    if v == 0 or v < 0.5 * len(spiky):
+        return out | {"C1": "UNTESTABLE", "C2": "UNTESTABLE", "C3": "UNTESTABLE"}
+    ratios = [r.null_r99 / math.sqrt(math.log(100.0) / r.n_spikes) for r in use]
+    null_a_ok = all(r.null_r99 <= null_a_bar(r.n_spikes) for r in use)
+    burst = sum(r.r >= R_BURST and r.p < ALPHA for r in use)
+    spread = sum(r.r <= R_SPREAD for r in use)
+    rb, mbar, p_b = between_stats(use)
+    p_null, null99 = null_shift_p(use, rb, np.random.default_rng(seed + 1))
+    gm = math.degrees(mbar)
+    out |= {
+        "null_a_ok": null_a_ok,
+        "null_a_ratio_range": [min(ratios), max(ratios)],
+        "burst_count": burst,
+        "spread_count": spread,
+        "r_min": min(r.r for r in use),
+        "r_max": max(r.r for r in use),
+        "r_between": rb,
+        "grand_mean_deg": gm,
+        "c3_distance_deg": circ_dist_deg(gm, C3_TARGET_DEG),
+        "p_between": p_b,
+        "null_b_p": p_null,
+        "null_b_r99": null99,
+    }
+    if not null_a_ok:
+        return out | {"C1": "UNTESTABLE", "C2": "UNTESTABLE", "C3": "UNTESTABLE"}
+    if burst >= C1_HELD_FRAC * v:
+        out["C1"] = "HELD"
+    elif spread >= P1_FAIL_FRAC * v:
+        out["C1"] = "FALSIFIED"
+    else:
+        out["C1"] = "INCONCLUSIVE"
+    if rb >= R_BETWEEN_HELD and p_b < ALPHA and p_null <= NULL_B_MAX_P:
+        out["C2"] = "HELD"
+    elif rb < R_BETWEEN_FAIL or p_b >= P_BETWEEN_FAIL:
+        out["C2"] = "FALSIFIED"
+    else:
+        out["C2"] = "INCONCLUSIVE"
+    d = out["c3_distance_deg"]
+    if out["C2"] != "HELD":
+        out["C3"] = "UNTESTABLE"
+    elif d <= C3_HELD_DEG:
+        out["C3"] = "HELD"
+    elif d > C3_FAIL_DEG:
+        out["C3"] = "FALSIFIED"
+    else:
+        out["C3"] = "INCONCLUSIVE"
+    return out

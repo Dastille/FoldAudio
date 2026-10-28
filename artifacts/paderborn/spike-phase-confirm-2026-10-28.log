@@ -1,0 +1,127 @@
+# prereg artifacts/paderborn/prereg-2026-10-28-phase-confirm.md
+# seed 20261028, null draws 2000, alpha 0.001
+# null-A gate 99th pct <= 1.2 * sqrt(ln100/N); C3 target -65.7 deg
+K001/N15_M07_F10_K001_6.mat    N  553  ref  33.8 dB ok  depth 0.0083  R 0.807  mu   -80.3 deg  p 2.8e-157  ±45° 0.79  nullA99 0.088 / bar 0.110
+K001/N15_M07_F10_K001_7.mat    N  286  ref  34.3 dB ok  depth 0.0088  R 0.880  mu   -77.1 deg  p 7.1e-97  ±45° 0.88  nullA99 0.126 / bar 0.152
+K001/N15_M07_F10_K001_8.mat    N  548  ref  25.8 dB ok  depth 0.0032  R 0.780  mu  -119.2 deg  p 1.2e-145  ±45° 0.78  nullA99 0.088 / bar 0.110
+K001/N15_M07_F10_K001_9.mat    N  377  ref  34.5 dB ok  depth 0.0085  R 0.858  mu   -86.8 deg  p 2.9e-121  ±45° 0.82  nullA99 0.113 / bar 0.133
+K001/N15_M07_F10_K001_10.mat   N  281  ref  33.3 dB ok  depth 0.0084  R 0.844  mu   -83.3 deg  p 1.2e-87  ±45° 0.78  nullA99 0.125 / bar 0.154
+K001/N09_M07_F10_K001_6.mat    N  447  ref  28.5 dB ok  depth 0.0040  R 0.738  mu   -61.4 deg  p 1.5e-106  ±45° 0.75  nullA99 0.104 / bar 0.122
+K001/N09_M07_F10_K001_7.mat    N  657  ref  27.9 dB ok  depth 0.0041  R 0.747  mu   -64.7 deg  p 4.0e-160  ±45° 0.74  nullA99 0.085 / bar 0.100
+K001/N09_M07_F10_K001_8.mat    N  266  ref  27.7 dB ok  depth 0.0041  R 0.769  mu   -57.3 deg  p 4.6e-69  ±45° 0.77  nullA99 0.133 / bar 0.158
+K001/N09_M07_F10_K001_9.mat    N  302  ref  27.7 dB ok  depth 0.0041  R 0.750  mu   -63.7 deg  p 2.0e-74  ±45° 0.75  nullA99 0.125 / bar 0.148
+K001/N09_M07_F10_K001_10.mat   N  563  ref  28.3 dB ok  depth 0.0042  R 0.731  mu   -63.3 deg  p 1.5e-131  ±45° 0.76  nullA99 0.091 / bar 0.109
+K001/N15_M01_F10_K001_6.mat    N  533  ref  32.6 dB ok  depth 0.0152  R 0.764  mu   -42.9 deg  p 8.9e-136  ±45° 0.78  nullA99 0.091 / bar 0.112
+K001/N15_M01_F10_K001_7.mat    N  308  ref  25.1 dB ok  depth 0.0057  R 0.698  mu   +94.9 deg  p 8.4e-66  ±45° 0.70  nullA99 0.124 / bar 0.147
+K001/N15_M01_F10_K001_8.mat    N  184  ref  22.5 dB ok  depth 0.0050  R 0.723  mu  +110.6 deg  p 1.6e-42  ±45° 0.72  nullA99 0.157 / bar 0.190
+K001/N15_M01_F10_K001_9.mat    N  305  ref  33.9 dB ok  depth 0.0149  R 0.806  mu   -42.2 deg  p 7.5e-87  ±45° 0.81  nullA99 0.126 / bar 0.147
+K001/N15_M01_F10_K001_10.mat   N  427  ref  33.0 dB ok  depth 0.0133  R 0.783  mu   -82.2 deg  p 1.7e-114  ±45° 0.80  nullA99 0.108 / bar 0.125
+K001/N15_M07_F04_K001_6.mat    N  340  ref  33.1 dB ok  depth 0.0085  R 0.778  mu  -114.2 deg  p 3.7e-90  ±45° 0.81  nullA99 0.113 / bar 0.140
+K001/N15_M07_F04_K001_7.mat    N  339  ref  33.8 dB ok  depth 0.0092  R 0.778  mu   -95.7 deg  p 6.9e-90  ±45° 0.82  nullA99 0.116 / bar 0.140
+K001/N15_M07_F04_K001_8.mat    N  369  ref  16.8 dB ok  depth 0.0022  R 0.172  mu    +8.1 deg  p 1.7e-05  ±45° 0.42  nullA99 0.106 / bar 0.134
+K001/N15_M07_F04_K001_9.mat    N  283  ref  21.4 dB ok  depth 0.0023  R 0.544  mu  -147.3 deg  p 4.3e-37  ±45° 0.61  nullA99 0.132 / bar 0.153
+K001/N15_M07_F04_K001_10.mat   N  153  ref  34.0 dB ok  depth 0.0078  R 0.857  mu  -117.8 deg  p 1.7e-49  ±45° 0.88  nullA99 0.178 / bar 0.208
+KI04/N15_M07_F10_KI04_6.mat    N   60  ref  28.9 dB ok  depth 0.0048  R 0.935  mu   -81.5 deg  p 1.6e-23  ±45° 1.00  nullA99 0.284 / bar 0.332
+KI04/N15_M07_F10_KI04_7.mat    N   14  ref  30.0 dB ok  depth 0.0052  R 0.933  mu  -100.9 deg  p 5.1e-06  ±45° 1.00  nullA99 0.574 / bar 0.688
+KI04/N15_M07_F10_KI04_8.mat    N  110  ref  28.2 dB ok  depth 0.0052  R 0.941  mu   -66.5 deg  p 4.9e-43  ±45° 0.99  nullA99 0.203 / bar 0.246
+KI04/N15_M07_F10_KI04_9.mat    N   75  ref  29.8 dB ok  depth 0.0053  R 0.929  mu   -67.0 deg  p 8.3e-29  ±45° 0.99  nullA99 0.251 / bar 0.297
+KI04/N15_M07_F10_KI04_10.mat   N   85  ref  30.3 dB ok  depth 0.0060  R 0.935  mu   -63.0 deg  p 5.3e-33  ±45° 0.96  nullA99 0.236 / bar 0.279
+KI04/N09_M07_F10_KI04_6.mat    N  207  ref  26.9 dB ok  depth 0.0043  R 0.917  mu   -57.4 deg  p 2.2e-76  ±45° 0.94  nullA99 0.150 / bar 0.179
+KI04/N09_M07_F10_KI04_7.mat    N  166  ref  28.4 dB ok  depth 0.0042  R 0.910  mu   -60.9 deg  p 2.0e-60  ±45° 0.93  nullA99 0.162 / bar 0.200
+KI04/N09_M07_F10_KI04_8.mat    N  277  ref  27.8 dB ok  depth 0.0042  R 0.893  mu   -61.5 deg  p 1.4e-96  ±45° 0.91  nullA99 0.131 / bar 0.155
+KI04/N09_M07_F10_KI04_9.mat    N  159  ref  28.2 dB ok  depth 0.0045  R 0.911  mu   -64.5 deg  p 4.6e-58  ±45° 0.92  nullA99 0.173 / bar 0.204
+KI04/N09_M07_F10_KI04_10.mat   N  153  ref  28.0 dB ok  depth 0.0041  R 0.908  mu   -66.8 deg  p 1.5e-55  ±45° 0.92  nullA99 0.179 / bar 0.208
+KI04/N15_M01_F10_KI04_6.mat    N  143  ref  20.9 dB ok  depth 0.0045  R 0.896  mu   -45.6 deg  p 1.5e-50  ±45° 0.92  nullA99 0.177 / bar 0.215
+KI04/N15_M01_F10_KI04_7.mat    N   74  ref  26.9 dB ok  depth 0.0072  R 0.923  mu   -43.6 deg  p 4.2e-28  ±45° 0.99  nullA99 0.251 / bar 0.299
+KI04/N15_M01_F10_KI04_8.mat    N  246  ref  24.6 dB ok  depth 0.0059  R 0.873  mu   -40.9 deg  p 3.7e-82  ±45° 0.89  nullA99 0.137 / bar 0.164
+KI04/N15_M01_F10_KI04_9.mat    N  279  ref  26.7 dB ok  depth 0.0071  R 0.917  mu   -39.7 deg  p 1.1e-102  ±45° 0.93  nullA99 0.132 / bar 0.154
+KI04/N15_M01_F10_KI04_10.mat   N  115  ref  19.7 dB ok  depth 0.0036  R 0.692  mu   -53.6 deg  p 1.1e-24  ±45° 0.81  nullA99 0.192 / bar 0.240
+KI04/N15_M07_F04_KI04_6.mat    N   25  ref  29.4 dB ok  depth 0.0058  R 0.858  mu   -56.8 deg  p 1.0e-08  ±45° 0.92  nullA99 0.418 / bar 0.515
+KI04/N15_M07_F04_KI04_7.mat    N  128  ref  30.8 dB ok  depth 0.0059  R 0.910  mu   -61.0 deg  p 1.0e-46  ±45° 0.95  nullA99 0.196 / bar 0.228
+KI04/N15_M07_F04_KI04_8.mat    N  200  ref  28.3 dB ok  depth 0.0052  R 0.908  mu   -86.2 deg  p 2.3e-72  ±45° 0.90  nullA99 0.156 / bar 0.182
+KI04/N15_M07_F04_KI04_9.mat    N  185  ref  31.1 dB ok  depth 0.0065  R 0.937  mu   -63.8 deg  p 2.5e-71  ±45° 0.97  nullA99 0.159 / bar 0.189
+KI04/N15_M07_F04_KI04_10.mat   N  166  ref  30.0 dB ok  depth 0.0054  R 0.903  mu   -77.2 deg  p 1.7e-59  ±45° 0.92  nullA99 0.161 / bar 0.200
+not spiky (< 10 spikes): none
+
+[confirmation]
+{
+ "spiky": 40,
+ "valid_reference": 40,
+ "null_a_ok": true,
+ "null_a_ratio_range": [
+  0.9520374587011571,
+  1.0440671928155263
+ ],
+ "burst_count": 38,
+ "spread_count": 1,
+ "r_min": 0.17235153192465397,
+ "r_max": 0.9410968098739995,
+ "r_between": 0.8050253608548698,
+ "grand_mean_deg": -68.90392996348804,
+ "c3_distance_deg": 3.2039299634880365,
+ "p_between": 5.520055149817259e-12,
+ "null_b_p": 0.0004997501249375312,
+ "null_b_r99": 0.32279245371176735,
+ "C1": "HELD",
+ "C2": "HELD",
+ "C3": "HELD"
+}
+
+[N09 subset]
+{
+ "spiky": 10,
+ "valid_reference": 10,
+ "null_a_ok": true,
+ "null_a_ratio_range": [
+  0.9700746055423676,
+  1.0306119055140677
+ ],
+ "burst_count": 10,
+ "spread_count": 0,
+ "r_min": 0.7314487672963768,
+ "r_max": 0.9173639735105855,
+ "r_between": 0.9987048842481301,
+ "grand_mean_deg": -62.14939599450389,
+ "c3_distance_deg": 3.550604005496112,
+ "p_between": 4.659047400557048e-05,
+ "null_b_p": 0.0004997501249375312,
+ "null_b_r99": 0.6387907909638034,
+ "C1": "HELD",
+ "C2": "HELD",
+ "C3": "HELD"
+}
+
+[N15 subset]
+{
+ "spiky": 30,
+ "valid_reference": 30,
+ "null_a_ok": true,
+ "null_a_ratio_range": [
+  0.9520374587011571,
+  1.0440671928155263
+ ],
+ "burst_count": 28,
+ "spread_count": 1,
+ "r_min": 0.17235153192465397,
+ "r_max": 0.9410968098739995,
+ "r_between": 0.7438074157129418,
+ "grand_mean_deg": -71.92141526176131,
+ "c3_distance_deg": 6.221415261761307,
+ "p_between": 6.191618941048663e-08,
+ "null_b_p": 0.0004997501249375312,
+ "null_b_r99": 0.37641286381084044,
+ "C1": "HELD",
+ "C2": "INCONCLUSIVE",
+ "C3": "UNTESTABLE"
+}
+N09 vs N15 grand-mean difference 9.8 deg -> caveat False
+grand mean -68.9 deg = 1.91 ms before the ripple maximum
+
+         HELD  C1
+         HELD  C2
+         HELD  C3
+wrote artifacts/paderborn/spike-phase-confirm-metrics.json
+
+real	0m8.575s
+user	0m9.454s
+sys	0m0.554s

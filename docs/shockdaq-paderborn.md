@@ -104,6 +104,18 @@ The five LP10 shortfalls are 2.13–2.99 dB (four K001 records and KI04 N09 `_4`
 
 **Reading.** If the null-A bar is set by sample size, as it should have been, the spikes behave like bursts at a fixed point of the supply cycle, about 60–70° (1.7–1.9 ms) ahead of the maximum of the current-magnitude ripple, rather than like switching edges weakly modulated by the ripple. That is consistent with rectifier-related bursts, but the relation between the DC-link voltage ripple and the |i_s| ripple of this drive is not known, so the phase cannot be mapped onto rectifier conduction from these data. A confirming run needs a fresh pre-registration with an N-scaled null-A bar on records not used here.
 
+## Confirmatory spike phase on fresh records (NOTES #8k, 2026-10-28)
+
+**Pre-registration.** [`artifacts/paderborn/prereg-2026-10-28-phase-confirm.md`](../artifacts/paderborn/prereg-2026-10-28-phase-confirm.md), committed (4ce52fb) together with the SHA-256 pins of the 40 new records before any number was computed on them. Records: K001 and KI04 × 4 operating conditions × measurements `_6`…`_10` (`pb.CONFIRM_MEASUREMENTS`), extracted from the cached MD5-verified archives. Reference, edge trim, spiky rule, statistics and shift null as on 10-27; seed 20261028. Changes: null-A gate scaled with spike count (99th pct ≤ 1.2·√(ln 100/N)); C1 burst bar ≥ 80 % of records; C3 asks whether the grand mean is within 30° of the 10-27 exploratory −65.7° (falsified beyond 60°).
+
+**Method.** `ps.confirm_verdicts` / `ps.null_a_bar` in `foldcrypt/paderborn_spikes.py`, `python scripts/confirm_spike_phase.py` → [`artifacts/paderborn/spike-phase-confirm-metrics.json`](../artifacts/paderborn/spike-phase-confirm-metrics.json), log [`artifacts/paderborn/spike-phase-confirm-2026-10-28.log`](../artifacts/paderborn/spike-phase-confirm-2026-10-28.log) (~9 s CPU). Synthetic rule checks: `tests/test_spike_phase_confirm.py`.
+
+**Results (pre-registered): C1, C2, C3 held.** 40/40 records spiky (14–657 spikes after trim), reference valid 40/40 (16.8–34.5 dB; ripple 0.22–1.52 %). Null-A gate passed on every record (0.952–1.044 × √(ln 100/N)). C1: 38/40 burst-like (R_ref 0.17–0.94; one record ≤ 0.5). C2: R_between 0.805, p 5.5e-12, shift-null p 5.0e-4 (the floor of 2,000 draws). C3: grand mean −68.9°, 3.2° from −65.7° (1.91 ms before the ripple maximum). N09 subset: 10/10 burst-like, R_between 0.999, −62.1°; N15 subset: R_between 0.744, −71.9°; difference 9.8° (no motor caveat).
+
+**Exploratory (post hoc).** C2 passed narrowly; the N15 subset alone would be inconclusive. By bearing: KI04 R_between 0.967 (−62.8°), K001 0.657 (−77.9°). K001 N15_M01_F10 `_7`/`_8` sit at +94.9°/+110.6°, and the only non-concentrated record (K001 N15_M07_F04 `_8`, R_ref 0.172) has the weakest reference in the set (16.8 dB, depth 0.22 %). Whether the healthy-bearing scatter is a weak-reference effect or a real second timing mode is not tested here.
+
+**Reading.** The fixed-phase, supply-synchronous burst reading now holds as a pre-registered result on fresh records of the same rig. It still does not identify the coupling (no DC-link channel), and successive measurements of one bench are not independent hardware.
+
 ## Interpretation
 
 1. The safety result transfers: on a second rig and sensor chain, the recovery condition predicted every cell and no failure was silent.
