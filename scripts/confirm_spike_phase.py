@@ -47,8 +47,12 @@ def _row(r: ps.PhaseRecord) -> dict:
 
 def main() -> int:
     print("# prereg artifacts/paderborn/prereg-2026-10-28-phase-confirm.md")
-    print(f"# seed {ps.CONFIRM_SEED}, null draws {ps.PHASE_NULL_DRAWS}, alpha {ps.ALPHA}")
-    print(f"# null-A gate 99th pct <= {ps.NULL_A_SCALE} * sqrt(ln100/N); C3 target {ps.C3_TARGET_DEG} deg")
+    print(
+        f"# seed {ps.CONFIRM_SEED}, null draws {ps.PHASE_NULL_DRAWS}, alpha {ps.ALPHA}"
+    )
+    print(
+        f"# null-A gate 99th pct <= {ps.NULL_A_SCALE} * sqrt(ln100/N); C3 target {ps.C3_TARGET_DEG} deg"
+    )
     rng = np.random.default_rng(ps.CONFIRM_SEED)
     recs, not_spiky = [], []
     for b in BEARINGS:
@@ -79,7 +83,9 @@ def main() -> int:
         print(f"N09 vs N15 grand-mean difference {d:.1f} deg -> caveat {caveat}")
     gm = v.get("grand_mean_deg")
     if gm is not None:
-        print(f"grand mean {gm:+.1f} deg = {-gm / 360.0 * 10.0:.2f} ms before the ripple maximum")
+        print(
+            f"grand mean {gm:+.1f} deg = {-gm / 360.0 * 10.0:.2f} ms before the ripple maximum"
+        )
     print()
     for k in ("C1", "C2", "C3"):
         print(f"{v[k]:>13}  {k}")
