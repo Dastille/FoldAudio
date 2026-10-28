@@ -1,7 +1,7 @@
 # Modulo Folding as an Alternative to Hard Clipping in Audio and Vibration Acquisition: Recovery Conditions, Self-Diagnosing Failure Detection, and Calibration
 
-**Technical report, version 1.11**
-**Date:** 2026-10-27
+**Technical report, version 1.12**
+**Date:** 2026-10-28
 **Author:** Ashlynn (GitHub: [Dastille](https://github.com/Dastille))
 **Repository:** <https://github.com/Dastille/FoldAudio> (MIT License)
 **Evidence class:** numerical simulation, plus software folding of public measured accelerometer recordings (Section 6.6). No hardware folding front end was built or measured for this work.
