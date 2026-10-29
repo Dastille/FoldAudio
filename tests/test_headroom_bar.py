@@ -103,3 +103,59 @@ def test_bar_constants_match_derivation():
             x = pb.load_vibration(pb.fetch("KA04", c, download=False, meas=m))
             vals.append(headroom_db(float(np.max(np.abs(x))), max_sample_jump(x)))
         assert ps.derive_bar_db(vals) == ps.HEADROOM_BAR_DB[c]
+
+
+def test_table18_doc_numbers_match_committed_metrics():
+    """Table 18 / doc numbers recomputed from the committed metrics (no cache)."""
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    m = json.loads(
+        (root / "artifacts" / "paderborn" / "headroom-bar-metrics.json").read_text()
+    )
+    b1, b2, recs = m["B1"], m["B2"], m["records"]
+    assert m["bars_db"] == ps.HEADROOM_BAR_DB
+    assert (b1["B1"], b2["B2"]) == ("HELD", "HELD")
+    assert (b1["at_or_above"], b1["n"], b1["excluded_spiky"]) == (16, 20, [])
+    assert (b2["lp10_at_or_above_bar"], b2["spiky_records"]) == (35, 40)
+    assert b2["lp10_at_or_above_3db_descriptive"] == 39
+    assert (b2["lines_testable"], b2["lines_lost"], b2["silent_fail"]) == (40, [], 0)
+    assert b2["rule_all_correct"]
+    spiky = [r for r in recs if r["spiky"]]
+    misses = [r for r in spiky if r["lp10_headroom_db"] < r["bar_db"]]
+    assert all(r["record"].startswith("K001/") for r in misses) and len(misses) == 5
+    assert sum(r["lp10_recovered"] for r in spiky) == 68
+    assert sum(r["lp10_cells"] for r in spiky) == 240
+    ka = [r["raw_headroom_db"] for r in recs if r["record"].startswith("KA04/")]
+    lp = [r["lp10_headroom_db"] for r in spiky]
+    strs = [
+        f"{min(ka):.2f}–{max(ka):.2f} dB",
+        f"{min(lp):.2f}–{max(lp):.2f} dB",
+        "16/20",
+        "35/40",
+        "39/40",
+        "24/32",
+    ]
+    for name in ("docs/shockdaq-paderborn.md", "docs/foldaudio-whitepaper.md"):
+        doc = (root / name).read_text(encoding="utf-8")
+        for s in strs:
+            assert s in doc, (name, s)
+
+
+def test_retro_score_on_seen_records():
+    """Exploratory 24/32 on measurements _2.._5 against the same bars (committed metrics)."""
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    h = json.loads(
+        (root / "artifacts" / "paderborn" / "heldout-metrics.json").read_text()
+    )
+    spiky = [r for r in h["records"] if r["spiky"]]
+    ok = sum(
+        r["lp10_headroom_db"]
+        >= ps.HEADROOM_BAR_DB[r["record"].split("/")[1].rsplit("_", 2)[0]]
+        for r in spiky
+    )
+    assert (ok, len(spiky)) == (24, 32)
