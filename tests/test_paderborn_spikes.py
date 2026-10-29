@@ -307,7 +307,7 @@ def test_heldout_members_are_pinned_and_distinct():
         "_K001_3.mat"
     )
     assert all(n in pb.MAT_SHA256 for n in names)
-    assert len(set(pb.MAT_SHA256.values())) == len(pb.MAT_SHA256) == 100
+    assert len(set(pb.MAT_SHA256.values())) == len(pb.MAT_SHA256) == 120
 
 
 def test_heldout_doc_numbers_match_committed_metrics():
