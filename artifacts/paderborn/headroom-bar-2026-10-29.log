@@ -1,0 +1,105 @@
+# prereg artifacts/paderborn/prereg-2026-10-29-headroom-bar.md
+# bars B_c (dB): {'N15_M07_F10': 3.31, 'N09_M07_F10': 3.94, 'N15_M01_F10': 2.95, 'N15_M07_F04': 1.6}
+K001/N15_M07_F10_K001_6.mat        spikes  577  bar 3.31  raw  -0.10  LP10  +3.58
+K001/N15_M07_F10_K001_7.mat        spikes  310  bar 3.31  raw  -0.29  LP10  +3.93
+K001/N15_M07_F10_K001_8.mat        spikes  583  bar 3.31  raw  -0.58  LP10  +3.80
+K001/N15_M07_F10_K001_9.mat        spikes  393  bar 3.31  raw  -0.14  LP10  +4.53
+K001/N15_M07_F10_K001_10.mat       spikes  298  bar 3.31  raw  +0.33  LP10  +3.27
+K001/N09_M07_F10_K001_6.mat        spikes  463  bar 3.94  raw  +0.14  LP10  +3.75
+K001/N09_M07_F10_K001_7.mat        spikes  692  bar 3.94  raw  -0.32  LP10  +3.35
+K001/N09_M07_F10_K001_8.mat        spikes  293  bar 3.94  raw  +0.05  LP10  +3.20
+K001/N09_M07_F10_K001_9.mat        spikes  334  bar 3.94  raw  +0.05  LP10  +4.28
+K001/N09_M07_F10_K001_10.mat       spikes  583  bar 3.94  raw  +0.08  LP10  +4.83
+K001/N15_M01_F10_K001_6.mat        spikes  554  bar 2.95  raw  +0.11  LP10  +4.51
+K001/N15_M01_F10_K001_7.mat        spikes  315  bar 2.95  raw  -0.02  LP10  +4.06
+K001/N15_M01_F10_K001_8.mat        spikes  194  bar 2.95  raw  -0.47  LP10  +4.12
+K001/N15_M01_F10_K001_9.mat        spikes  335  bar 2.95  raw  +0.27  LP10  +3.17
+K001/N15_M01_F10_K001_10.mat       spikes  445  bar 2.95  raw  -0.37  LP10  +2.75
+K001/N15_M07_F04_K001_6.mat        spikes  346  bar 1.60  raw  -0.56  LP10  +4.48
+K001/N15_M07_F04_K001_7.mat        spikes  352  bar 1.60  raw  -0.29  LP10  +5.22
+K001/N15_M07_F04_K001_8.mat        spikes  395  bar 1.60  raw  -0.12  LP10  +4.51
+K001/N15_M07_F04_K001_9.mat        spikes  294  bar 1.60  raw  -0.12  LP10  +4.12
+K001/N15_M07_F04_K001_10.mat       spikes  164  bar 1.60  raw  +0.33  LP10  +4.02
+KA04/N15_M07_F10_KA04_6.mat        spikes    0  bar 3.31  raw  +4.30  LP10  +5.13  line raw  36.8 LP10  36.2
+KA04/N15_M07_F10_KA04_7.mat        spikes    0  bar 3.31  raw  +2.70  LP10  +5.01  line raw  34.5 LP10  34.5
+KA04/N15_M07_F10_KA04_8.mat        spikes    0  bar 3.31  raw  +3.33  LP10  +4.00  line raw  37.2 LP10  36.8
+KA04/N15_M07_F10_KA04_9.mat        spikes    0  bar 3.31  raw  +3.82  LP10  +4.96  line raw  36.2 LP10  35.8
+KA04/N15_M07_F10_KA04_10.mat       spikes    0  bar 3.31  raw  +4.51  LP10  +6.00  line raw  36.3 LP10  35.3
+KA04/N09_M07_F10_KA04_6.mat        spikes    0  bar 3.94  raw  +5.53  LP10  +6.68  line raw  31.7 LP10  31.9
+KA04/N09_M07_F10_KA04_7.mat        spikes    0  bar 3.94  raw  +4.09  LP10  +6.20  line raw  36.7 LP10  37.1
+KA04/N09_M07_F10_KA04_8.mat        spikes    0  bar 3.94  raw  +4.66  LP10  +6.48  line raw  31.5 LP10  31.7
+KA04/N09_M07_F10_KA04_9.mat        spikes    2  bar 3.94  raw  +3.19  LP10  +6.56  line raw  34.0 LP10  34.0
+KA04/N09_M07_F10_KA04_10.mat       spikes    2  bar 3.94  raw  +3.63  LP10  +7.10  line raw  32.8 LP10  32.5
+KA04/N15_M01_F10_KA04_6.mat        spikes    0  bar 2.95  raw  +4.12  LP10  +4.58  line raw  36.8 LP10  36.4
+KA04/N15_M01_F10_KA04_7.mat        spikes    0  bar 2.95  raw  +2.92  LP10  +3.89  line raw  35.5 LP10  35.5
+KA04/N15_M01_F10_KA04_8.mat        spikes    0  bar 2.95  raw  +3.97  LP10  +4.67  line raw  37.1 LP10  36.7
+KA04/N15_M01_F10_KA04_9.mat        spikes    0  bar 2.95  raw  +4.32  LP10  +5.27  line raw  34.2 LP10  33.7
+KA04/N15_M01_F10_KA04_10.mat       spikes    0  bar 2.95  raw  +3.80  LP10  +4.00  line raw  37.6 LP10  37.2
+KA04/N15_M07_F04_KA04_6.mat        spikes    0  bar 1.60  raw  +2.65  LP10  +3.13  line raw  33.4 LP10  34.1
+KA04/N15_M07_F04_KA04_7.mat        spikes    0  bar 1.60  raw  +2.70  LP10  +3.42  line raw  33.0 LP10  33.7
+KA04/N15_M07_F04_KA04_8.mat        spikes    0  bar 1.60  raw  +2.52  LP10  +3.50  line raw  34.1 LP10  34.6
+KA04/N15_M07_F04_KA04_9.mat        spikes    0  bar 1.60  raw  +2.91  LP10  +3.68  line raw  34.6 LP10  34.9
+KA04/N15_M07_F04_KA04_10.mat       spikes    0  bar 1.60  raw  +2.22  LP10  +2.96  line raw  33.5 LP10  34.4
+KI04/N15_M07_F10_KI04_6.mat        spikes   61  bar 3.31  raw  +0.74  LP10  +5.56  line raw  23.7 LP10  23.8
+KI04/N15_M07_F10_KI04_7.mat        spikes   16  bar 3.31  raw  +0.43  LP10  +6.48  line raw  23.9 LP10  24.1
+KI04/N15_M07_F10_KI04_8.mat        spikes  111  bar 3.31  raw  -0.16  LP10  +5.70  line raw  25.7 LP10  26.2
+KI04/N15_M07_F10_KI04_9.mat        spikes   77  bar 3.31  raw  +0.50  LP10  +5.75  line raw  22.6 LP10  22.1
+KI04/N15_M07_F10_KI04_10.mat       spikes   88  bar 3.31  raw  -0.58  LP10  +4.67  line raw  26.6 LP10  26.5
+KI04/N09_M07_F10_KI04_6.mat        spikes  224  bar 3.94  raw  -0.71  LP10  +4.58  line raw  20.1 LP10  21.4
+KI04/N09_M07_F10_KI04_7.mat        spikes  169  bar 3.94  raw  +0.17  LP10  +4.85  line raw  19.6 LP10  20.8
+KI04/N09_M07_F10_KI04_8.mat        spikes  291  bar 3.94  raw  -0.16  LP10  +5.17  line raw  18.5 LP10  21.3
+KI04/N09_M07_F10_KI04_9.mat        spikes  164  bar 3.94  raw  +0.11  LP10  +4.10  line raw  20.6 LP10  22.5
+KI04/N09_M07_F10_KI04_10.mat       spikes  157  bar 3.94  raw  -0.10  LP10  +5.06  line raw  22.5 LP10  23.6
+KI04/N15_M01_F10_KI04_6.mat        spikes  149  bar 2.95  raw  +0.36  LP10  +5.77  line raw  25.0 LP10  25.4
+KI04/N15_M01_F10_KI04_7.mat        spikes   79  bar 2.95  raw  -0.50  LP10  +6.43  line raw  23.1 LP10  22.7
+KI04/N15_M01_F10_KI04_8.mat        spikes  257  bar 2.95  raw  -0.04  LP10  +6.09  line raw  22.8 LP10  23.1
+KI04/N15_M01_F10_KI04_9.mat        spikes  288  bar 2.95  raw  -0.58  LP10  +4.96  line raw  24.4 LP10  24.4
+KI04/N15_M01_F10_KI04_10.mat       spikes  120  bar 2.95  raw  -0.15  LP10  +6.03  line raw  24.7 LP10  24.6
+KI04/N15_M07_F04_KI04_6.mat        spikes   25  bar 1.60  raw  +0.84  LP10  +5.82  line raw  22.1 LP10  21.8
+KI04/N15_M07_F04_KI04_7.mat        spikes  133  bar 1.60  raw  -0.27  LP10  +5.59  line raw  24.4 LP10  24.3
+KI04/N15_M07_F04_KI04_8.mat        spikes  206  bar 1.60  raw  -0.44  LP10  +4.93  line raw  23.0 LP10  22.4
+KI04/N15_M07_F04_KI04_9.mat        spikes  196  bar 1.60  raw  -0.07  LP10  +4.84  line raw  23.4 LP10  22.9
+KI04/N15_M07_F04_KI04_10.mat       spikes  179  bar 1.60  raw  -0.07  LP10  +4.31  line raw  20.3 LP10  19.9
+
+[B1]
+{
+ "n": 20,
+ "at_or_above": 16,
+ "per_condition": {
+  "N15_M07_F10": [
+   4,
+   5
+  ],
+  "N09_M07_F10": [
+   3,
+   5
+  ],
+  "N15_M01_F10": [
+   4,
+   5
+  ],
+  "N15_M07_F04": [
+   5,
+   5
+  ]
+ },
+ "B1": "HELD",
+ "excluded_spiky": []
+}
+
+[B2]
+{
+ "spiky_records": 40,
+ "lp10_at_or_above_bar": 35,
+ "lp10_at_or_above_3db_descriptive": 39,
+ "silent_fail": 0,
+ "rule_all_correct": true,
+ "lines_testable": 40,
+ "lines_lost": [],
+ "B2": "HELD"
+}
+wrote artifacts/paderborn/headroom-bar-metrics.json
+
+real	1m42.896s
+user	1m33.735s
+sys	0m9.026s

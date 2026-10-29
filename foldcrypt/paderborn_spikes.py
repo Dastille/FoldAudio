@@ -909,3 +909,89 @@ def confirm_verdicts(recs: list[PhaseRecord], *, seed: int = CONFIRM_SEED) -> di
     else:
         out["C3"] = "INCONCLUSIVE"
     return out
+
+
+# --- condition-matched headroom bar (prereg-2026-10-29-headroom-bar.md, NOTES #8k c) ---
+
+#: Spike-free control measurements used to derive the bar (already seen).
+BAR_DERIVE_MEASUREMENTS = (1, 2, 3, 4, 5)
+
+#: Per-condition bar B_c (dB) = min raw headroom of KA04 ``_1.._5``, floored to 0.01 dB,
+#: fixed in the prereg before any ``_6.._10`` headroom was computed.
+HEADROOM_BAR_DB = {
+    "N15_M07_F10": 3.31,
+    "N09_M07_F10": 3.94,
+    "N15_M01_F10": 2.95,
+    "N15_M07_F04": 1.60,
+}
+
+B1_HELD_FRAC = 0.70
+B1_MIN_PER_CONDITION = 3
+B1_FAIL_FRAC = 0.50
+
+
+def derive_bar_db(values: list[float]) -> float:
+    """Bar rule from the prereg: lowest spike-free headroom, floored to 0.01 dB."""
+    if not values:
+        raise ValueError("need at least one spike-free headroom value")
+    return math.floor(min(values) * 100.0) / 100.0
+
+
+def bar_stability_verdict(
+    controls: list[tuple[str, float]], bars: dict[str, float]
+) -> dict:
+    """B1: fraction of fresh spike-free records (condition, raw headroom dB) at or above B_c."""
+    n = len(controls)
+    per: dict[str, list[int]] = {}
+    for cond, h in controls:
+        ok, tot = per.setdefault(cond, [0, 0])
+        per[cond] = [ok + int(h >= bars[cond]), tot + 1]
+    k = sum(v[0] for v in per.values())
+    if n == 0:
+        verdict = "UNTESTABLE"
+    elif k <= B1_FAIL_FRAC * n:
+        verdict = "FALSIFIED"
+    elif k >= B1_HELD_FRAC * n and all(
+        v[0] >= B1_MIN_PER_CONDITION for v in per.values()
+    ):
+        verdict = "HELD"
+    else:
+        verdict = "INCONCLUSIVE"
+    return {"n": n, "at_or_above": k, "per_condition": per, "B1": verdict}
+
+
+def bar_lp10_verdict(probes: list[RecordProbe], bars: dict[str, float]) -> dict:
+    """B2: LP10 headroom ≥ B_c on spiky records, plus line / silent / rule checks (all probes)."""
+    spiky = [p for p in probes if p.spiky]
+    s = len(spiky)
+    lp = [p.filters["LP10"] for p in spiky]
+    good = sum(f["headroom_db"] >= bars[p.condition] for p, f in zip(spiky, lp))
+    good_fixed = sum(f["headroom_db"] >= HEADROOM_TARGET_DB for f in lp)
+    silent = sum(f["silent_fail"] for f in lp)
+    rule_ok = all(f["rule_correct"] == f["cells"] for f in lp)
+    lost, testable = [], 0
+    for p in probes:
+        raw = p.raw["line_snr_db"]
+        if raw is None or raw < LINE_MIN_DB:
+            continue
+        testable += 1
+        if p.filters["LP10"]["line_snr_db"] < raw - LINE_DROP_DB:
+            lost.append(p.record)
+    if s == 0:
+        v = "UNTESTABLE"
+    elif good <= LP_FAIL_FRAC * s or lost or silent:
+        v = "FALSIFIED"
+    elif good >= LP_HELD_FRAC * s and rule_ok:
+        v = "HELD"
+    else:
+        v = "INCONCLUSIVE"
+    return {
+        "spiky_records": s,
+        "lp10_at_or_above_bar": good,
+        "lp10_at_or_above_3db_descriptive": good_fixed,
+        "silent_fail": silent,
+        "rule_all_correct": rule_ok,
+        "lines_testable": testable,
+        "lines_lost": lost,
+        "B2": v,
+    }

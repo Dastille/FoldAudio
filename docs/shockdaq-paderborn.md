@@ -116,6 +116,16 @@ The five LP10 shortfalls are 2.13–2.99 dB (four K001 records and KI04 N09 `_4`
 
 **Reading.** The fixed-phase, supply-synchronous burst reading now holds as a pre-registered result on fresh records of the same rig. It still does not identify the coupling (no DC-link channel), and successive measurements of one bench are not independent hardware.
 
+## Condition-matched headroom bar (NOTES #8k item c, 2026-10-29)
+
+Pre-registered in `artifacts/paderborn/prereg-2026-10-29-headroom-bar.md` (20 fresh KA04 records `_6.._10` SHA-256-pinned in the same commit). The fixed 3 dB bar of the LP10 rule came from KA04 `_1` alone; KA04 `_1.._5` raw headroom groups by operating condition (N15_M07_F04 about 2 dB lower), so the new bar is $B_c$ = lowest KA04 `_1.._5` raw headroom in that condition, floored to 0.01 dB: 3.31 (N15_M07_F10), 3.94 (N09_M07_F10), 2.95 (N15_M01_F10), 1.60 dB (N15_M07_F04). Script `scripts/headroom_bar.py`, log `artifacts/paderborn/headroom-bar-2026-10-29.log`, metrics `artifacts/paderborn/headroom-bar-metrics.json` (~100 s CPU).
+
+- **B1 bar stable — held:** fresh spike-free KA04 raw headroom ≥ $B_c$ on 16/20 (80 %; per condition 4, 3, 4, 5 of 5); raw 2.22–5.53 dB; no KA04 record spiky.
+- **B2 LP10 meets bar — held, no margin:** 35/40 spiky K001/KI04 records (87.5 %, the bar exactly); LP10 2.75–6.48 dB; 0/40 testable fault lines lost; 0 silent; slew rule agrees in 240/240 cells; 68/240 recovered. Old fixed 3 dB bar (descriptive): 39/40.
+- All five misses are K001: N09 `_6`, `_7`, `_8` (3.20–3.75 vs 3.94 dB), N15_M07_F10 `_10` (3.27 vs 3.31), N15_M01_F10 `_10` (2.75 vs 2.95). KI04 20/20. Fresh spike-free controls missed the bar on 4/20, a similar rate.
+- Exploratory (already-seen data, scored after the fact): `_2.._5` LP10 meets the same bars on 24/32 (75 %), which would have been inconclusive. Reading: after the 10 kHz low-pass, spike-bearing records look like spike-free records on headroom, but the pass rate sits at the bar, not above it.
+- Named assumption, untested: KA04's spike-free headroom transfers to K001 and KI04 on the same rig and sensor.
+
 ## Interpretation
 
 1. The safety result transfers: on a second rig and sensor chain, the recovery condition predicted every cell and no failure was silent.
@@ -129,6 +139,7 @@ The five LP10 shortfalls are 2.13–2.99 dB (four K001 records and KI04 N09 `_4`
 - The spike count threshold (half the peak) is a chosen convention.
 - Spike origin (2026-10-25): electrical by the pre-registered criteria, but the physical coupling path is not identified, the 100 Hz gating result is exploratory (post hoc), and the probe used one measurement per condition from two bearings. The filter study applies a modelled filter to recorded data after the rig's own 30 kHz charge-amplifier filter and 64 kHz digitiser; a real filter in front of a modulo ADC would see the analog signal, including any content above 32 kHz that this recording cannot show.
 - Spike phase (2026-10-27): the pre-registered verdicts are untestable because the null-A bar did not scale with spike count; the burst-like, fixed-phase reading is exploratory. The phase reference is the current-magnitude ripple (assumes a 3-wire, near-balanced machine), not the DC-link voltage, which the dataset does not record.
+- Headroom bar (2026-10-29): per-condition bar from 5 spike-free records of one damaged bearing; B2 passed exactly at its threshold; same rig only.
 
 ## References
 
