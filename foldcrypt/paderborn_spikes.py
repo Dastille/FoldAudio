@@ -995,3 +995,136 @@ def bar_lp10_verdict(probes: list[RecordProbe], bars: dict[str, float]) -> dict:
         "lines_lost": lost,
         "B2": v,
     }
+
+
+# --- K001 own spike-free level (prereg-2026-10-30-k001-spike-free.md) -------
+
+#: Despike stops after this many passes even if spikes remain.
+DESPIKE_MAX_PASSES = 50
+#: D0 method control: injected spikes per record, amplitude (× peak), seed, spacing.
+D0_N_INJECT = 300
+D0_AMP_X_PEAK = 3.0
+D0_SEED = 20261030
+D0_MIN_GAP = 4
+D0_TOL_DB = 0.25
+D0_MAX_MODIFIED_FRAC = 0.01
+D1_HELD_MIN = 4
+D1_FAIL_MAX = 2
+#: The five LP10 misses of Table 18 (all K001), fixed in the prereg.
+D1_MISSES = (
+    "K001/N09_M07_F10_K001_6.mat",
+    "K001/N09_M07_F10_K001_7.mat",
+    "K001/N09_M07_F10_K001_8.mat",
+    "K001/N15_M07_F10_K001_10.mat",
+    "K001/N15_M01_F10_K001_10.mat",
+)
+
+
+@dataclass
+class Despiked:
+    """Result of :func:`despike`: the signal, samples changed and passes used."""
+
+    y: np.ndarray
+    n_modified: int
+    passes: int
+    converged: bool
+
+
+def despike(
+    x: np.ndarray, frac: float = 0.5, max_passes: int = DESPIKE_MAX_PASSES
+) -> Despiked:
+    """Replace each isolated single-sample spike (``spike_indices``) with the mean
+    of its two neighbours; repeat with the peak recomputed until none is found
+    or ``max_passes`` passes have run. The input is not modified."""
+    y = np.array(x, dtype=float, copy=True)
+    touched = np.zeros(len(y), dtype=bool)
+    for k in range(max_passes):
+        idx = spike_indices(y, frac)
+        if len(idx) == 0:
+            return Despiked(y, int(touched.sum()), k, True)
+        y[idx] = 0.5 * (y[idx - 1] + y[idx + 1])
+        touched[idx] = True
+    converged = len(spike_indices(y, frac)) == 0
+    return Despiked(y, int(touched.sum()), max_passes, converged)
+
+
+def despiked_headroom_db(x: np.ndarray) -> float:
+    """DS: raw headroom 20·log10(peak / max|Δx|) after :func:`despike` (no filter)."""
+    y = despike(x).y
+    return headroom_db(float(np.max(np.abs(y))), max_sample_jump(y))
+
+
+def inject_spikes(
+    x: np.ndarray,
+    n: int = D0_N_INJECT,
+    *,
+    amp_x_peak: float = D0_AMP_X_PEAK,
+    min_gap: int = D0_MIN_GAP,
+    seed: int = D0_SEED,
+) -> tuple[np.ndarray, np.ndarray]:
+    """D0 control: set ``n`` samples to ±``amp_x_peak``·peak (alternating sign),
+    at least ``min_gap`` apart and ``min_gap`` from the ends. Returns (signal, positions)."""
+    x = np.asarray(x, dtype=float)
+    span = len(x) - 2 * min_gap
+    if n < 0 or span < n * min_gap:
+        raise ValueError("record too short for the requested spikes")
+    rng = np.random.default_rng(seed)
+    # Draw n gaps on a compressed line, then re-expand: guarantees spacing.
+    base = np.sort(rng.choice(span - (n - 1) * (min_gap - 1), size=n, replace=False))
+    pos = base + np.arange(n) * (min_gap - 1) + min_gap
+    y = x.copy()
+    sign = np.where(np.arange(n) % 2 == 0, 1.0, -1.0)
+    y[pos] = sign * amp_x_peak * float(np.max(np.abs(x)))
+    return y, pos
+
+
+def d0_row(x: np.ndarray, *, seed: int = D0_SEED) -> dict:
+    """D0 numbers for one spike-free control record."""
+    ref = despiked_headroom_db(x)
+    inj, _ = inject_spikes(x, seed=seed)
+    d = despike(inj)
+    h = headroom_db(float(np.max(np.abs(d.y))), max_sample_jump(d.y))
+    return {
+        "ds_clean_db": ref,
+        "ds_injected_db": h,
+        "abs_err_db": abs(h - ref),
+        "modified_frac": d.n_modified / len(x),
+        "converged": d.converged,
+    }
+
+
+def d0_verdict(rows: list[dict]) -> str:
+    """D0 gate: every control within tolerance, converged, ≤ 1 % of samples modified."""
+    if not rows:
+        return "UNTESTABLE"
+    ok = all(
+        r["converged"]
+        and r["abs_err_db"] <= D0_TOL_DB
+        and r["modified_frac"] <= D0_MAX_MODIFIED_FRAC
+        for r in rows
+    )
+    return "PASS" if ok else "FAIL"
+
+
+def d1_verdict(ds_by_record: dict[str, float], bar_by_record: dict[str, float]) -> dict:
+    """D1: DS < B_c on the five pre-listed LP10 misses."""
+    below = [r for r in D1_MISSES if ds_by_record[r] < bar_by_record[r]]
+    k = len(below)
+    if k >= D1_HELD_MIN:
+        v = "HELD"
+    elif k <= D1_FAIL_MAX:
+        v = "FALSIFIED"
+    else:
+        v = "INCONCLUSIVE"
+    return {"misses": len(D1_MISSES), "ds_below_bar": k, "below": below, "D1": v}
+
+
+def d2_verdict(pairs: list[tuple[float, float]]) -> dict:
+    """D2: (LP10 headroom, DS) pairs on spiky records; LP10 ≥ DS on ≥ 87.5 %."""
+    n = len(pairs)
+    k = sum(lp >= ds for lp, ds in pairs)
+    return {
+        "n": n,
+        "lp10_at_or_above_ds": k,
+        "D2": _frac_verdict(k, n, LP_HELD_FRAC, LP_FAIL_FRAC),
+    }
