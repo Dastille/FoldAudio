@@ -1,0 +1,43 @@
+D0 single-sample vs K001-burst fakes, all cached KA04 records; despike = neighbour-average
+burst src ('K001/N09_M07_F10_K001_6.mat', 142765) (0.104, 2.255, 0.134, -2.286, 0.012, -1.712, -0.089)
+N09_M07_F10_KA04_1.mat single err 0.000 dB  burst err 4.335 dB
+N09_M07_F10_KA04_10.mat single err 0.000 dB  burst err 0.000 dB
+N09_M07_F10_KA04_2.mat single err 0.000 dB  burst err 0.067 dB
+N09_M07_F10_KA04_3.mat single err 0.000 dB  burst err 0.000 dB
+N09_M07_F10_KA04_4.mat single err 0.000 dB  burst err 0.000 dB
+N09_M07_F10_KA04_5.mat single err 0.000 dB  burst err 0.000 dB
+N09_M07_F10_KA04_6.mat single err 0.000 dB  burst err 0.000 dB
+N09_M07_F10_KA04_7.mat single err 0.000 dB  burst err 0.000 dB
+N09_M07_F10_KA04_8.mat single err 0.000 dB  burst err 0.000 dB
+N09_M07_F10_KA04_9.mat single err 0.000 dB  burst err 4.988 dB
+N15_M01_F10_KA04_1.mat single err 0.000 dB  burst err 4.641 dB
+N15_M01_F10_KA04_10.mat single err 0.000 dB  burst err 5.006 dB
+N15_M01_F10_KA04_2.mat single err 0.000 dB  burst err 0.000 dB
+N15_M01_F10_KA04_3.mat single err 0.000 dB  burst err 4.977 dB
+N15_M01_F10_KA04_4.mat single err 0.000 dB  burst err 2.929 dB
+N15_M01_F10_KA04_5.mat single err 0.000 dB  burst err 0.000 dB
+N15_M01_F10_KA04_6.mat single err 0.000 dB  burst err 5.675 dB
+N15_M01_F10_KA04_7.mat single err 0.000 dB  burst err 0.000 dB
+N15_M01_F10_KA04_8.mat single err 0.000 dB  burst err 0.000 dB
+N15_M01_F10_KA04_9.mat single err 0.000 dB  burst err 5.270 dB
+N15_M07_F04_KA04_1.mat single err 0.000 dB  burst err 3.721 dB
+N15_M07_F04_KA04_10.mat single err 0.000 dB  burst err 0.000 dB
+N15_M07_F04_KA04_2.mat single err 0.000 dB  burst err 2.607 dB
+N15_M07_F04_KA04_3.mat single err 0.000 dB  burst err 4.018 dB
+N15_M07_F04_KA04_4.mat single err 0.000 dB  burst err 0.000 dB
+N15_M07_F04_KA04_5.mat single err 0.000 dB  burst err 3.779 dB
+N15_M07_F04_KA04_6.mat single err 0.000 dB  burst err 3.674 dB
+N15_M07_F04_KA04_7.mat single err 0.000 dB  burst err 4.342 dB
+N15_M07_F04_KA04_8.mat single err 0.000 dB  burst err 0.000 dB
+N15_M07_F04_KA04_9.mat single err 0.000 dB  burst err 4.348 dB
+N15_M07_F10_KA04_1.mat single err 0.000 dB  burst err 0.000 dB
+N15_M07_F10_KA04_10.mat single err 0.000 dB  burst err 0.000 dB
+N15_M07_F10_KA04_2.mat single err 0.000 dB  burst err 0.000 dB
+N15_M07_F10_KA04_3.mat single err 0.000 dB  burst err 0.000 dB
+N15_M07_F10_KA04_4.mat single err 0.000 dB  burst err 0.000 dB
+N15_M07_F10_KA04_5.mat single err 0.000 dB  burst err 4.617 dB
+N15_M07_F10_KA04_6.mat single err 0.000 dB  burst err 0.000 dB
+N15_M07_F10_KA04_7.mat single err 0.000 dB  burst err 2.776 dB
+N15_M07_F10_KA04_8.mat single err 0.000 dB  burst err 0.000 dB
+N15_M07_F10_KA04_9.mat single err 0.000 dB  burst err 3.787 dB
+n 40 single-sample D0: PASS  burst D0: FAIL  burst rows failing tol: 18

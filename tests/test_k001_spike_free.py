@@ -127,3 +127,67 @@ def test_doc_numbers_match_committed_metrics():
         doc = (ROOT / name).read_text(encoding="utf-8")
         for s in strs:
             assert s in doc, (name, s)
+
+
+# --- Burst-shaped fakes: the gate for claiming a despike method works -----------
+
+
+def test_k001_burst_matches_cached_record():
+    """The burst constant is a verbatim copy of real K001 samples (when cached)."""
+    rec, start = ps.K001_BURST_SRC
+    path = pb.default_cache() / rec
+    if not path.exists():
+        pytest.skip("K001 _6 not cached")
+    x = pb.load_vibration(path)
+    got = x[start : start + len(ps.K001_BURST)]
+    assert np.allclose(got, ps.K001_BURST, atol=5e-4)
+
+
+def test_k001_burst_flips_sign():
+    b = np.asarray(ps.K001_BURST)
+    big = b[np.abs(b) > 0.5 * np.max(np.abs(b))]
+    assert len(big) >= 3 and np.any(np.diff(np.sign(big)) != 0)
+
+
+def test_inject_bursts_spacing_and_shape():
+    x = _tone()
+    y, pos = ps.inject_bursts(x, 300, seed=ps.D0_SEED)
+    w = len(ps.K001_BURST) + ps.BURST_MIN_GAP
+    assert len(pos) == 300 and np.min(np.diff(pos)) >= w
+    assert pos.min() >= w and pos.max() + w <= len(x)
+    d = (
+        y[pos[0] : pos[0] + len(ps.K001_BURST)]
+        - x[pos[0] : pos[0] + len(ps.K001_BURST)]
+    )
+    assert np.isclose(np.max(np.abs(d)), ps.D0_AMP_X_PEAK * np.max(np.abs(x)))
+    with pytest.raises(ValueError):
+        ps.inject_bursts(x[:500], 300)
+
+
+def test_single_sample_fakes_are_insufficient_negative_control():
+    """Negative control: neighbour-average despike PASSES clean single-sample fakes
+    but FAILS real K001 burst-shaped fakes on the same record. So passing
+    single-sample fakes says nothing about real spikes."""
+    x = _tone(64_000)
+    clean = ps.d0_row(x)
+    burst = ps.d0_burst_row(x, n=100)
+    assert ps.d0_verdict([clean]) == "PASS"
+    assert ps.d0_verdict([burst]) == "FAIL"
+    assert burst["abs_err_db"] > 10 * ps.D0_TOL_DB
+
+
+def test_neighbour_average_despike_fails_burst_gate_on_ka04():
+    required = os.environ.get(REQUIRE_ENV) == "1"
+    try:
+        import scipy  # noqa: F401
+
+        path = pb.fetch("KA04", "N09_M07_F10", download=False, meas=9)
+    except (ImportError, FileNotFoundError) as e:
+        if required:
+            pytest.fail(f"{REQUIRE_ENV}=1 but KA04 _9 unavailable: {e}")
+        pytest.skip("scipy or KA04 _9 not cached")
+    x = pb.load_vibration(path)
+    assert ps.d0_verdict([ps.d0_row(x)]) == "PASS"
+    burst = ps.d0_burst_row(x)
+    assert ps.d0_verdict([burst]) == "FAIL"
+    assert burst["abs_err_db"] > 10 * ps.D0_TOL_DB
