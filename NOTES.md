@@ -10,6 +10,7 @@
 - **Parked:** SettleSeal / FoldOrbit (2026-09-30).
 
 ## Done (recent)
+- **2026-10-30 burst fake-spike gate:** D0 fakes now use real K001 burst shape (`ps.inject_bursts`, K001_6 samples 142765–142771); single-sample fakes = negative control only. Neighbour-average despike passes single-sample 40/40, fails burst gate (18/40 >0.25 dB). Test fix only; K001 headroom still open.
 
 - ~~WrapCancel v0 + oracle SER + FoldAsync memo + Alg. 1 block search~~
 - ~~Recovery shares pivot~~ then parked after Ashlynn uniqueness check.

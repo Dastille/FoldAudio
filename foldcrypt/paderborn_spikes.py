@@ -1062,7 +1062,8 @@ def inject_spikes(
     min_gap: int = D0_MIN_GAP,
     seed: int = D0_SEED,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """D0 control: set ``n`` samples to ±``amp_x_peak``·peak (alternating sign),
+    """D0 negative control (too clean, NOT sufficient to validate despike):
+    set ``n`` samples to ±``amp_x_peak``·peak (alternating sign),
     at least ``min_gap`` apart and ``min_gap`` from the ends. Returns (signal, positions)."""
     x = np.asarray(x, dtype=float)
     span = len(x) - 2 * min_gap
@@ -1104,6 +1105,61 @@ def d0_verdict(rows: list[dict]) -> str:
         for r in rows
     )
     return "PASS" if ok else "FAIL"
+
+
+#: Real spike burst copied from K001/N09_M07_F10_K001_6.mat, samples
+#: 142765..142771 (inclusive). Real spikes are short bursts that flip sign every
+#: other sample, not isolated single samples.
+K001_BURST_SRC = ("K001/N09_M07_F10_K001_6.mat", 142765)
+K001_BURST = (0.104, 2.255, 0.134, -2.286, 0.012, -1.712, -0.089)
+BURST_MIN_GAP = 16
+
+
+def inject_bursts(
+    x: np.ndarray,
+    n: int = D0_N_INJECT,
+    *,
+    shape=K001_BURST,
+    amp_x_peak: float = D0_AMP_X_PEAK,
+    min_gap: int = BURST_MIN_GAP,
+    seed: int = D0_SEED,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Burst-shaped fake spikes: add ``shape`` (scaled so its largest |sample| is
+    ``amp_x_peak``·peak, sign alternating burst to burst) at ``n`` start positions
+    spaced ≥ ``len(shape)`` + ``min_gap``. Returns (signal, start positions).
+
+    This is the gate for claiming a despike method works; single-sample
+    :func:`inject_spikes` is too clean (negative control only)."""
+    x = np.asarray(x, dtype=float)
+    b = np.asarray(shape, dtype=float)
+    b = b / np.max(np.abs(b))
+    w = len(b) + min_gap
+    span = len(x) - 2 * w
+    if n < 0 or span < n * w:
+        raise ValueError("record too short for the requested bursts")
+    rng = np.random.default_rng(seed)
+    base = np.sort(rng.choice(span - (n - 1) * (w - 1), size=n, replace=False))
+    pos = base + np.arange(n) * (w - 1) + w
+    y = x.copy()
+    amp = amp_x_peak * float(np.max(np.abs(x)))
+    for i, p0 in enumerate(pos):
+        y[p0 : p0 + len(b)] += (1.0 if i % 2 == 0 else -1.0) * amp * b
+    return y, pos
+
+
+def d0_burst_row(x: np.ndarray, *, seed: int = D0_SEED, n: int = D0_N_INJECT) -> dict:
+    """D0 numbers with K001 burst-shaped fakes (same fields as :func:`d0_row`)."""
+    ref = despiked_headroom_db(x)
+    inj, _ = inject_bursts(x, n, seed=seed)
+    d = despike(inj)
+    h = headroom_db(float(np.max(np.abs(d.y))), max_sample_jump(d.y))
+    return {
+        "ds_clean_db": ref,
+        "ds_injected_db": h,
+        "abs_err_db": abs(h - ref),
+        "modified_frac": d.n_modified / len(x),
+        "converged": d.converged,
+    }
 
 
 def d1_verdict(ds_by_record: dict[str, float], bar_by_record: dict[str, float]) -> dict:
