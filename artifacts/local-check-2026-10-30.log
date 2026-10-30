@@ -1,0 +1,124 @@
+# FoldCrypt local check (full), 2026-10-30 09:00 EDT
+# code = 088d5c7
+# Python 3.13.5; numpy 2.5.4
+# scipy 1.18.1
+# ruff 0.17.1; pip-audit 2.10.1
+# CWRU cache = /home/box/.cache/foldcrypt/cwru
+# Paderborn cache = /home/box/.cache/foldcrypt/paderborn
+
+## lint: ruff check .
+[1;32mAll checks passed![0m
+## lint: PASS
+
+## format: ruff format --check .
+68 files already formatted
+## format: PASS
+
+## audit: pip-audit --skip-editable
+No known vulnerabilities found
+Name      Skip Reason
+--------- -------------------------------
+foldcrypt distribution marked as editable
+## audit: PASS
+
+## tests: env FOLDCRYPT_REQUIRE_CWRU=1 FOLDCRYPT_REQUIRE_PADERBORN=1 python -m pytest -q -rs
+........................................................................ [ 39%]
+........................................................................ [ 79%]
+.....................................                                    [100%]
+181 passed in 137.59s (0:02:17)
+## tests: PASS
+
+## cwru-recompute: python scripts/check_cwru_numbers.py --recompute
+## Tables 10-11 (metrics.json)
+  OK   cells: run=120 doc=120
+  OK   rule correct: run=120 doc=120
+  OK   recovered: run=26 doc=26
+  OK   failed: run=94 doc=94
+  OK   failures flagged: run=94 doc=94
+  OK   silent failures: run=0 doc=0
+  OK   slip false alarms: run=0 doc=0
+  OK   edge conservative: run=3 doc=3
+  OK   48 kHz recovered: run=(26, 42) doc=(26, 42)
+  OK   12 kHz failed: run=(78, 78) doc=(78, 78)
+  OK   every cell overloaded: run=True doc=True
+  OK   edge on recovered: run=[('109@48k', 0.4), ('213@48k', 0.4), ('226@48k', 0.33)] doc=[('109@48k', 0.4), ('213@48k', 0.4), ('226@48k', 0.33)]
+  OK   48 kHz step/peak: run=(0.32, 0.42) doc=(0.32, 0.42)
+  OK   12 kHz step/peak: run=(1.03, 1.61) doc=(1.03, 1.61)
+  OK   48 kHz extra range dB: run=(7.5, 9.8) doc=(7.5, 9.8)
+  OK   Table 11 row 97: run=(0.42, 7.5, 0.5, 23.2, 2.8, 2.5, 4.2, 2.2) doc=(0.42, 7.5, 0.5, 23.2, 2.8, 2.5, 4.2, 2.2)
+  OK     97: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 109: run=(0.38, 8.3, 0.4, 19.5, 6.0, 4.7, 6.1, 3.2) doc=(0.38, 8.3, 0.4, 19.5, 6.0, 4.7, 6.1, 3.2)
+  OK     109: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 122: run=(0.35, 9.0, 0.4, 24.6, 3.1, 2.8, 4.9, 2.5) doc=(0.35, 9.0, 0.4, 24.6, 3.1, 2.8, 4.9, 2.5)
+  OK     122: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 135: run=(0.4, 7.9, 0.5, 15.8, 6.7, 4.9, 5.2, 2.8) doc=(0.4, 7.9, 0.5, 15.8, 6.7, 4.9, 5.2, 2.8)
+  OK     135: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 213: run=(0.37, 8.7, 0.4, 21.0, 4.2, 3.4, 5.3, 2.7) doc=(0.37, 8.7, 0.4, 21.0, 4.2, 3.4, 5.3, 2.7)
+  OK     213: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 226: run=(0.32, 9.8, 0.33, 29.7, 3.2, 3.0, 5.6, 2.8) doc=(0.32, 9.8, 0.33, 29.7, 3.2, 3.0, 5.6, 2.8)
+  OK     226: fold-recovered kurtosis/crest exact: run=True doc=True
+  OK   Table 11 row 238: run=(0.4, 7.9, 0.5, 19.6, 20.8, 15.9, 11.5, 6.0) doc=(0.4, 7.9, 0.5, 19.6, 20.8, 15.9, 11.5, 6.0)
+  OK     238: fold-recovered kurtosis/crest exact: run=True doc=True
+## Table 12 (nonideal-metrics.json)
+  OK   cells: run=3000 doc=3000
+  OK   configurations: run=25 doc=25
+  OK   fallback: run=2492 doc=2492
+  OK   ideal front end fallback: run=(97, 120) doc=(97, 120)
+  OK   kept reconstruction: run=508 doc=508
+  OK   kept cells all at 48 kHz: run=True doc=True
+  OK   silent slip: run=0 doc=0
+  OK   uncovered samples (event | rail mask): run=0 doc=0
+  OK   fallback cells uncovered: run=0 doc=0
+  OK   bad kept: run=145 doc=145
+  OK   invisible: run=57 doc=57
+  OK   invisible by config: run={'gain -5.0%': 16, 'gain -1.0%': 16, 'inl 2%': 11, 'inl 5%': 14} doc={'gain -1.0%': 16, 'gain -5.0%': 16, 'inl 2%': 11, 'inl 5%': 14}
+  OK   bad fallback: run=50 doc=50
+  OK   bad fallback by config: run={'inl 2%': 7, 'inl 5%': 43} doc={'inl 2%': 7, 'inl 5%': 43}
+  OK   largest trusted error on fallback (% of peak, 1 dp): run=3.9 doc=3.9
+  OK   largest trusted error (% of peak): run=8.0 doc=8.0
+  OK   uncalibrated error at |g| = 1 / 5 %, INL 5 % (% of peak): run=(1.6, 8.0, 4.0) doc=(1.6, 8.0, 4.0)
+  OK   median masked on fallback, every config: run=True doc=True
+  OK   lowest masked fallback cell: run=(6.2, '238@48k') doc=(6.2, '238@48k')
+  OK   Table 13 uncalibrated row: run=(None, 2492, 0, 0, 145, 50, 57, 8.0) doc=(None, 2492, 0, 0, 145, 50, 57, 8.0)
+## Table 13, committed 60 dB gated run (nonideal-cal-metrics.json)
+  OK   calibrated: run=True doc=True
+  OK   cal SNR dB: run=60.0 doc=60.0
+  OK   cells: run=3000 doc=3000
+  OK   Table 13 row 60 dB gate on: run=(0, 2489, 0, 0, 0, 0, 0, 0.037) doc=(0, 2489, 0, 0, 0, 0, 0, 0.037)
+## CWRU cache SHA-256 (pinned in foldcrypt/realdata.py)
+  16bf48babcf1c7ac224bc1a81cd9eafdb27e42d5cf559761907e067e8eeadf3c  /home/box/.cache/foldcrypt/cwru/97.mat
+  OK   97.mat sha256 matches pin: run=True doc=True
+  f80b0ea04fd06b372a0eaec7c056543ea37e4bb4727a5b173d2a5bacd2aa9cab  /home/box/.cache/foldcrypt/cwru/105.mat
+  OK   105.mat sha256 matches pin: run=True doc=True
+  daddef5f784879becdf8fefbe2453f11c3cfc8d061a2a671da2f546d1bb48460  /home/box/.cache/foldcrypt/cwru/109.mat
+  OK   109.mat sha256 matches pin: run=True doc=True
+  b00628f8dd8d1d930af77fa465d1e5cdb385fe259489053f91f3680bda7f640e  /home/box/.cache/foldcrypt/cwru/118.mat
+  OK   118.mat sha256 matches pin: run=True doc=True
+  f392129bf3b43360b964d4e5b3479d0797d1647af8359934b0f56b9abab4739a  /home/box/.cache/foldcrypt/cwru/122.mat
+  OK   122.mat sha256 matches pin: run=True doc=True
+  35a095307d0971477049b343a1b5981dde465a58fb7f233ad89b035068c1717d  /home/box/.cache/foldcrypt/cwru/130.mat
+  OK   130.mat sha256 matches pin: run=True doc=True
+  5a1c3ceec1f2b58af9e01051e425aa9d31dd018f58a8d31cda25bbdb1ac6dca9  /home/box/.cache/foldcrypt/cwru/135.mat
+  OK   135.mat sha256 matches pin: run=True doc=True
+  9f723d6d9d2eba714c6dc50f99321dffa73d8b1e4d3605675b2c2251511eff80  /home/box/.cache/foldcrypt/cwru/209.mat
+  OK   209.mat sha256 matches pin: run=True doc=True
+  6afb81f36a9efcdd370a52166d71c13cb42278c7de22752c81d4b2a22fa133f0  /home/box/.cache/foldcrypt/cwru/213.mat
+  OK   213.mat sha256 matches pin: run=True doc=True
+  fcc0ee740fa123b1f4683f555458891719efb2857afd9fdee63e8fde0ed14469  /home/box/.cache/foldcrypt/cwru/222.mat
+  OK   222.mat sha256 matches pin: run=True doc=True
+  fc78f08085760f2e17bcf7efe486b3a278e108093cd184acf278daecad6765e4  /home/box/.cache/foldcrypt/cwru/226.mat
+  OK   226.mat sha256 matches pin: run=True doc=True
+  ebcbdb96612e8085bbdbf81f0e5e8e8a8d1a693d1ec559c4894f7792771aa9b2  /home/box/.cache/foldcrypt/cwru/234.mat
+  OK   234.mat sha256 matches pin: run=True doc=True
+  63209a4057f199beb42beedf5b4481987fdb3ac746c46777dd385d689bc481df  /home/box/.cache/foldcrypt/cwru/238.mat
+  OK   238.mat sha256 matches pin: run=True doc=True
+## recompute metrics.json from the .mat files
+  OK   metrics.json: fields differing from committed: run=0 doc=0
+## recompute nonideal-metrics.json from the .mat files
+  OK   nonideal-metrics.json: fields differing from committed: run=0 doc=0
+## recompute nonideal-cal-metrics.json from the .mat files
+  OK   nonideal-cal-metrics.json: fields differing from committed: run=0 doc=0
+RESULT: ALL MATCH (69/69 checks)
+## cwru-recompute: PASS
+
+# RESULT: PASS

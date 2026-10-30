@@ -1,0 +1,141 @@
+# prereg artifacts/paderborn/prereg-2026-10-30-k001-spike-free.md
+# bars B_c (dB): {'N15_M07_F10': 3.31, 'N09_M07_F10': 3.94, 'N15_M01_F10': 2.95, 'N15_M07_F04': 1.6}
+K001/N15_M07_F10_K001_6.mat        spikes  577  bar 3.31  raw  -0.10  DS  -0.20  LP10  +3.58  mod 4123 passes 5
+K001/N15_M07_F10_K001_7.mat        spikes  310  bar 3.31  raw  -0.29  DS  -0.69  LP10  +3.93  mod 4169 passes 5
+K001/N15_M07_F10_K001_8.mat        spikes  583  bar 3.31  raw  -0.58  DS  -0.55  LP10  +3.80  mod 2753 passes 5
+K001/N15_M07_F10_K001_9.mat        spikes  393  bar 3.31  raw  -0.14  DS  -1.10  LP10  +4.53  mod 6643 passes 6
+K001/N15_M07_F10_K001_10.mat       spikes  298  bar 3.31  raw  +0.33  DS  -0.43  LP10  +3.27  mod 6415 passes 5
+K001/N09_M07_F10_K001_6.mat        spikes  463  bar 3.94  raw  +0.14  DS  -0.31  LP10  +3.75  mod 9478 passes 7
+K001/N09_M07_F10_K001_7.mat        spikes  692  bar 3.94  raw  -0.32  DS  -0.09  LP10  +3.35  mod 7312 passes 5
+K001/N09_M07_F10_K001_8.mat        spikes  293  bar 3.94  raw  +0.05  DS  -0.19  LP10  +3.20  mod 10576 passes 8
+K001/N09_M07_F10_K001_9.mat        spikes  334  bar 3.94  raw  +0.05  DS  -0.11  LP10  +4.28  mod 11088 passes 7
+K001/N09_M07_F10_K001_10.mat       spikes  583  bar 3.94  raw  +0.08  DS  -0.08  LP10  +4.83  mod 6336 passes 5
+K001/N15_M01_F10_K001_6.mat        spikes  554  bar 2.95  raw  +0.11  DS  -0.35  LP10  +4.51  mod 5419 passes 5
+K001/N15_M01_F10_K001_7.mat        spikes  315  bar 2.95  raw  -0.02  DS  +0.14  LP10  +4.06  mod 7576 passes 6
+K001/N15_M01_F10_K001_8.mat        spikes  194  bar 2.95  raw  -0.47  DS  -1.12  LP10  +4.12  mod 7532 passes 6
+K001/N15_M01_F10_K001_9.mat        spikes  335  bar 2.95  raw  +0.27  DS  -0.47  LP10  +3.17  mod 9403 passes 7
+K001/N15_M01_F10_K001_10.mat       spikes  445  bar 2.95  raw  -0.37  DS  -0.03  LP10  +2.75  mod 3825 passes 6
+K001/N15_M07_F04_K001_6.mat        spikes  346  bar 1.60  raw  -0.56  DS  +0.30  LP10  +4.48  mod 7189 passes 6
+K001/N15_M07_F04_K001_7.mat        spikes  352  bar 1.60  raw  -0.29  DS  -0.60  LP10  +5.22  mod 3515 passes 5
+K001/N15_M07_F04_K001_8.mat        spikes  395  bar 1.60  raw  -0.12  DS  -0.12  LP10  +4.51  mod 6249 passes 7
+K001/N15_M07_F04_K001_9.mat        spikes  294  bar 1.60  raw  -0.12  DS  -0.38  LP10  +4.12  mod 4952 passes 7
+K001/N15_M07_F04_K001_10.mat       spikes  164  bar 1.60  raw  +0.33  DS  -0.18  LP10  +4.02  mod 9160 passes 7
+KA04/N15_M07_F10_KA04_6.mat        spikes    0  bar 3.31  raw  +4.30  DS  +4.30  LP10  +5.13  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N15_M07_F10_KA04_7.mat        spikes    0  bar 3.31  raw  +2.70  DS  +2.70  LP10  +5.01  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N15_M07_F10_KA04_8.mat        spikes    0  bar 3.31  raw  +3.33  DS  +3.33  LP10  +4.00  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N15_M07_F10_KA04_9.mat        spikes    0  bar 3.31  raw  +3.82  DS  +3.82  LP10  +4.96  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N15_M07_F10_KA04_10.mat       spikes    0  bar 3.31  raw  +4.51  DS  +4.51  LP10  +6.00  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N09_M07_F10_KA04_6.mat        spikes    0  bar 3.94  raw  +5.53  DS  +5.53  LP10  +6.68  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N09_M07_F10_KA04_7.mat        spikes    0  bar 3.94  raw  +4.09  DS  +4.09  LP10  +6.20  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N09_M07_F10_KA04_8.mat        spikes    0  bar 3.94  raw  +4.66  DS  +4.66  LP10  +6.48  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N09_M07_F10_KA04_9.mat        spikes    2  bar 3.94  raw  +3.19  DS  +4.31  LP10  +6.56  mod    2 passes 1  D0 err 0.0000 dB
+KA04/N09_M07_F10_KA04_10.mat       spikes    2  bar 3.94  raw  +3.63  DS  +3.63  LP10  +7.10  mod    2 passes 1  D0 err 0.0000 dB
+KA04/N15_M01_F10_KA04_6.mat        spikes    0  bar 2.95  raw  +4.12  DS  +4.12  LP10  +4.58  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N15_M01_F10_KA04_7.mat        spikes    0  bar 2.95  raw  +2.92  DS  +2.92  LP10  +3.89  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N15_M01_F10_KA04_8.mat        spikes    0  bar 2.95  raw  +3.97  DS  +3.97  LP10  +4.67  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N15_M01_F10_KA04_9.mat        spikes    0  bar 2.95  raw  +4.32  DS  +4.32  LP10  +5.27  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N15_M01_F10_KA04_10.mat       spikes    0  bar 2.95  raw  +3.80  DS  +3.80  LP10  +4.00  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N15_M07_F04_KA04_6.mat        spikes    0  bar 1.60  raw  +2.65  DS  +2.65  LP10  +3.13  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N15_M07_F04_KA04_7.mat        spikes    0  bar 1.60  raw  +2.70  DS  +2.70  LP10  +3.42  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N15_M07_F04_KA04_8.mat        spikes    0  bar 1.60  raw  +2.52  DS  +2.52  LP10  +3.50  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N15_M07_F04_KA04_9.mat        spikes    0  bar 1.60  raw  +2.91  DS  +2.91  LP10  +3.68  mod    0 passes 0  D0 err 0.0000 dB
+KA04/N15_M07_F04_KA04_10.mat       spikes    0  bar 1.60  raw  +2.22  DS  +2.22  LP10  +2.96  mod    0 passes 0  D0 err 0.0000 dB
+KI04/N15_M07_F10_KI04_6.mat        spikes   61  bar 3.31  raw  +0.74  DS  +0.86  LP10  +5.56  mod  614 passes 3
+KI04/N15_M07_F10_KI04_7.mat        spikes   16  bar 3.31  raw  +0.43  DS  +1.53  LP10  +6.48  mod  743 passes 4
+KI04/N15_M07_F10_KI04_8.mat        spikes  111  bar 3.31  raw  -0.16  DS  +0.73  LP10  +5.70  mod  513 passes 3
+KI04/N15_M07_F10_KI04_9.mat        spikes   77  bar 3.31  raw  +0.50  DS  -0.56  LP10  +5.75  mod  901 passes 4
+KI04/N15_M07_F10_KI04_10.mat       spikes   88  bar 3.31  raw  -0.58  DS  +0.98  LP10  +4.67  mod  378 passes 3
+KI04/N09_M07_F10_KI04_6.mat        spikes  224  bar 3.94  raw  -0.71  DS  +0.90  LP10  +4.58  mod 1620 passes 5
+KI04/N09_M07_F10_KI04_7.mat        spikes  169  bar 3.94  raw  +0.17  DS  -0.27  LP10  +4.85  mod 1730 passes 4
+KI04/N09_M07_F10_KI04_8.mat        spikes  291  bar 3.94  raw  -0.16  DS  +0.10  LP10  +5.17  mod 1815 passes 4
+KI04/N09_M07_F10_KI04_9.mat        spikes  164  bar 3.94  raw  +0.11  DS  -0.28  LP10  +4.10  mod 1853 passes 4
+KI04/N09_M07_F10_KI04_10.mat       spikes  157  bar 3.94  raw  -0.10  DS  -0.45  LP10  +5.06  mod 3648 passes 6
+KI04/N15_M01_F10_KI04_6.mat        spikes  149  bar 2.95  raw  +0.36  DS  +0.97  LP10  +5.77  mod  380 passes 3
+KI04/N15_M01_F10_KI04_7.mat        spikes   79  bar 2.95  raw  -0.50  DS  +1.31  LP10  +6.43  mod  649 passes 4
+KI04/N15_M01_F10_KI04_8.mat        spikes  257  bar 2.95  raw  -0.04  DS  -0.44  LP10  +6.09  mod  925 passes 4
+KI04/N15_M01_F10_KI04_9.mat        spikes  288  bar 2.95  raw  -0.58  DS  +1.29  LP10  +4.96  mod  887 passes 5
+KI04/N15_M01_F10_KI04_10.mat       spikes  120  bar 2.95  raw  -0.15  DS  +1.28  LP10  +6.03  mod  767 passes 4
+KI04/N15_M07_F04_KI04_6.mat        spikes   25  bar 1.60  raw  +0.84  DS  +1.90  LP10  +5.82  mod  308 passes 3
+KI04/N15_M07_F04_KI04_7.mat        spikes  133  bar 1.60  raw  -0.27  DS  -1.23  LP10  +5.59  mod  492 passes 3
+KI04/N15_M07_F04_KI04_8.mat        spikes  206  bar 1.60  raw  -0.44  DS  +0.17  LP10  +4.93  mod 1047 passes 4
+KI04/N15_M07_F04_KI04_9.mat        spikes  196  bar 1.60  raw  -0.07  DS  +1.94  LP10  +4.84  mod  399 passes 2
+KI04/N15_M07_F04_KI04_10.mat       spikes  179  bar 1.60  raw  -0.07  DS  +0.54  LP10  +4.31  mod 1022 passes 5
+
+# Diagnostic (exploratory): samples around the largest step left after despiking
+K001/N09_M07_F10_K001_6.mat step at 142768: raw [0.104, 2.255, 0.134, -2.286, 0.012, -1.712, -0.089, -0.516]
+                                   despiked [0.104, 0.119, 0.134, 0.073, -1.999, -1.712, -0.089, -0.516]
+KI04/N15_M07_F10_KI04_9.mat step at 189409: raw [0.046, 0.528, 0.528, 0.418, -1.73, -0.763, -0.562, -0.186]
+                                   despiked [0.046, 0.528, 0.528, 0.418, -1.73, -0.763, -0.562, -0.186]
+
+[D0]
+{
+ "n": 20,
+ "max_abs_err_db": 0.0,
+ "max_modified_frac": 0.0011796828918637036,
+ "all_converged": true,
+ "D0": "PASS"
+}
+
+[D1]
+{
+ "misses": 5,
+ "ds_below_bar": 5,
+ "below": [
+  "K001/N09_M07_F10_K001_6.mat",
+  "K001/N09_M07_F10_K001_7.mat",
+  "K001/N09_M07_F10_K001_8.mat",
+  "K001/N15_M07_F10_K001_10.mat",
+  "K001/N15_M01_F10_K001_10.mat"
+ ],
+ "D1": "HELD"
+}
+
+[D2]
+{
+ "n": 40,
+ "lp10_at_or_above_ds": 40,
+ "D2": "HELD"
+}
+
+[D3]
+{
+ "median_db": {
+  "N15_M07_F10": {
+   "K001_ds": -0.5495543261636643,
+   "KI04_ds": 0.8585640108362175,
+   "KA04_raw": 3.816290317527752
+  },
+  "N09_M07_F10": {
+   "K001_ds": -0.10912065173122239,
+   "KI04_ds": -0.27335475077969085,
+   "KA04_raw": 4.088172926603272
+  },
+  "N15_M01_F10": {
+   "K001_ds": -0.35024214398877207,
+   "KI04_ds": 1.2809830182093904,
+   "KA04_raw": 3.966700957040778
+  },
+  "N15_M07_F04": {
+   "K001_ds": -0.17726920662610143,
+   "KI04_ds": 0.5396697937118718,
+   "KA04_raw": 2.645967714445081
+  }
+ },
+ "k001_ds_at_or_above_bar": 0,
+ "k001_n": 20,
+ "own_bar_lp10_misses_exploratory": [],
+ "ki04_ds_below_bar_exploratory": 18,
+ "ki04_n": 20,
+ "ds_range_spiky_db": [
+  -1.2342570176571512,
+  1.9407583192690199
+ ],
+ "max_modified_frac_all": 0.04331233081120777,
+ "max_passes_all": 8,
+ "all_converged": true,
+ "lp10_minus_ds_db_spiky": {
+  "min": 2.7847846332580963,
+  "median": 4.561176905849594
+ }
+}
+wrote artifacts/paderborn/k001-spike-free-metrics.json

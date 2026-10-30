@@ -126,6 +126,16 @@ Pre-registered in `artifacts/paderborn/prereg-2026-10-29-headroom-bar.md` (20 fr
 - Exploratory (already-seen data, scored after the fact): `_2.._5` LP10 meets the same bars on 24/32 (75 %), which would have been inconclusive. Reading: after the 10 kHz low-pass, spike-bearing records look like spike-free records on headroom, but the pass rate sits at the bar, not above it.
 - Named assumption, untested: KA04's spike-free headroom transfers to K001 and KI04 on the same rig and sensor.
 
+## K001 own spike-free level (NOTES #8k item d, 2026-10-30) — method failed, question still open
+
+Pre-registered in `artifacts/paderborn/prereg-2026-10-30-k001-spike-free.md` (explanatory, not a fresh confirmation: the five K001 misses of Table 18 were already known). Hypothesis: K001 misses because the healthy bearing's own spike-free headroom is lower than KA04's. Method: replace each isolated spike (unchanged detector) with the mean of its neighbours, repeat until none is left, and take raw headroom DS of the result. Script `scripts/k001_spike_free.py`, log `artifacts/paderborn/k001-spike-free-2026-10-30.log`, metrics `artifacts/paderborn/k001-spike-free-metrics.json` (~3 s CPU).
+
+- **D0 method control — passed:** 300 injected ideal single-sample spikes per KA04 record removed exactly (0.00 dB error on 20/20).
+- **D1 — formally held, not evidence:** DS < $B_c$ on 5/5 misses. But K001 DS ≥ $B_c$ on 0/20 records and KI04 DS < $B_c$ on 18/20 (exploratory check added after the run), although KI04 met the bar 20/20 after LP10. DS on the spiky records is −1.23 to 1.94 dB, so DS does not separate K001 from KI04 and cannot explain the K001 misses.
+- **D2 — formally held, not evidence:** LP10 ≥ DS on 40/40, for the same reason.
+- **Why the method failed:** despiking changed up to 4.3 % of a record's samples and still left a step close to the peak. Real spikes come as short alternating bursts (e.g. K001 N09 `_6` around sample 142768: 0.10, 2.26, 0.13, −2.29, 0.01, −1.71, −0.09). Because the detector's bar is relative to the current peak, a later pass flags the quiet sample inside the burst but not its neighbour, and averaging leaves a two-sample plateau (−2.00, −1.71) that is no longer an isolated spike. `tests/test_k001_spike_free.py` reproduces this with those seven samples. The D0 control passed because it injected only ideal isolated spikes; it did not resemble the real bursts.
+- **Reading:** question (d) is still open. The despiked level is not a spike-free level on these records. A next test needs a burst-aware measure fixed in advance (for example headroom on windows that contain no detected spike), with a control built from real burst shapes.
+
 ## Interpretation
 
 1. The safety result transfers: on a second rig and sensor chain, the recovery condition predicted every cell and no failure was silent.
