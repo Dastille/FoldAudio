@@ -1392,3 +1392,101 @@ def burst_detect_frac(
     f = np.zeros(len(y) + 1, dtype=bool)
     f[abs_flags(y, t)] = True
     return float(np.mean([f[p : p + span + 1].any() for p in pos])) if len(pos) else 0.0
+
+
+# --- K001 phase scatter vs reference SNR (prereg-2026-10-31d-k001-ref-snr.md, NOTES #8k a2) ---
+
+REF_SNR_SEED = 20261031
+#: fixed reference-SNR split (dB) between low and high records
+REF_SNR_SPLIT_DB = 26.0
+REF_SNR_MIN_BIN = 4
+A1_MIN_EXTRA_DEG = 20.0
+A1_MAX_P = 0.05
+A1B_MIN_RHO = 0.3
+
+
+def _r_between(recs: list[PhaseRecord]) -> float | None:
+    """R_between of the record mean phases, or None for an empty list."""
+    return between_stats(recs)[0] if recs else None
+
+
+def _three_way(held: bool, falsified: bool) -> str:
+    if held:
+        return "HELD"
+    if falsified:
+        return "FALSIFIED"
+    return "INCONCLUSIVE"
+
+
+def ref_snr_verdicts(
+    k001: list[PhaseRecord],
+    ki04: list[PhaseRecord],
+    *,
+    split_db: float = REF_SNR_SPLIT_DB,
+) -> dict:
+    """Apply the prereg-2026-10-31d-k001-ref-snr.md rules (A0, A1, A1b, A2, A3).
+
+    ``k001`` and ``ki04`` are spiky PhaseRecords (non-spiky records removed)."""
+    from scipy.stats import mannwhitneyu, spearmanr
+
+    k = [r for r in k001 if r.usable]
+    i = [r for r in ki04 if r.usable]
+    out: dict = {"k001_usable": len(k), "ki04_usable": len(i)}
+    out["A0_null_a_ok"] = all(r.null_r99 <= null_a_bar(r.n_spikes) for r in k + i)
+    split, rule = split_db, "fixed"
+    lo = [r for r in k if r.ref_db < split]
+    hi = [r for r in k if r.ref_db >= split]
+    if min(len(lo), len(hi)) < REF_SNR_MIN_BIN and len(k) >= 2 * REF_SNR_MIN_BIN:
+        split, rule = float(np.median([r.ref_db for r in k])), "median"
+        lo = [r for r in k if r.ref_db < split]
+        hi = [r for r in k if r.ref_db >= split]
+    out |= {"split_db": split, "split_rule": rule, "n_low": len(lo), "n_high": len(hi)}
+    rb_i = _r_between(i)
+    out["ki04_r_between"] = rb_i
+    out["k001_r_between_all"] = _r_between(k)
+    if rb_i is None:
+        out["A2"] = "UNTESTABLE"
+    else:
+        out["A2"] = _three_way(rb_i >= R_BETWEEN_HELD, rb_i < R_BETWEEN_FAIL)
+    if not out["A0_null_a_ok"]:
+        return out | {
+            "A1": "UNTESTABLE",
+            "A1b": "UNTESTABLE",
+            "A2": "UNTESTABLE",
+            "A3": "UNTESTABLE",
+        }
+    if min(len(lo), len(hi)) < REF_SNR_MIN_BIN:
+        return out | {"A1": "UNTESTABLE", "A1b": "UNTESTABLE", "A3": "UNTESTABLE"}
+    _rb, mu_hi, _p = between_stats(hi)
+    g = math.degrees(mu_hi)
+    d_lo = [circ_dist_deg(math.degrees(r.mu), g) for r in lo]
+    d_hi = [circ_dist_deg(math.degrees(r.mu), g) for r in hi]
+    p_mw = float(mannwhitneyu(d_lo, d_hi, alternative="greater").pvalue)
+    med_lo, med_hi = float(np.median(d_lo)), float(np.median(d_hi))
+    xs, ys = [r.ref_db for r in k], [r.r for r in k]
+    if len(set(xs)) > 1 and len(set(ys)) > 1:
+        rho, p_rho = spearmanr(xs, ys)
+    else:  # correlation undefined on constant input -> A1b INCONCLUSIVE
+        rho, p_rho = math.nan, math.nan
+    rho, p_rho = float(rho), float(p_rho)
+    rb_hi = between_stats(hi)[0]
+    rb_all = out["k001_r_between_all"]
+    out |= {
+        "high_grand_mean_deg": g,
+        "median_dev_low_deg": med_lo,
+        "median_dev_high_deg": med_hi,
+        "mannwhitney_p": p_mw,
+        "spearman_rho": rho,
+        "spearman_p": p_rho,
+        "k001_r_between_high": rb_hi,
+        "k001_r_between_low": between_stats(lo)[0],
+        "A1": _three_way(
+            med_lo >= med_hi + A1_MIN_EXTRA_DEG and p_mw < A1_MAX_P, med_lo <= med_hi
+        ),
+        "A1b": _three_way(rho >= A1B_MIN_RHO and p_rho < A1_MAX_P, rho <= 0),
+        "A3": _three_way(
+            rb_hi >= R_BETWEEN_HELD and rb_hi > rb_all,
+            rb_hi < R_BETWEEN_FAIL or rb_hi <= rb_all,
+        ),
+    }
+    return out
