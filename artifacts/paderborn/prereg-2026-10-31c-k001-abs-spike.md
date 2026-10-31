@@ -50,3 +50,18 @@ SHA-256-pinned Paderborn files only. Follows PR #11 (G0 FAIL → UNTESTABLE; sub
 - **CLOSE (d) as "not separable on this rig"** if gate PASS and any of: K001 UNTESTABLE (< 5 tiles) on ≥ 10/20;
   A2 FALSIFIED (KI04 equally low → K001 ≈ KI04-class EMI level, not a bearing property); or A1 and A3 both not HELD.
 - Gate FAIL → method UNTESTABLE; (d) stays open (no closure from a broken control).
+
+## Amendment A (written after the first run; disclosed)
+
+First run (`abs-spike-v1-2026-10-31.log`, `abs-spike-v1-metrics.json`): A0 PASS (0.00 dB, 20/20); **A0s FAIL**
+(0 % detected) → A1–A3 UNTESTABLE, outcome "gate FAIL; (d) stays open". Diagnosis (control bug, not detector):
+the K001_BURST samples alternate around zero (2.255, 0.134, −2.286), so the normalised burst's largest spike
+score is 1.005 × amplitude, not ≈ 2 ×; amplitude 0.75·T_c gives score ≈ 0.75·T_c < T_c, undetectable by
+design. The text's intent ("steps ≈ 1.5·T_c") is restored by amplitude **1.5·T_c**. Also: three KA04 `_1.._5`
+records have 1 flag each because T_c was rounded to 3 decimals (not exactly 0 by construction); bars unaffected
+(KA04 coverage ~1.0).
+
+Seen before this amendment: the v1 K001/KI04 tile counts and AH values (K001 0 abs-guarded tiles 20/20; KI04
+LP10 below LB 10/20). The amendment changes only the A0s amplitude; detector, T_c, tiles, bars, A1–A3 thresholds
+and the closure rules are unchanged. v1 stays the primary result; the amended run decides whether the gate
+failure was the control's fault.
