@@ -1490,3 +1490,42 @@ def ref_snr_verdicts(
         ),
     }
     return out
+
+
+# --- K002 second healthy bearing (prereg-2026-10-31d-k002.md, NOTES #8k b) ---
+
+K0_HELD_MIN = 16
+K0_FAIL_MAX = 4
+K_MIN_RECORDS = 8
+
+
+def k002_verdicts(
+    probes: list[RecordProbe], bars: dict[str, float] = HEADROOM_BAR_DB
+) -> dict:
+    """Apply the prereg-2026-10-31d-k002.md rules (K0–K5) to K002 record probes."""
+    n = len(probes)
+    spiky = [p for p in probes if p.spiky]
+    quiet = [p for p in probes if not p.spiky]
+    s = len(spiky)
+    out: dict = {"records": n, "spiky_records": s, "non_spiky_records": len(quiet)}
+    out["K0"] = count_verdict(s, K0_HELD_MIN, K0_FAIL_MAX)
+    if s >= K_MIN_RECORDS:
+        h = heldout_verdicts(spiky)
+        b = bar_lp10_verdict(spiky, bars)
+        out |= {"heldout_rules": h, "bar_rules": b}
+        out |= {"K1": h["R2"], "K2": h["R1"], "K3": h["R3"], "K4": b["B2"]}
+    else:
+        out |= {
+            "K1": "UNTESTABLE",
+            "K2": "UNTESTABLE",
+            "K3": "UNTESTABLE",
+            "K4": "UNTESTABLE",
+        }
+    if len(quiet) >= K_MIN_RECORDS:
+        b1 = bar_stability_verdict(
+            [(p.condition, p.raw["headroom_db"]) for p in quiet], bars
+        )
+        out |= {"bar_stability": b1, "K5": b1["B1"]}
+    else:
+        out["K5"] = "UNTESTABLE"
+    return out
