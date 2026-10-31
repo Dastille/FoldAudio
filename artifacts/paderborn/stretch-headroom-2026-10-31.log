@@ -1,0 +1,54 @@
+KA04/N15_M07_F10_KA04_1.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F10_KA04_2.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F10_KA04_3.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F10_KA04_4.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F10_KA04_5.mat        burst err 0.009  single err 0.000
+KA04/N15_M07_F10_KA04_6.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F10_KA04_7.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F10_KA04_8.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F10_KA04_9.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F10_KA04_10.mat       burst err 0.000  single err 0.000
+KA04/N09_M07_F10_KA04_1.mat        burst err 0.000  single err 0.000
+KA04/N09_M07_F10_KA04_2.mat        burst err 0.067  single err 0.000
+KA04/N09_M07_F10_KA04_3.mat        burst err 0.000  single err 0.000
+KA04/N09_M07_F10_KA04_4.mat        burst err 0.000  single err 0.000
+KA04/N09_M07_F10_KA04_5.mat        burst err 0.000  single err 0.000
+KA04/N09_M07_F10_KA04_6.mat        burst err 0.000  single err 0.000
+KA04/N09_M07_F10_KA04_7.mat        burst err 0.000  single err 0.000
+KA04/N09_M07_F10_KA04_8.mat        burst err 0.000  single err 0.000
+KA04/N09_M07_F10_KA04_9.mat        burst err 0.000  single err 0.000
+KA04/N09_M07_F10_KA04_10.mat       burst err 0.000  single err 0.000
+KA04/N15_M01_F10_KA04_1.mat        burst err 0.000  single err 0.000
+KA04/N15_M01_F10_KA04_2.mat        burst err 0.000  single err 0.000
+KA04/N15_M01_F10_KA04_3.mat        burst err 0.000  single err 0.000
+KA04/N15_M01_F10_KA04_4.mat        burst err 0.000  single err 0.000
+KA04/N15_M01_F10_KA04_5.mat        burst err 0.000  single err 0.000
+KA04/N15_M01_F10_KA04_6.mat        burst err 0.000  single err 0.000
+KA04/N15_M01_F10_KA04_7.mat        burst err 0.000  single err 0.000
+KA04/N15_M01_F10_KA04_8.mat        burst err 0.000  single err 0.000
+KA04/N15_M01_F10_KA04_9.mat        burst err 0.613  single err 0.000
+KA04/N15_M01_F10_KA04_10.mat       burst err 0.000  single err 0.000
+KA04/N15_M07_F04_KA04_1.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F04_KA04_2.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F04_KA04_3.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F04_KA04_4.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F04_KA04_5.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F04_KA04_6.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F04_KA04_7.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F04_KA04_8.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F04_KA04_9.mat        burst err 0.000  single err 0.000
+KA04/N15_M07_F04_KA04_10.mat       burst err 0.000  single err 0.000
+
+[Part B] {'burst_pass': 39, 'single_pass': 40, 'n': 40, 'B1': 'HELD'}
+miss K001/N09_M07_F10_K001_6.mat        SH None  SB 5.32  tiles 0
+miss K001/N09_M07_F10_K001_7.mat        SH None  SB 5.32  tiles 0
+miss K001/N09_M07_F10_K001_8.mat        SH None  SB 5.32  tiles 0
+miss K001/N15_M07_F10_K001_10.mat       SH None  SB 4.46  tiles 0
+miss K001/N15_M01_F10_K001_10.mat       SH None  SB 4.02  tiles 0
+
+[S0] FAIL 0
+[bars] {'N15_M07_F10': 4.46, 'N09_M07_F10': 5.32, 'N15_M01_F10': 4.02, 'N15_M07_F04': 2.92}
+[S1] {'below': 0, 'n': 5, 'S1': 'UNTESTABLE'} 
+[S2] {'below': 0, 'n': 20, 'S2': 'UNTESTABLE'} 
+[S3] {"K001": {"median_sh_db": null, "testable": 0, "median_tiles": 0.0}, "KA04": {"median_sh_db": 4.669819945342977, "testable": 20, "median_tiles": 40.0}, "KI04": {"median_sh_db": null, "testable": 0, "median_tiles": 0.0}}
+wrote artifacts/paderborn/stretch-headroom-metrics.json
