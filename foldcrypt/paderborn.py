@@ -49,6 +49,33 @@ BEARINGS: dict[str, tuple[str, str]] = {
     "KI04": ("inner ring, fatigue pitting", "a5a634fcdcb33a8501e7411d30441c6d"),
 }
 
+#: further-check bearings (NOTES #8k b), kept out of ``BEARINGS`` so the earlier sweeps
+#: that loop over ``BEARINGS`` reproduce unchanged.
+EXTRA_BEARINGS: dict[str, tuple[str, str]] = {
+    "K002": ("healthy", "88631bc0081a6470846d18189d46381d"),
+    # K002 second healthy bearing _1.._5 (NOTES #8k b), pinned 2026-10-31 before analysis
+    "K002/N15_M07_F10_K002_1.mat": "e2955b32c984c2e2557248ef2c7fbe213c180ade11dcfab8e4456712f785aabb",
+    "K002/N15_M07_F10_K002_2.mat": "c1f4ea201d157be12c0f7f4587281804e0f7af5c9a3ce6b75b6a34f90fbdf62d",
+    "K002/N15_M07_F10_K002_3.mat": "2f854f3e6e9d0d86ce706f115ef81a452fff8dc9d22c909924b591244a4f5a66",
+    "K002/N15_M07_F10_K002_4.mat": "e66091caf2624fc91995d679e717d6dea2332e63b544fc58e4ed2643fb870f43",
+    "K002/N15_M07_F10_K002_5.mat": "5a54462656ed06d73f84d2c5718e239ba51839966961b6f4fa8c5e165f015a84",
+    "K002/N09_M07_F10_K002_1.mat": "b5707fd0384a6ca21c5bfb370f23345daa0678be2cb345279eccd2761b2aeace",
+    "K002/N09_M07_F10_K002_2.mat": "38a19ddad1da41d320b43bf814708a750d54cfd071c45ac5498582912e4b933f",
+    "K002/N09_M07_F10_K002_3.mat": "b6d19c399d78bf5d923aebc3fe5e0d6162fb85c3c7e47ad55157b6efd31ba9ac",
+    "K002/N09_M07_F10_K002_4.mat": "817546de0f37a106d11bfe8253434e3192c57dc51e13e206f4c84bcc69da2624",
+    "K002/N09_M07_F10_K002_5.mat": "5b37f8c17e8c96ffc0a1f7e9b23557fd5e9c8f54867d3cb30c3a8cf743989ec3",
+    "K002/N15_M01_F10_K002_1.mat": "f2797493d7bfcabd4f78a9137e7f97e08dfd1ef6aec72e482b007c69e900d2f4",
+    "K002/N15_M01_F10_K002_2.mat": "51867f87e33af5c78d9f3321d413153490887aeb7a7edf23b18a614b1315bebb",
+    "K002/N15_M01_F10_K002_3.mat": "9a1e624892876e4b3499b3b41d3e95d68b8fc6ca0ef1ec155a0362e3f47b70f9",
+    "K002/N15_M01_F10_K002_4.mat": "86001098a9725b105bf50f3d2b9727151cffc15c3383930073d98e32347f67ae",
+    "K002/N15_M01_F10_K002_5.mat": "93c0fb87e08a017e8e864a27ad066a2d5a58efa3f0aa5ca80703dbf8f6170c6d",
+    "K002/N15_M07_F04_K002_1.mat": "c882f239602508c7c4fd56e2134207d1fbdda9bff7aa223970b19e23056558ab",
+    "K002/N15_M07_F04_K002_2.mat": "e903a254d45bea6b040952ad3e5c3e86a0d5c96d0a50cf31a220627f6a9f746c",
+    "K002/N15_M07_F04_K002_3.mat": "6a7d50f2b725c90e2c84ad9e8c693149eec54090395f37c0ba944e420b56b82f",
+    "K002/N15_M07_F04_K002_4.mat": "bb0febed0fbd195312bc85c196d6dc087034bbe9fef175ce9eed9f7900e45edd",
+    "K002/N15_M07_F04_K002_5.mat": "d78051169458f26e54da816d67540b05853ea47777c25a597558c2f6b40a85a2",
+}
+
 #: operating conditions (speed / torque / radial force codes), measurement _1
 CONDITIONS = ("N15_M07_F10", "N09_M07_F10", "N15_M01_F10", "N15_M07_F04")
 
@@ -281,6 +308,9 @@ CONFIRM_MEASUREMENTS = (6, 7, 8, 9, 10)
 #: fresh measurement numbers for the 2026-10-31d reference-SNR split (NOTES #8k a2)
 REF_SNR_MEASUREMENTS = tuple(range(11, 21))
 
+#: K002 measurement numbers for the 2026-10-31d further check (NOTES #8k b)
+K002_MEASUREMENTS = (1, 2, 3, 4, 5)
+
 
 def member(bearing: str, condition: str, meas: int = 1) -> str:
     """Archive member path, e.g. ``K001/N15_M07_F10_K001_1.mat``."""
@@ -296,7 +326,7 @@ def _digest(path: Path, algo: str) -> str:
 
 
 def _fetch_rar(bearing: str, cache: Path) -> Path:
-    _label, md5 = BEARINGS[bearing]
+    _label, md5 = (BEARINGS | EXTRA_BEARINGS)[bearing]
     rar = cache / "rar" / f"{bearing}.rar"
     if rar.exists() and _digest(rar, "md5") == md5:
         return rar
