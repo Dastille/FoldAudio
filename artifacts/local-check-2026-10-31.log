@@ -1,5 +1,5 @@
-# FoldCrypt local check (full), 2026-10-31 15:56 EDT
-# code = c7eabcd + uncommitted changes
+# FoldCrypt local check (full), 2026-10-31 16:04 EDT
+# code = fa5d15b + uncommitted changes
 # Python 3.13.5; numpy 2.5.4
 # scipy 1.18.1
 # ruff 0.17.1; pip-audit 2.10.1
@@ -11,7 +11,7 @@
 ## lint: PASS
 
 ## format: ruff format --check .
-71 files already formatted
+74 files already formatted
 ## format: PASS
 
 ## audit: pip-audit --skip-editable
@@ -22,10 +22,10 @@ foldcrypt distribution marked as editable
 ## audit: PASS
 
 ## tests: env FOLDCRYPT_REQUIRE_CWRU=1 FOLDCRYPT_REQUIRE_PADERBORN=1 python -m pytest -q -rs
-........................................................................ [ 37%]
-........................................................................ [ 74%]
-.................................................                        [100%]
-193 passed in 143.85s (0:02:23)
+........................................................................ [ 36%]
+........................................................................ [ 73%]
+.....................................................                    [100%]
+197 passed in 132.27s (0:02:12)
 ## tests: PASS
 
 ## cwru-recompute: python scripts/check_cwru_numbers.py --recompute

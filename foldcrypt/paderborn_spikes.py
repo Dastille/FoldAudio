@@ -1257,3 +1257,54 @@ def count_verdict(k: int, held_min: int, fail_max: int) -> str:
     if k <= fail_max:
         return "FALSIFIED"
     return "INCONCLUSIVE"
+
+
+# --- Guarded short-tile headroom (prereg-2026-10-31-k001-gap-headroom.md) ----
+
+#: 16 ms at 64 kHz; fixed a priori. No tile-own-peak criterion (it censors low headroom).
+GAP_LEN = 1024
+G3_HELD_MISSES, G3_HELD_K001 = 4, 15
+G3_FAIL_MISSES, G3_FAIL_K001 = 2, 10
+G4_HELD_MAX, G4_FAIL_MIN = 5, 10
+
+
+def guarded_tiles(
+    x: np.ndarray, length: int = GAP_LEN, guard: int = STRETCH_GUARD
+) -> list[int]:
+    """Tile starts with no record-level spike within ``guard`` samples."""
+    x = np.asarray(x, dtype=float)
+    bad = np.zeros(len(x) + 1, dtype=int)
+    for i in spike_indices(x):
+        bad[max(i - guard, 0)] += 1
+        bad[min(i + guard + 1, len(x))] -= 1
+    near = np.cumsum(bad)[: len(x)] > 0
+    return [
+        s0
+        for s0 in range(0, len(x) - length + 1, length)
+        if not near[s0 : s0 + length].any()
+    ]
+
+
+def tile_headroom_db(y: np.ndarray, starts: list[int], length: int = GAP_LEN):
+    """Median raw headroom of ``y`` over the given tiles (None if < STRETCH_MIN_TILES)."""
+    if len(starts) < STRETCH_MIN_TILES:
+        return None
+    y = np.asarray(y, dtype=float)
+    h = [
+        headroom_db(float(np.max(np.abs(t))), max_sample_jump(t))
+        for t in (y[s : s + length] for s in starts)
+    ]
+    return float(np.median(h))
+
+
+def gap_headroom(x: np.ndarray, length: int = GAP_LEN) -> dict:
+    """SH_raw, SH_lp (LP10 on the whole record), tile count, own-peak reject fraction."""
+    x = np.asarray(x, dtype=float)
+    st = guarded_tiles(x, length)
+    own = sum(len(spike_indices(x[s : s + length])) > 0 for s in st)
+    return {
+        "sh_raw": tile_headroom_db(x, st, length),
+        "sh_lp": tile_headroom_db(apply_filter(x, "LP10"), st, length),
+        "tiles": len(st),
+        "own_peak_reject_frac": own / len(st) if st else None,
+    }
