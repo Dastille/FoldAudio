@@ -157,3 +157,11 @@ Pre-registered in `artifacts/paderborn/prereg-2026-10-30-k001-spike-free.md` (ex
 1. C. Lessmeier, J. K. Kimotho, D. Zimmer, and W. Sextro, "Condition Monitoring of Bearing Damage in Electromechanical Drive Systems by Using Motor Current Signals of Electric Motors: A Benchmark Data Set for Data-Driven Classification," *PHM Society European Conference*, vol. 3, no. 1, 2016. doi:10.36001/phme.2016.v3i1.1577
 2. J. van den Hoogen, "Paderborn Bearing Dataset," Zenodo, 2025. doi:10.5281/zenodo.15845309 (mirror of <https://groups.uni-paderborn.de/kat/BearingDataCenter/>, accessed 2026-10-23)
 3. Schaeffler Technologies, bearinx-online catalogue, "6203-2Z basic frequency factors" (BPFO factor 3.0531, BPFI factor 4.9469), accessed 2026-10-25.
+
+## K001 phase scatter vs reference SNR (2026-10-31d, NOTES #8k a2)
+
+Pre-registered in `artifacts/paderborn/prereg-2026-10-31d-k001-ref-snr.md` (commit 5ec40b8, 80 SHA-256 pins for K001/KI04 `_11.._20` in the same commit). Fixed split 26.0 dB on the 100 Hz current-reference line. A0 null-A 80/80; A1 low-SNR K001 deviation 54.9° vs 15.1° (n 4 vs 36, MWU p 0.037) HELD; A1b Spearman ρ(ref, R_ref) 0.80 HELD; A2 KI04 R_between 0.959 HELD; A3 K001 R_between high 0.814 vs all 0.763 HELD. Exploratory: K001 N15_M01 scatters at high reference SNR (R_between 0.490), so the effect is partial and confounded with condition. Script `scripts/ref_snr_phase.py`, log `artifacts/paderborn/ref-snr-phase-2026-10-31d.log` (~9 s CPU). Whitepaper v1.19 Table 19.
+
+## K002 second healthy bearing (2026-10-31d, NOTES #8k b)
+
+Pre-registered in `artifacts/paderborn/prereg-2026-10-31d-k002.md` (commit fbd7725; the 20 SHA-256 pins were placed in the wrong dict in that commit and moved in the next commit, before any analysis). `K002.rar` MD5 `88631bc0…d46381d` (Zenodo). K0 spiky 20/20 HELD; K1 16 kHz 18/20 HELD at the 90 % bar; K2 100 Hz 20/20 HELD; K3 mechanical 1/20 HELD (18/20 decoy-contaminated, caveat); K4 LP10 ≥ B_c 18/20 HELD (misses N09 `_4` 3.06 dB, `_5` 3.34 dB vs 3.94); K5 UNTESTABLE (no spike-free records). Raw headroom −0.35…+0.25 dB. Script `scripts/k002_check.py`, log `artifacts/paderborn/k002-check-2026-10-31d.log` (~40 s CPU). Whitepaper v1.19 Table 20.

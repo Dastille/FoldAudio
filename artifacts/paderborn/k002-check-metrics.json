@@ -1,0 +1,229 @@
+{
+  "source": "Paderborn KAt via Zenodo 15845309 (CC BY 4.0); K002 vibration_1 + phase currents, 64 kHz",
+  "prereg": "artifacts/paderborn/prereg-2026-10-31d-k002.md",
+  "verdicts": {
+    "records": 20,
+    "spiky_records": 20,
+    "non_spiky_records": 0,
+    "K0": "HELD",
+    "heldout_rules": {
+      "records": 20,
+      "spiky_records": 20,
+      "mains100_locked": 20,
+      "pwm16k_locked": 18,
+      "h2_evidence": 1,
+      "decoy_contaminated": 18,
+      "n09_spiky": 5,
+      "n09_mains100_locked": 5,
+      "n09_fe_locked": 1,
+      "R1": "HELD",
+      "R1b": "HELD",
+      "R2": "HELD",
+      "R3": "HELD",
+      "R4": "HELD",
+      "filters": {
+        "LP10": {
+          "headroom_ok": 20,
+          "silent_fail": 0,
+          "rule_all_correct": true,
+          "lines_testable": 0,
+          "lines_lost": [],
+          "verdict": "HELD"
+        },
+        "LP5": {
+          "headroom_ok": 20,
+          "silent_fail": 0,
+          "rule_all_correct": true,
+          "lines_testable": 0,
+          "lines_lost": [],
+          "verdict": "descriptive (HELD under R4 bars)"
+        },
+        "MED3": {
+          "headroom_ok": 0,
+          "silent_fail": 0,
+          "rule_all_correct": true,
+          "lines_testable": 0,
+          "lines_lost": [],
+          "verdict": "descriptive (FALSIFIED under R4 bars)"
+        }
+      }
+    },
+    "bar_rules": {
+      "spiky_records": 20,
+      "lp10_at_or_above_bar": 18,
+      "lp10_at_or_above_3db_descriptive": 20,
+      "silent_fail": 0,
+      "rule_all_correct": true,
+      "lines_testable": 0,
+      "lines_lost": [],
+      "B2": "HELD"
+    },
+    "K1": "HELD",
+    "K2": "HELD",
+    "K3": "HELD",
+    "K4": "HELD",
+    "K5": "UNTESTABLE"
+  },
+  "records": [
+    {
+      "record": "K002/N15_M07_F10_K002_1.mat",
+      "condition": "N15_M07_F10",
+      "n_spikes": 182,
+      "spiky": true,
+      "raw_headroom_db": -0.13811776313513696,
+      "lp10_headroom_db": 5.159053049541097
+    },
+    {
+      "record": "K002/N15_M07_F10_K002_2.mat",
+      "condition": "N15_M07_F10",
+      "n_spikes": 181,
+      "spiky": true,
+      "raw_headroom_db": -0.2683953968325397,
+      "lp10_headroom_db": 5.299243923892725
+    },
+    {
+      "record": "K002/N15_M07_F10_K002_3.mat",
+      "condition": "N15_M07_F10",
+      "n_spikes": 134,
+      "spiky": true,
+      "raw_headroom_db": -0.08810783550513843,
+      "lp10_headroom_db": 5.332153730923138
+    },
+    {
+      "record": "K002/N15_M07_F10_K002_4.mat",
+      "condition": "N15_M07_F10",
+      "n_spikes": 122,
+      "spiky": true,
+      "raw_headroom_db": -0.08722305568428969,
+      "lp10_headroom_db": 5.095187249121382
+    },
+    {
+      "record": "K002/N15_M07_F10_K002_5.mat",
+      "condition": "N15_M07_F10",
+      "n_spikes": 601,
+      "spiky": true,
+      "raw_headroom_db": 0.14967440381785954,
+      "lp10_headroom_db": 3.9775063077910513
+    },
+    {
+      "record": "K002/N09_M07_F10_K002_1.mat",
+      "condition": "N09_M07_F10",
+      "n_spikes": 18,
+      "spiky": true,
+      "raw_headroom_db": 0.03281826185622466,
+      "lp10_headroom_db": 4.542416105145211
+    },
+    {
+      "record": "K002/N09_M07_F10_K002_2.mat",
+      "condition": "N09_M07_F10",
+      "n_spikes": 126,
+      "spiky": true,
+      "raw_headroom_db": -0.04052521956949113,
+      "lp10_headroom_db": 5.4458573458684
+    },
+    {
+      "record": "K002/N09_M07_F10_K002_3.mat",
+      "condition": "N09_M07_F10",
+      "n_spikes": 83,
+      "spiky": true,
+      "raw_headroom_db": -0.06330851378202786,
+      "lp10_headroom_db": 4.590071803580125
+    },
+    {
+      "record": "K002/N09_M07_F10_K002_4.mat",
+      "condition": "N09_M07_F10",
+      "n_spikes": 328,
+      "spiky": true,
+      "raw_headroom_db": 0.134407163754164,
+      "lp10_headroom_db": 3.0634028691767634
+    },
+    {
+      "record": "K002/N09_M07_F10_K002_5.mat",
+      "condition": "N09_M07_F10",
+      "n_spikes": 237,
+      "spiky": true,
+      "raw_headroom_db": -0.23084305830889568,
+      "lp10_headroom_db": 3.339717853415834
+    },
+    {
+      "record": "K002/N15_M01_F10_K002_1.mat",
+      "condition": "N15_M01_F10",
+      "n_spikes": 47,
+      "spiky": true,
+      "raw_headroom_db": -0.0626238447272741,
+      "lp10_headroom_db": 3.293938552740948
+    },
+    {
+      "record": "K002/N15_M01_F10_K002_2.mat",
+      "condition": "N15_M01_F10",
+      "n_spikes": 354,
+      "spiky": true,
+      "raw_headroom_db": -0.050646730307900734,
+      "lp10_headroom_db": 4.265683826546868
+    },
+    {
+      "record": "K002/N15_M01_F10_K002_3.mat",
+      "condition": "N15_M01_F10",
+      "n_spikes": 45,
+      "spiky": true,
+      "raw_headroom_db": 0.24979117929670225,
+      "lp10_headroom_db": 4.7075736942417015
+    },
+    {
+      "record": "K002/N15_M01_F10_K002_4.mat",
+      "condition": "N15_M01_F10",
+      "n_spikes": 145,
+      "spiky": true,
+      "raw_headroom_db": -0.27791795318183005,
+      "lp10_headroom_db": 5.048631479077352
+    },
+    {
+      "record": "K002/N15_M01_F10_K002_5.mat",
+      "condition": "N15_M01_F10",
+      "n_spikes": 151,
+      "spiky": true,
+      "raw_headroom_db": 0.04162574885842778,
+      "lp10_headroom_db": 4.185073954766944
+    },
+    {
+      "record": "K002/N15_M07_F04_K002_1.mat",
+      "condition": "N15_M07_F04",
+      "n_spikes": 162,
+      "spiky": true,
+      "raw_headroom_db": -0.050394859532107164,
+      "lp10_headroom_db": 5.074072598548827
+    },
+    {
+      "record": "K002/N15_M07_F04_K002_2.mat",
+      "condition": "N15_M07_F04",
+      "n_spikes": 132,
+      "spiky": true,
+      "raw_headroom_db": -0.02023897530399452,
+      "lp10_headroom_db": 4.707745309440262
+    },
+    {
+      "record": "K002/N15_M07_F04_K002_3.mat",
+      "condition": "N15_M07_F04",
+      "n_spikes": 391,
+      "spiky": true,
+      "raw_headroom_db": 0.1426872274291255,
+      "lp10_headroom_db": 5.2881493274110145
+    },
+    {
+      "record": "K002/N15_M07_F04_K002_4.mat",
+      "condition": "N15_M07_F04",
+      "n_spikes": 228,
+      "spiky": true,
+      "raw_headroom_db": -0.12309704185523233,
+      "lp10_headroom_db": 4.4421583766184485
+    },
+    {
+      "record": "K002/N15_M07_F04_K002_5.mat",
+      "condition": "N15_M07_F04",
+      "n_spikes": 288,
+      "spiky": true,
+      "raw_headroom_db": -0.35044200218699145,
+      "lp10_headroom_db": 5.018144256852242
+    }
+  ]
+}

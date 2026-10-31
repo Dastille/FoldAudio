@@ -1,0 +1,154 @@
+# prereg artifacts/paderborn/prereg-2026-10-31d-k001-ref-snr.md
+# seed 20261031, split 26.0 dB, min bin 4
+K001/N15_M07_F10_K001_11.mat   N  167  ref  34.0 dB  R 0.832  mu   -87.3  nullA99 0.164/0.199
+K001/N15_M07_F10_K001_12.mat   N  365  ref  33.5 dB  R 0.855  mu   -53.6  nullA99 0.108/0.135
+K001/N15_M07_F10_K001_13.mat   N  166  ref  32.9 dB  R 0.831  mu  -103.5  nullA99 0.160/0.200
+K001/N15_M07_F10_K001_14.mat   N  272  ref  19.0 dB  R 0.575  mu   -55.5  nullA99 0.135/0.156
+K001/N15_M07_F10_K001_15.mat   N  222  ref  33.9 dB  R 0.842  mu   -83.2  nullA99 0.144/0.173
+K001/N15_M07_F10_K001_16.mat   N  388  ref  31.7 dB  R 0.775  mu   -45.8  nullA99 0.107/0.131
+K001/N15_M07_F10_K001_17.mat   N  350  ref  26.1 dB  R 0.706  mu  -109.0  nullA99 0.113/0.138
+K001/N15_M07_F10_K001_18.mat   N  277  ref  34.6 dB  R 0.835  mu   -71.6  nullA99 0.129/0.155
+K001/N15_M07_F10_K001_19.mat   N  106  ref  34.7 dB  R 0.833  mu   -86.1  nullA99 0.205/0.250
+K001/N15_M07_F10_K001_20.mat   N  233  ref  23.4 dB  R 0.418  mu   -48.4  nullA99 0.135/0.169
+K001/N09_M07_F10_K001_11.mat   N  518  ref  28.3 dB  R 0.731  mu   -63.2  nullA99 0.093/0.113
+K001/N09_M07_F10_K001_12.mat   N  196  ref  28.7 dB  R 0.804  mu   -61.5  nullA99 0.149/0.184
+K001/N09_M07_F10_K001_13.mat   N  545  ref  28.4 dB  R 0.757  mu   -63.2  nullA99 0.092/0.110
+K001/N09_M07_F10_K001_14.mat   N  386  ref  27.7 dB  R 0.788  mu   -63.9  nullA99 0.109/0.131
+K001/N09_M07_F10_K001_15.mat   N  189  ref  28.8 dB  R 0.784  mu   -64.0  nullA99 0.154/0.187
+K001/N09_M07_F10_K001_16.mat   N  200  ref  28.1 dB  R 0.777  mu   -62.1  nullA99 0.150/0.182
+K001/N09_M07_F10_K001_17.mat   N  379  ref  28.6 dB  R 0.737  mu   -66.1  nullA99 0.108/0.132
+K001/N09_M07_F10_K001_18.mat   N  307  ref  27.1 dB  R 0.780  mu   -65.5  nullA99 0.120/0.147
+K001/N09_M07_F10_K001_19.mat   N  308  ref  28.3 dB  R 0.768  mu   -58.9  nullA99 0.122/0.147
+K001/N09_M07_F10_K001_20.mat   N  550  ref  29.1 dB  R 0.744  mu   -59.2  nullA99 0.091/0.110
+K001/N15_M01_F10_K001_11.mat   N  240  ref  33.3 dB  R 0.753  mu   -29.8  nullA99 0.137/0.166
+K001/N15_M01_F10_K001_12.mat   N  263  ref  30.4 dB  R 0.772  mu  -111.7  nullA99 0.134/0.159
+K001/N15_M01_F10_K001_13.mat   N  347  ref  32.9 dB  R 0.814  mu   -42.9  nullA99 0.114/0.138
+K001/N15_M01_F10_K001_14.mat   N  354  ref  32.1 dB  R 0.714  mu    -6.7  nullA99 0.113/0.137
+K001/N15_M01_F10_K001_15.mat   N  360  ref  33.2 dB  R 0.811  mu   -63.0  nullA99 0.117/0.136
+K001/N15_M01_F10_K001_16.mat   N  265  ref  29.7 dB  R 0.703  mu   +25.8  nullA99 0.129/0.158
+K001/N15_M01_F10_K001_17.mat   N  284  ref  27.2 dB  R 0.652  mu  -152.8  nullA99 0.128/0.153
+K001/N15_M01_F10_K001_18.mat   N  200  ref  23.9 dB  R 0.280  mu  +150.1  nullA99 0.155/0.182
+K001/N15_M01_F10_K001_19.mat   N  273  ref  33.2 dB  R 0.785  mu   -96.0  nullA99 0.128/0.156
+K001/N15_M01_F10_K001_20.mat   N  293  ref  32.2 dB  R 0.796  mu   -95.7  nullA99 0.123/0.150
+K001/N15_M07_F04_K001_11.mat   N  162  ref  26.9 dB  R 0.783  mu    -8.2  nullA99 0.174/0.202
+K001/N15_M07_F04_K001_12.mat   N  362  ref  21.8 dB  R 0.757  mu  -158.3  nullA99 0.113/0.135
+K001/N15_M07_F04_K001_13.mat   N  339  ref  36.5 dB  R 0.859  mu   -68.5  nullA99 0.120/0.140
+K001/N15_M07_F04_K001_14.mat   N  183  ref  30.4 dB  R 0.834  mu  -120.4  nullA99 0.160/0.190
+K001/N15_M07_F04_K001_15.mat   N  140  ref  34.7 dB  R 0.835  mu   -92.8  nullA99 0.179/0.218
+K001/N15_M07_F04_K001_16.mat   N  410  ref  34.2 dB  R 0.851  mu   -57.7  nullA99 0.102/0.127
+K001/N15_M07_F04_K001_17.mat   N  338  ref  29.2 dB  R 0.788  mu  -140.8  nullA99 0.119/0.140
+K001/N15_M07_F04_K001_18.mat   N  215  ref  35.1 dB  R 0.841  mu   -82.2  nullA99 0.149/0.176
+K001/N15_M07_F04_K001_19.mat   N  430  ref  36.5 dB  R 0.871  mu   -73.5  nullA99 0.102/0.124
+K001/N15_M07_F04_K001_20.mat   N  280  ref  26.2 dB  R 0.460  mu  -161.5  nullA99 0.130/0.154
+KI04/N15_M07_F10_KI04_11.mat   N   29  ref  28.6 dB  R 0.948  mu   -52.1  nullA99 0.399/0.478
+KI04/N15_M07_F10_KI04_12.mat   N   42  ref  32.1 dB  R 0.943  mu   -62.9  nullA99 0.327/0.397
+KI04/N15_M07_F10_KI04_13.mat   N   90  ref  28.3 dB  R 0.906  mu   -73.6  nullA99 0.229/0.271
+KI04/N15_M07_F10_KI04_14.mat   N  103  ref  31.5 dB  R 0.883  mu   -79.2  nullA99 0.207/0.254
+KI04/N15_M07_F10_KI04_15.mat   N  110  ref  31.0 dB  R 0.888  mu   -68.4  nullA99 0.195/0.246
+KI04/N15_M07_F10_KI04_16.mat   N  103  ref  29.1 dB  R 0.876  mu   -67.1  nullA99 0.216/0.254
+KI04/N15_M07_F10_KI04_17.mat   N   70  ref  29.1 dB  R 0.501  mu   -93.5  nullA99 0.254/0.308
+KI04/N15_M07_F10_KI04_18.mat   N   84  ref  29.7 dB  R 0.589  mu   -93.8  nullA99 0.225/0.281
+KI04/N15_M07_F10_KI04_19.mat   N  108  ref  31.1 dB  R 0.645  mu   -74.4  nullA99 0.215/0.248
+KI04/N15_M07_F10_KI04_20.mat   N  179  ref  30.1 dB  R 0.465  mu   -86.5  nullA99 0.156/0.192
+KI04/N09_M07_F10_KI04_11.mat   N   60  ref  29.4 dB  R 0.895  mu   -60.4  nullA99 0.278/0.332
+KI04/N09_M07_F10_KI04_12.mat   N  133  ref  26.9 dB  R 0.919  mu   -59.2  nullA99 0.190/0.223
+KI04/N09_M07_F10_KI04_13.mat   N  283  ref  28.0 dB  R 0.911  mu   -63.2  nullA99 0.125/0.153
+KI04/N09_M07_F10_KI04_14.mat   N   49  ref  27.5 dB  R 0.923  mu   -61.3  nullA99 0.301/0.368
+KI04/N09_M07_F10_KI04_15.mat   N  336  ref  27.1 dB  R 0.904  mu   -69.1  nullA99 0.113/0.140
+KI04/N09_M07_F10_KI04_16.mat   N  245  ref  28.6 dB  R 0.919  mu   -61.9  nullA99 0.139/0.165
+KI04/N09_M07_F10_KI04_17.mat   N   94  ref  26.8 dB  R 0.935  mu   -66.9  nullA99 0.226/0.266
+KI04/N09_M07_F10_KI04_18.mat   N  162  ref  26.2 dB  R 0.916  mu   -63.9  nullA99 0.166/0.202
+KI04/N09_M07_F10_KI04_19.mat   N  238  ref  27.8 dB  R 0.923  mu   -64.0  nullA99 0.143/0.167
+KI04/N09_M07_F10_KI04_20.mat   N  221  ref  26.7 dB  R 0.909  mu   -65.3  nullA99 0.143/0.173
+KI04/N15_M01_F10_KI04_11.mat   N   52  ref  26.5 dB  R 0.894  mu   -44.8  nullA99 0.287/0.357
+KI04/N15_M01_F10_KI04_12.mat   N  103  ref  22.1 dB  R 0.795  mu   -35.0  nullA99 0.213/0.254
+KI04/N15_M01_F10_KI04_13.mat   N   44  ref  24.0 dB  R 0.934  mu   -37.1  nullA99 0.323/0.388
+KI04/N15_M01_F10_KI04_14.mat   N   33  ref  23.2 dB  R 0.912  mu   -37.6  nullA99 0.378/0.448
+KI04/N15_M01_F10_KI04_15.mat   N   82  ref  26.9 dB  R 0.886  mu   -52.6  nullA99 0.240/0.284
+KI04/N15_M01_F10_KI04_16.mat   N  125  ref  26.0 dB  R 0.904  mu   -40.8  nullA99 0.186/0.230
+KI04/N15_M01_F10_KI04_17.mat   N   36  ref  22.5 dB  R 0.864  mu   -25.6  nullA99 0.352/0.429
+KI04/N15_M01_F10_KI04_18.mat   N   48  ref  22.6 dB  R 0.880  mu   -24.9  nullA99 0.305/0.372
+KI04/N15_M01_F10_KI04_19.mat   N   49  ref  26.4 dB  R 0.946  mu   -38.1  nullA99 0.295/0.368
+KI04/N15_M01_F10_KI04_20.mat   N  223  ref  27.4 dB  R 0.911  mu   -40.5  nullA99 0.138/0.172
+KI04/N15_M07_F04_KI04_11.mat   N  334  ref  31.1 dB  R 0.862  mu   -73.2  nullA99 0.117/0.141
+KI04/N15_M07_F04_KI04_12.mat   N  215  ref  29.0 dB  R 0.886  mu   -75.4  nullA99 0.140/0.176
+KI04/N15_M07_F04_KI04_13.mat   N  202  ref  30.1 dB  R 0.901  mu   -72.8  nullA99 0.147/0.181
+KI04/N15_M07_F04_KI04_14.mat   N  171  ref  31.5 dB  R 0.923  mu   -73.1  nullA99 0.161/0.197
+KI04/N15_M07_F04_KI04_15.mat   N  112  ref  29.2 dB  R 0.895  mu   -68.5  nullA99 0.201/0.243
+KI04/N15_M07_F04_KI04_16.mat   N  107  ref  28.8 dB  R 0.894  mu   -75.5  nullA99 0.211/0.249
+KI04/N15_M07_F04_KI04_17.mat   N  263  ref  30.6 dB  R 0.884  mu   -69.3  nullA99 0.129/0.159
+KI04/N15_M07_F04_KI04_18.mat   N  197  ref  29.8 dB  R 0.867  mu   -73.0  nullA99 0.149/0.183
+KI04/N15_M07_F04_KI04_19.mat   N   21  ref  29.3 dB  R 0.891  mu   -66.5  nullA99 0.451/0.562
+KI04/N15_M07_F04_KI04_20.mat   N   46  ref  31.0 dB  R 0.946  mu   -63.3  nullA99 0.305/0.380
+not spiky: none
+
+[verdicts]
+{
+ "k001_usable": 40,
+ "ki04_usable": 40,
+ "A0_null_a_ok": true,
+ "split_db": 26.0,
+ "split_rule": "fixed",
+ "n_low": 4,
+ "n_high": 36,
+ "ki04_r_between": 0.9591704841364526,
+ "k001_r_between_all": 0.7631612677979481,
+ "A2": "HELD",
+ "high_grand_mean_deg": -73.3956372222852,
+ "median_dev_low_deg": 54.94841903423408,
+ "median_dev_high_deg": 15.065247727783476,
+ "mannwhitney_p": 0.03715942663311085,
+ "spearman_rho": 0.801688555347092,
+ "spearman_p": 5.091652755396946e-10,
+ "k001_r_between_high": 0.8136369596676335,
+ "k001_r_between_low": 0.38728881350009153,
+ "A1": "HELD",
+ "A1b": "HELD",
+ "A3": "HELD"
+}
+
+[exploratory: K001 per condition]
+{
+ "N15_M07_F10": {
+  "n": 10,
+  "ref_db_range": [
+   18.988541107566217,
+   34.73924910877346
+  ],
+  "r_between": 0.9296480838749603,
+  "n_low": 2
+ },
+ "N09_M07_F10": {
+  "n": 10,
+  "ref_db_range": [
+   27.076863463651264,
+   29.129423729595253
+  ],
+  "r_between": 0.9992186644878709,
+  "n_low": 0
+ },
+ "N15_M01_F10": {
+  "n": 10,
+  "ref_db_range": [
+   23.902074057407336,
+   33.33805946067582
+  ],
+  "r_between": 0.49027188906199126,
+  "n_low": 1
+ },
+ "N15_M07_F04": {
+  "n": 10,
+  "ref_db_range": [
+   21.777116154709447,
+   36.49516905026385
+  ],
+  "r_between": 0.7105652517798181,
+  "n_low": 1
+ }
+}
+         True  A0_null_a_ok
+         HELD  A1
+         HELD  A1b
+         HELD  A2
+         HELD  A3
+wrote artifacts/paderborn/ref-snr-phase-metrics.json

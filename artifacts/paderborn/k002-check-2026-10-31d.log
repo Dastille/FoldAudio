@@ -1,0 +1,94 @@
+# prereg artifacts/paderborn/prereg-2026-10-31d-k002.md
+# bars B_c {'N15_M07_F10': 3.31, 'N09_M07_F10': 3.94, 'N15_M01_F10': 2.95, 'N15_M07_F04': 1.6}
+K002/N15_M07_F10_K002_1.mat    spikes   182  raw  -0.14 dB  LP10  +5.16 dB  bar 3.31  16k Y  100 Y  mech n
+K002/N15_M07_F10_K002_2.mat    spikes   181  raw  -0.27 dB  LP10  +5.30 dB  bar 3.31  16k Y  100 Y  mech n
+K002/N15_M07_F10_K002_3.mat    spikes   134  raw  -0.09 dB  LP10  +5.33 dB  bar 3.31  16k Y  100 Y  mech n
+K002/N15_M07_F10_K002_4.mat    spikes   122  raw  -0.09 dB  LP10  +5.10 dB  bar 3.31  16k Y  100 Y  mech n
+K002/N15_M07_F10_K002_5.mat    spikes   601  raw  +0.15 dB  LP10  +3.98 dB  bar 3.31  16k Y  100 Y  mech n
+K002/N09_M07_F10_K002_1.mat    spikes    18  raw  +0.03 dB  LP10  +4.54 dB  bar 3.94  16k n  100 Y  mech n
+K002/N09_M07_F10_K002_2.mat    spikes   126  raw  -0.04 dB  LP10  +5.45 dB  bar 3.94  16k Y  100 Y  mech n
+K002/N09_M07_F10_K002_3.mat    spikes    83  raw  -0.06 dB  LP10  +4.59 dB  bar 3.94  16k Y  100 Y  mech n
+K002/N09_M07_F10_K002_4.mat    spikes   328  raw  +0.13 dB  LP10  +3.06 dB  bar 3.94  16k Y  100 Y  mech Y
+K002/N09_M07_F10_K002_5.mat    spikes   237  raw  -0.23 dB  LP10  +3.34 dB  bar 3.94  16k Y  100 Y  mech n
+K002/N15_M01_F10_K002_1.mat    spikes    47  raw  -0.06 dB  LP10  +3.29 dB  bar 2.95  16k Y  100 Y  mech n
+K002/N15_M01_F10_K002_2.mat    spikes   354  raw  -0.05 dB  LP10  +4.27 dB  bar 2.95  16k Y  100 Y  mech n
+K002/N15_M01_F10_K002_3.mat    spikes    45  raw  +0.25 dB  LP10  +4.71 dB  bar 2.95  16k n  100 Y  mech n
+K002/N15_M01_F10_K002_4.mat    spikes   145  raw  -0.28 dB  LP10  +5.05 dB  bar 2.95  16k Y  100 Y  mech n
+K002/N15_M01_F10_K002_5.mat    spikes   151  raw  +0.04 dB  LP10  +4.19 dB  bar 2.95  16k Y  100 Y  mech n
+K002/N15_M07_F04_K002_1.mat    spikes   162  raw  -0.05 dB  LP10  +5.07 dB  bar 1.60  16k Y  100 Y  mech n
+K002/N15_M07_F04_K002_2.mat    spikes   132  raw  -0.02 dB  LP10  +4.71 dB  bar 1.60  16k Y  100 Y  mech n
+K002/N15_M07_F04_K002_3.mat    spikes   391  raw  +0.14 dB  LP10  +5.29 dB  bar 1.60  16k Y  100 Y  mech n
+K002/N15_M07_F04_K002_4.mat    spikes   228  raw  -0.12 dB  LP10  +4.44 dB  bar 1.60  16k Y  100 Y  mech n
+K002/N15_M07_F04_K002_5.mat    spikes   288  raw  -0.35 dB  LP10  +5.02 dB  bar 1.60  16k Y  100 Y  mech n
+
+[verdicts]
+{
+ "records": 20,
+ "spiky_records": 20,
+ "non_spiky_records": 0,
+ "K0": "HELD",
+ "heldout_rules": {
+  "records": 20,
+  "spiky_records": 20,
+  "mains100_locked": 20,
+  "pwm16k_locked": 18,
+  "h2_evidence": 1,
+  "decoy_contaminated": 18,
+  "n09_spiky": 5,
+  "n09_mains100_locked": 5,
+  "n09_fe_locked": 1,
+  "R1": "HELD",
+  "R1b": "HELD",
+  "R2": "HELD",
+  "R3": "HELD",
+  "R4": "HELD",
+  "filters": {
+   "LP10": {
+    "headroom_ok": 20,
+    "silent_fail": 0,
+    "rule_all_correct": true,
+    "lines_testable": 0,
+    "lines_lost": [],
+    "verdict": "HELD"
+   },
+   "LP5": {
+    "headroom_ok": 20,
+    "silent_fail": 0,
+    "rule_all_correct": true,
+    "lines_testable": 0,
+    "lines_lost": [],
+    "verdict": "descriptive (HELD under R4 bars)"
+   },
+   "MED3": {
+    "headroom_ok": 0,
+    "silent_fail": 0,
+    "rule_all_correct": true,
+    "lines_testable": 0,
+    "lines_lost": [],
+    "verdict": "descriptive (FALSIFIED under R4 bars)"
+   }
+  }
+ },
+ "bar_rules": {
+  "spiky_records": 20,
+  "lp10_at_or_above_bar": 18,
+  "lp10_at_or_above_3db_descriptive": 20,
+  "silent_fail": 0,
+  "rule_all_correct": true,
+  "lines_testable": 0,
+  "lines_lost": [],
+  "B2": "HELD"
+ },
+ "K1": "HELD",
+ "K2": "HELD",
+ "K3": "HELD",
+ "K4": "HELD",
+ "K5": "UNTESTABLE"
+}
+         HELD  K0
+         HELD  K1
+         HELD  K2
+         HELD  K3
+         HELD  K4
+   UNTESTABLE  K5
+wrote artifacts/paderborn/k002-check-metrics.json
