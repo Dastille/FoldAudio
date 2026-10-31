@@ -39,8 +39,9 @@ def test_despike_is_noop_without_spikes():
     assert np.array_equal(d.y, x)
 
 
-def test_despike_cannot_fix_alternating_burst():
-    """The failure seen on real K001 records (documented, not fixed): while a larger
+def test_despike_fixes_alternating_burst():
+    """The failure seen on real K001 records, fixed 2026-10-31 (adjacent flags no
+    longer repaired in one pass). Originally: while a larger
     feature elsewhere holds the peak up, the relative bar flags the quiet sample
     inside a +/- burst but not its neighbour, and neighbour-averaging leaves a
     two-sample plateau that is no longer an isolated spike, so a ~2-unit step stays."""
@@ -50,7 +51,7 @@ def test_despike_cannot_fix_alternating_burst():
     # Seven samples copied from K001/N09_M07_F10_K001_6.mat around index 142768.
     x[1000:1007] = [0.104, 2.255, 0.134, -2.286, 0.012, -1.712, -0.089]
     d = ps.despike(x)
-    assert d.converged and ps.max_sample_jump(d.y) > 1.5
+    assert d.converged and ps.max_sample_jump(d.y[995:1012]) < 0.5
 
 
 def test_inject_spikes_spacing_and_amplitude():
@@ -172,11 +173,12 @@ def test_single_sample_fakes_are_insufficient_negative_control():
     clean = ps.d0_row(x)
     burst = ps.d0_burst_row(x, n=100)
     assert ps.d0_verdict([clean]) == "PASS"
+    # Still FAILS after the 2026-10-31 fix: on a smooth tone the burst's low-level
+    # samples (~0.18 x scale) survive and exceed the tone's native max step.
     assert ps.d0_verdict([burst]) == "FAIL"
-    assert burst["abs_err_db"] > 10 * ps.D0_TOL_DB
 
 
-def test_neighbour_average_despike_fails_burst_gate_on_ka04():
+def test_fixed_despike_passes_burst_gate_on_ka04():
     required = os.environ.get(REQUIRE_ENV) == "1"
     try:
         import scipy  # noqa: F401
@@ -189,5 +191,4 @@ def test_neighbour_average_despike_fails_burst_gate_on_ka04():
     x = pb.load_vibration(path)
     assert ps.d0_verdict([ps.d0_row(x)]) == "PASS"
     burst = ps.d0_burst_row(x)
-    assert ps.d0_verdict([burst]) == "FAIL"
-    assert burst["abs_err_db"] > 10 * ps.D0_TOL_DB
+    assert ps.d0_verdict([burst]) == "PASS"  # failed 4.99 dB before the 2026-10-31 fix

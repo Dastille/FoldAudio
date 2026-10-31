@@ -1030,6 +1030,22 @@ class Despiked:
     converged: bool
 
 
+def _non_adjacent(y: np.ndarray, idx: np.ndarray) -> np.ndarray:
+    """Drop flagged samples next to a flagged sample with a larger deviation
+    |y − neighbour mean| (ties: keep the left one). Replacing two adjacent samples
+    in one pass uses an unrepaired neighbour and leaves a two-sample plateau the
+    single-sample detector never flags again (prereg-2026-10-31, Part B)."""
+    if len(idx) < 2:
+        return idx
+    dev = np.abs(y[idx] - 0.5 * (y[idx - 1] + y[idx + 1]))
+    keep = np.ones(len(idx), dtype=bool)
+    adj_r = np.diff(idx) == 1  # idx[i+1] == idx[i] + 1
+    # A sample loses to an adjacent flagged neighbour with larger dev (left wins ties).
+    keep[:-1] &= ~(adj_r & (dev[1:] > dev[:-1]))
+    keep[1:] &= ~(adj_r & (dev[:-1] >= dev[1:]))
+    return idx[keep]
+
+
 def despike(
     x: np.ndarray, frac: float = 0.5, max_passes: int = DESPIKE_MAX_PASSES
 ) -> Despiked:
@@ -1042,6 +1058,7 @@ def despike(
         idx = spike_indices(y, frac)
         if len(idx) == 0:
             return Despiked(y, int(touched.sum()), k, True)
+        idx = _non_adjacent(y, idx)
         y[idx] = 0.5 * (y[idx - 1] + y[idx + 1])
         touched[idx] = True
     converged = len(spike_indices(y, frac)) == 0
@@ -1184,3 +1201,59 @@ def d2_verdict(pairs: list[tuple[float, float]]) -> dict:
         "lp10_at_or_above_ds": k,
         "D2": _frac_verdict(k, n, LP_HELD_FRAC, LP_FAIL_FRAC),
     }
+
+
+# --- Spike-free stretch headroom (prereg-2026-10-31-stretch-headroom.md) ----
+
+#: Stretch (tile) length fixed a priori: 0.1 s at 64 kHz.
+STRETCH_LEN = 6400
+STRETCH_GUARD = 32
+STRETCH_MIN_TILES = 5
+S1_HELD_MIN = 4
+S1_FAIL_MAX = 2
+S2_HELD_MIN = 15
+S2_FAIL_MAX = 10
+
+
+def spike_free_tiles(
+    x: np.ndarray, length: int = STRETCH_LEN, guard: int = STRETCH_GUARD
+) -> list[int]:
+    """Start indices of fixed, non-overlapping tiles with no record-level spike
+    within ``guard`` samples and no spike by the tile's own peak."""
+    x = np.asarray(x, dtype=float)
+    bad = np.zeros(len(x) + 1, dtype=int)
+    for i in spike_indices(x):
+        bad[max(i - guard, 0)] += 1
+        bad[min(i + guard + 1, len(x))] -= 1
+    near = np.cumsum(bad)[: len(x)] > 0
+    out = []
+    for s0 in range(0, len(x) - length + 1, length):
+        t = x[s0 : s0 + length]
+        if not near[s0 : s0 + length].any() and len(spike_indices(t)) == 0:
+            out.append(s0)
+    return out
+
+
+def stretch_headroom_db(
+    x: np.ndarray, length: int = STRETCH_LEN
+) -> tuple[float | None, int]:
+    """SH: median raw headroom over spike-free tiles, and the tile count.
+    None if fewer than ``STRETCH_MIN_TILES`` tiles (UNTESTABLE)."""
+    x = np.asarray(x, dtype=float)
+    tiles = spike_free_tiles(x, length)
+    if len(tiles) < STRETCH_MIN_TILES:
+        return None, len(tiles)
+    h = [
+        headroom_db(float(np.max(np.abs(t))), max_sample_jump(t))
+        for t in (x[s : s + length] for s in tiles)
+    ]
+    return float(np.median(h)), len(tiles)
+
+
+def count_verdict(k: int, held_min: int, fail_max: int) -> str:
+    """HELD / FALSIFIED / INCONCLUSIVE on a count (untestable records count against HELD)."""
+    if k >= held_min:
+        return "HELD"
+    if k <= fail_max:
+        return "FALSIFIED"
+    return "INCONCLUSIVE"
