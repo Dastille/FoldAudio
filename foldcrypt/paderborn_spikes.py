@@ -1308,3 +1308,87 @@ def gap_headroom(x: np.ndarray, length: int = GAP_LEN) -> dict:
         "tiles": len(st),
         "own_peak_reject_frac": own / len(st) if st else None,
     }
+
+
+# --- Absolute small-spike guard (prereg-2026-10-31c-k001-abs-spike.md) ------
+
+#: T_c: max opposite-pair spike score on spike-free KA04 _1.._5 (fixed in the prereg).
+ABS_T = {
+    "N15_M07_F10": 1.337,
+    "N09_M07_F10": 1.132,
+    "N15_M01_F10": 1.315,
+    "N15_M07_F04": 1.077,
+}
+ABS_POST_GUARD = 128
+A0S_AMP_X_T = 1.5  # amendment A (v1 used 0.75: score 0.75·T, undetectable)
+A0S_MIN_FRAC = 0.95
+A3_MIN_DIFF_DB = 1.0
+
+
+def spike_score(x: np.ndarray) -> np.ndarray:
+    """s_i = min(|Δin|, |Δout|) where the two steps have opposite sign, else 0 (edges 0)."""
+    x = np.asarray(x, dtype=float)
+    s = np.zeros(len(x))
+    if len(x) < 3:
+        return s
+    a, b = x[1:-1] - x[:-2], x[2:] - x[1:-1]
+    s[1:-1] = np.where(a * b < 0, np.minimum(np.abs(a), np.abs(b)), 0.0)
+    return s
+
+
+def abs_flags(x: np.ndarray, t: float) -> np.ndarray:
+    """Indices with spike score above the absolute threshold ``t``."""
+    return np.flatnonzero(spike_score(x) > t)
+
+
+def _near(n: int, idx, pre: int, post: int) -> np.ndarray:
+    """Mask of samples j with i - post <= j <= i + pre for some i in idx."""
+    bad = np.zeros(n + 1, dtype=int)
+    for i in idx:
+        bad[max(i - post, 0)] += 1
+        bad[min(i + pre + 1, n)] -= 1
+    return np.cumsum(bad)[:n] > 0
+
+
+def abs_tiles(
+    x: np.ndarray, t: float, length: int = GAP_LEN
+) -> tuple[list[int], list[int]]:
+    """(abs-guarded starts, record-guarded-but-abs-flagged starts).
+
+    Abs-guarded: no abs flag in [s0-32, s0+L+128) and no record spike within 32."""
+    x = np.asarray(x, dtype=float)
+    n = len(x)
+    rec_near = _near(n, spike_indices(x), STRETCH_GUARD, STRETCH_GUARD)
+    # flag at i excludes samples j with s0-32 <= i < s0+L+128 for j in tile:
+    # mark j in [i-128, i+32] so any tile containing a marked sample is excluded.
+    abs_near = _near(n, abs_flags(x, t), STRETCH_GUARD, ABS_POST_GUARD)
+    good, flagged = [], []
+    for s0 in range(0, n - length + 1, length):
+        if rec_near[s0 : s0 + length].any():
+            continue
+        (flagged if abs_near[s0 : s0 + length].any() else good).append(s0)
+    return good, flagged
+
+
+def abs_headroom(x: np.ndarray, t: float, length: int = GAP_LEN) -> dict:
+    x = np.asarray(x, dtype=float)
+    good, flagged = abs_tiles(x, t, length)
+    lp = apply_filter(x, "LP10")
+    total = len(x) // length
+    return {
+        "ah_raw": tile_headroom_db(x, good, length),
+        "ah_lp": tile_headroom_db(lp, good, length),
+        "ah_lp_flagged": tile_headroom_db(lp, flagged, length),
+        "tiles": len(good),
+        "flagged_tiles": len(flagged),
+        "coverage": len(good) / total if total else 0.0,
+    }
+
+
+def burst_detect_frac(
+    y: np.ndarray, pos, t: float, span: int = len(K001_BURST)
+) -> float:
+    """Fraction of injected bursts with ≥ 1 abs flag inside [p, p+span]."""
+    f = np.zeros(len(y) + 1, dtype=bool)
+    f[abs_flags(y, t)] = True
+    return float(np.mean([f[p : p + span + 1].any() for p in pos])) if len(pos) else 0.0

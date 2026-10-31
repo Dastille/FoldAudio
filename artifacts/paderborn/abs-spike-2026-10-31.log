@@ -1,0 +1,49 @@
+K001/N15_M07_F10_K001_6.mat        lp None  flagged 4.38109350859965  LB 6.74  tiles 0/53
+K001/N15_M07_F10_K001_7.mat        lp None  flagged 4.465371309834636  LB 6.74  tiles 0/96
+K001/N15_M07_F10_K001_8.mat        lp None  flagged 4.604769028134918  LB 6.74  tiles 0/40
+K001/N15_M07_F10_K001_9.mat        lp None  flagged 4.159828118246221  LB 6.74  tiles 0/82
+K001/N15_M07_F10_K001_10.mat       lp None  flagged 4.3774504329251664  LB 6.74  tiles 0/94 MISS
+K001/N09_M07_F10_K001_6.mat        lp None  flagged 4.04495367838533  LB 9.26  tiles 0/61 MISS
+K001/N09_M07_F10_K001_7.mat        lp None  flagged 4.189521608458906  LB 9.26  tiles 0/30 MISS
+K001/N09_M07_F10_K001_8.mat        lp None  flagged 4.0424594185335945  LB 9.26  tiles 0/106 MISS
+K001/N09_M07_F10_K001_9.mat        lp None  flagged 3.887531260462941  LB 9.26  tiles 0/86
+K001/N09_M07_F10_K001_10.mat       lp None  flagged 3.8837913340435937  LB 9.26  tiles 0/46
+K001/N15_M01_F10_K001_6.mat        lp None  flagged 4.316004192628999  LB 5.72  tiles 0/41
+K001/N15_M01_F10_K001_7.mat        lp None  flagged 4.303923932330898  LB 5.72  tiles 0/95
+K001/N15_M01_F10_K001_8.mat        lp None  flagged 4.32865515242278  LB 5.72  tiles 0/133
+K001/N15_M01_F10_K001_9.mat        lp None  flagged 4.170117903121797  LB 5.72  tiles 0/75
+K001/N15_M01_F10_K001_10.mat       lp None  flagged 4.4463921716894745  LB 5.72  tiles 0/76 MISS
+K001/N15_M07_F04_K001_6.mat        lp None  flagged 4.388219743712181  LB 4.59  tiles 0/90
+K001/N15_M07_F04_K001_7.mat        lp None  flagged 4.128979392389358  LB 4.59  tiles 0/84
+K001/N15_M07_F04_K001_8.mat        lp None  flagged 4.517359515113471  LB 4.59  tiles 0/62
+K001/N15_M07_F04_K001_9.mat        lp None  flagged 4.386421804776408  LB 4.59  tiles 0/99
+K001/N15_M07_F04_K001_10.mat       lp None  flagged 4.377580164747013  LB 4.59  tiles 0/156
+KI04/N15_M07_F10_KI04_6.mat        lp 5.997516021072106  flagged 6.035865640313051  LB 6.74  tiles 77/125
+KI04/N15_M07_F10_KI04_7.mat        lp 6.027668290609362  flagged 5.868262845190832  LB 6.74  tiles 79/154
+KI04/N15_M07_F10_KI04_8.mat        lp 5.95899892628606  flagged 5.91394926872626  LB 6.74  tiles 94/79
+KI04/N15_M07_F10_KI04_9.mat        lp 5.918294550801942  flagged 5.7980516916496585  LB 6.74  tiles 83/109
+KI04/N15_M07_F10_KI04_10.mat       lp 6.089643902846663  flagged 5.843718619638947  LB 6.74  tiles 95/92
+KI04/N09_M07_F10_KI04_6.mat        lp 4.582867297725899  flagged 4.712478794610441  LB 9.26  tiles 16/107
+KI04/N09_M07_F10_KI04_7.mat        lp 5.525801843659155  flagged 4.819151867252797  LB 9.26  tiles 20/129
+KI04/N09_M07_F10_KI04_8.mat        lp 5.007125914716556  flagged 5.2974321449452075  LB 9.26  tiles 33/81
+KI04/N09_M07_F10_KI04_9.mat        lp 5.056138142919187  flagged 4.861043757732288  LB 9.26  tiles 21/130
+KI04/N09_M07_F10_KI04_10.mat       lp 5.192234498355228  flagged 4.635261153620907  LB 9.26  tiles 31/124
+KI04/N15_M01_F10_KI04_6.mat        lp 6.729771407195172  flagged 6.064825873105077  LB 5.72  tiles 59/79
+KI04/N15_M01_F10_KI04_7.mat        lp 6.472701202055422  flagged 6.374793044692485  LB 5.72  tiles 52/132
+KI04/N15_M01_F10_KI04_8.mat        lp 6.13230934075908  flagged 6.186559642499946  LB 5.72  tiles 69/54
+KI04/N15_M01_F10_KI04_9.mat        lp 6.439066034473145  flagged 6.574056981960555  LB 5.72  tiles 77/41
+KI04/N15_M01_F10_KI04_10.mat       lp 6.459774557722944  flagged 6.185941836522058  LB 5.72  tiles 57/106
+KI04/N15_M07_F04_KI04_6.mat        lp 5.492269436849316  flagged 5.413084059745886  LB 4.59  tiles 16/208
+KI04/N15_M07_F04_KI04_7.mat        lp 5.916654016903894  flagged 5.490996620206169  LB 4.59  tiles 21/134
+KI04/N15_M07_F04_KI04_8.mat        lp 5.725769456004177  flagged 5.430878146613921  LB 4.59  tiles 22/107
+KI04/N15_M07_F04_KI04_9.mat        lp 5.770160392403087  flagged 5.445975518133147  LB 4.59  tiles 19/110
+KI04/N15_M07_F04_KI04_10.mat       lp 5.311291287823078  flagged 5.5038256749676355  LB 4.59  tiles 25/116
+[KA04 _1.._5 abs flags] [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+[A0] PASS 0 0
+[A0s] PASS 0.9733333333333334
+[bars] {'ah_raw': {'N15_M07_F10': 5.32, 'N09_M07_F10': 4.44, 'N15_M01_F10': 4.64, 'N15_M07_F04': 3.53}, 'ah_lp': {'N15_M07_F10': 6.74, 'N09_M07_F10': 9.26, 'N15_M01_F10': 5.72, 'N15_M07_F04': 4.59}}
+[counts] {'lp_misses': 0, 'lp_k001': 0, 'lp_ki04': 10, 'a3_misses': 0, 'k001_untestable': 20, 'ki04_untestable': 0}
+[A1] FALSIFIED [A2] FALSIFIED [A3] FALSIFIED
+[close] ['K001 untestable >= 10/20', 'A2 FALSIFIED (KI04 equally low)', 'A1 and A3 both not HELD'] -> CLOSED: not separable on this rig
+[G5] {"K001": {"ah_raw": null, "ah_lp": null, "ah_lp_flagged": 4.322329672525889, "tiles": 0.0, "coverage": 0.0}, "KA04": {"ah_raw": 4.722388497765906, "ah_lp": 6.320809096921447, "ah_lp_flagged": null, "tiles": 250.0, "coverage": 1.0}, "KI04": {"ah_raw": 0.6032569951649462, "ah_lp": 5.917474283852918, "ah_lp_flagged": 5.650938683308647, "tiles": 42.5, "coverage": 0.16999999999999998}}
+wrote artifacts/paderborn/abs-spike-metrics.json
