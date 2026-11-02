@@ -89,3 +89,21 @@ rejected if F1 or F2 FALSIFIED. Anything else: not settled.
 
 Script `scripts/fundamental_phase.py`; log `artifacts/paderborn/fundamental-phase-2026-11-02.log`;
 metrics `artifacts/paderborn/fundamental-phase-metrics.json`. Anything beyond this file is exploratory.
+
+## Amendment A (2026-11-02, before any number was computed on the 30 K002 records)
+
+Found while writing the synthetic tests (`tests/test_fundamental_phase.py`), not from K002 data. Two points:
+
+1. `current_magnitude` removes each phase current's record mean, so a DC current-sensor offset cannot be the
+   source of an f_el line in |i_s|. The coherent component, if present, is an amplitude modulation locked to
+   the electrical angle (cause not identified, as already stated under Named limits).
+2. **F1 is not evidence for H_fund.** With no f_el component at all, a pure 100 Hz supply line at 1500 rpm
+   still gives a share of ~0.84 (`test_supply_only_collinearity_named_limit`): cos/sin θ_el at ~99.97 Hz and a
+   100.00 Hz line drift only ~0.12 cycle over 4 s, so the fit absorbs most of the supply line too. A high F
+   therefore does not show that a non-supply component dominates. F1 is kept, with unchanged bars, but is
+   **descriptive only** and is removed from the reading.
+
+Revised reading: H_fund supported if F0 passes, F2 HELD, F5 PASS, F3 HELD or UNTESTABLE, and F4 HELD. H_fund
+rejected if F2 FALSIFIED, F3 FALSIFIED or F4 FALSIFIED. Anything else: not settled. (F4 moves into the
+reading because, with F1 uninformative, agreement with the 900 rpm phase is the check that the residual is
+the supply-locked reference and not an arbitrary leftover.) Nothing else changes.

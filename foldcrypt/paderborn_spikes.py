@@ -1529,3 +1529,212 @@ def k002_verdicts(
     else:
         out["K5"] = "UNTESTABLE"
     return out
+
+
+# --- Motor fundamental inside the reference band (prereg-2026-11-02-n15m01-fundamental.md, NOTES #8k)
+
+FUND_SEED = 20261102
+FUND_MIN_RECORDS = 8
+F0_MAX_N09_SHARE = 0.05
+F1_HELD_SHARE = 0.5
+F1_FAIL_SHARE = 0.25
+F3_MIN_GAIN = 0.2
+F4_HELD_DEG = 30.0
+F4_FAIL_DEG = 60.0
+F5_MAX_DEG = 10.0
+
+
+def electrical_angle(i1: np.ndarray, i2: np.ndarray, sr: float = pb.SR):
+    """Unwrapped electrical angle θ_el (rad) of the mean-removed current space
+    vector (same α/β as ``current_magnitude``) and its mean frequency f_el (Hz)."""
+    a = np.asarray(i1, dtype=float) - float(np.mean(i1))
+    b = np.asarray(i2, dtype=float) - float(np.mean(i2))
+    beta = (a + 2 * b) / math.sqrt(3)
+    th = np.unwrap(np.arctan2(beta, a))
+    f_el = float((th[-1] - th[0]) / (2 * math.pi) * sr / max(len(th) - 1, 1))
+    return th, f_el
+
+
+def ripple_band(m: np.ndarray, sr: float = pb.SR) -> np.ndarray:
+    """Zero-phase RIPPLE_BAND_HZ band-pass of ``m`` − mean (the signal whose
+    Hilbert phase ``ripple_phase`` returns)."""
+    from scipy.signal import butter, sosfiltfilt
+
+    m = np.asarray(m, dtype=float)
+    sos = butter(4, RIPPLE_BAND_HZ, btype="bandpass", fs=sr, output="sos")
+    return sosfiltfilt(sos, m - m.mean())
+
+
+def fundamental_split(r: np.ndarray, theta_el: np.ndarray):
+    """Least-squares split of band signal ``r`` into a part coherent with the
+    electrical angle (a·cos θ_el + b·sin θ_el) and a residual.
+
+    Returns (fit, residual, share) with share = var(fit) / var(r) (0 for a
+    zero signal)."""
+    r = np.asarray(r, dtype=float)
+    x = np.column_stack([np.cos(theta_el), np.sin(theta_el)])
+    coef, *_ = np.linalg.lstsq(x, r, rcond=None)
+    fit = x @ coef
+    vr = float(np.var(r))
+    share = float(np.var(fit) / vr) if vr > 0 else 0.0
+    return fit, r - fit, share
+
+
+def _phase_stats(
+    name: str, condition: str, meas: int, idx: np.ndarray, phase, ref_db, rng
+) -> PhaseRecord:
+    """PhaseRecord for spike indices against a given instantaneous phase."""
+    kept, lo, hi = trim_indices(idx, len(phase), pb.SR)
+    rec = PhaseRecord(
+        record=name,
+        condition=condition,
+        meas=meas,
+        n_spikes=int(len(kept)),
+        ref_db=ref_db,
+        ref_valid=ref_db >= REF_MIN_DB,
+        depth=0.0,
+    )
+    if len(kept) == 0:
+        return rec
+    theta = phase[kept]
+    rec.r, rec.mu, rec.p = circ_stats(theta)
+    d = np.angle(np.exp(1j * (theta - rec.mu)))
+    rec.frac45 = float(np.mean(np.abs(d) <= math.pi / 4))
+    rec.theta = theta
+    if len(kept) >= SPIKY_MIN:
+        rec.null_r99 = float(
+            np.percentile(null_random_r(phase, len(kept), lo, hi, rng), 99)
+        )
+    rec._phase, rec._idx, rec._lo, rec._hi = phase, kept, lo, hi
+    return rec
+
+
+@dataclass
+class FundRecord:
+    """One record against the original |i_s| reference and the residual
+    reference after removing the electrical-angle-coherent part."""
+
+    orig: PhaseRecord
+    resid: PhaseRecord
+    share: float
+    f_el: float
+
+    @property
+    def usable(self) -> bool:
+        return self.orig.usable
+
+
+def fund_from_signals(
+    name: str,
+    condition: str,
+    meas: int,
+    x: np.ndarray,
+    i1: np.ndarray,
+    i2: np.ndarray,
+    sr: float = pb.SR,
+    *,
+    rng=None,
+) -> FundRecord | None:
+    """Original and residual reference phase statistics for one record.
+    Returns None if the record is not spiky (< SPIKY_MIN spikes)."""
+    from scipy.signal import hilbert
+
+    idx = spike_indices(x)
+    if len(idx) < SPIKY_MIN:
+        return None
+    rng = rng if rng is not None else np.random.default_rng(FUND_SEED)
+    m = current_magnitude(i1, i2)
+    ref_db = ripple_line_db(m, sr)
+    r = ripple_band(m, sr)
+    th, f_el = electrical_angle(i1, i2, sr)
+    _fit, res, share = fundamental_split(r, th)
+    orig = _phase_stats(name, condition, meas, idx, np.angle(hilbert(r)), ref_db, rng)
+    resid = _phase_stats(
+        name, condition, meas, idx, np.angle(hilbert(res)), ref_db, rng
+    )
+    return FundRecord(orig=orig, resid=resid, share=share, f_el=f_el)
+
+
+def fund_record(
+    bearing: str, condition: str, meas: int, cache=None, *, rng=None
+) -> FundRecord | None:
+    """Load one pinned record (no download) and compute ``fund_from_signals``."""
+    path = pb.fetch(bearing, condition, cache, download=False, meas=meas)
+    ch = load_channels(path, ("vibration_1", *CURRENT_CHANNELS))
+    return fund_from_signals(
+        pb.member(bearing, condition, meas),
+        condition,
+        meas,
+        ch["vibration_1"],
+        ch[CURRENT_CHANNELS[0]],
+        ch[CURRENT_CHANNELS[1]],
+        pb.SR,
+        rng=rng,
+    )
+
+
+def fund_verdicts(
+    m01: list[FundRecord], n09: list[FundRecord], *, seed: int = FUND_SEED
+) -> dict:
+    """Apply the prereg-2026-11-02-n15m01-fundamental.md rules (F0–F5, Q) to
+    spiky FundRecords at N15_M01_F10 (``m01``) and N09_M07_F10 (``n09``)."""
+    a = [f for f in m01 if f.usable]
+    b = [f for f in n09 if f.usable]
+    out: dict = {"n15_m01_usable": len(a), "n09_usable": len(b)}
+    keys = ("F0", "Q", "F1", "F2", "F3", "F4", "F5")
+    if len(a) < FUND_MIN_RECORDS or len(b) < FUND_MIN_RECORDS:
+        return out | dict.fromkeys(keys, "UNTESTABLE")
+    recs = [f.orig for f in a + b] + [f.resid for f in a + b]
+    null_ok = all(r.null_r99 <= null_a_bar(r.n_spikes) for r in recs)
+    share_m01 = float(np.median([f.share for f in a]))
+    share_n09 = float(np.median([f.share for f in b]))
+    f0 = null_ok and share_n09 <= F0_MAX_N09_SHARE
+    rng = np.random.default_rng(seed + 1)
+    rb_o, mu_o, p_o = between_stats([f.orig for f in a])
+    rb_r, mu_r, p_r = between_stats([f.resid for f in a])
+    nb_p, nb_99 = null_shift_p([f.resid for f in a], rb_r, rng)
+    rb_9, mu_9, _ = between_stats([f.orig for f in b])
+    rb_9r, mu_9r, _ = between_stats([f.resid for f in b])
+    d4 = circ_dist_deg(math.degrees(mu_r), math.degrees(mu_9))
+    d5 = circ_dist_deg(math.degrees(mu_9r), math.degrees(mu_9))
+    out |= {
+        "null_a_ok_both_refs": null_ok,
+        "median_share_n15_m01": share_m01,
+        "median_share_n09": share_n09,
+        "share_range_n15_m01": [min(f.share for f in a), max(f.share for f in a)],
+        "f_el_range_n15_m01": [min(f.f_el for f in a), max(f.f_el for f in a)],
+        "f_el_range_n09": [min(f.f_el for f in b), max(f.f_el for f in b)],
+        "n15_m01_orig_r_between": rb_o,
+        "n15_m01_orig_grand_mean_deg": math.degrees(mu_o),
+        "n15_m01_orig_p_between": p_o,
+        "n15_m01_resid_r_between": rb_r,
+        "n15_m01_resid_grand_mean_deg": math.degrees(mu_r),
+        "n15_m01_resid_p_between": p_r,
+        "n15_m01_resid_null_b_p": nb_p,
+        "n15_m01_resid_null_b_r99": nb_99,
+        "n09_orig_r_between": rb_9,
+        "n09_orig_grand_mean_deg": math.degrees(mu_9),
+        "n09_resid_r_between": rb_9r,
+        "n09_resid_grand_mean_deg": math.degrees(mu_9r),
+        "f4_dist_deg": d4,
+        "f5_dist_deg": d5,
+        "F0": "PASS" if f0 else "FAIL",
+        "Q": "replicated" if rb_o < R_BETWEEN_HELD else "not replicated",
+        "F5": "PASS" if rb_9r >= R_BETWEEN_HELD and d5 <= F5_MAX_DEG else "FAIL",
+    }
+    if not f0:
+        return out | dict.fromkeys(("F1", "F2", "F3", "F4"), "UNTESTABLE")
+    out["F1"] = _three_way(share_m01 >= F1_HELD_SHARE, share_m01 < F1_FAIL_SHARE)
+    out["F2"] = _three_way(
+        rb_r >= R_BETWEEN_HELD and p_r < ALPHA and nb_p <= NULL_B_MAX_P,
+        rb_r < R_BETWEEN_FAIL or p_r >= P_BETWEEN_FAIL,
+    )
+    if out["Q"] == "replicated":
+        out["F3"] = _three_way(rb_r >= rb_o + F3_MIN_GAIN, rb_r <= rb_o)
+    else:
+        out["F3"] = "UNTESTABLE"
+    if out["F2"] == "HELD" and rb_9 >= R_BETWEEN_HELD:
+        out["F4"] = _three_way(d4 <= F4_HELD_DEG, d4 > F4_FAIL_DEG)
+    else:
+        out["F4"] = "UNTESTABLE"
+    return out
