@@ -1,0 +1,119 @@
+# prereg artifacts/paderborn/prereg-2026-11-02-n15m01-fundamental.md
+# seed 20261102; conditions ('N15_M01_F10', 'N09_M07_F10')
+
+[pre-registered: K002 _6.._20]
+K002/N15_M01_F10_K002_6.mat    N  142  ref  22.7 dB  f_el  99.95  F 0.49  orig R 0.872 mu   -50.5  resid R 0.212 mu    -5.1  nullA99 0.189/0.176 bar 0.216
+K002/N15_M01_F10_K002_7.mat    N  101  ref  26.4 dB  f_el  99.97  F 0.78  orig R 0.931 mu   -45.7  resid R 0.411 mu    +3.9  nullA99 0.217/0.211 bar 0.256
+K002/N15_M01_F10_K002_8.mat    N   53  ref  25.5 dB  f_el  99.99  F 0.60  orig R 0.900 mu   -41.0  resid R 0.472 mu   -52.8  nullA99 0.298/0.297 bar 0.354
+K002/N15_M01_F10_K002_9.mat    N  391  ref  25.1 dB  f_el  99.96  F 0.79  orig R 0.825 mu   -76.4  resid R 0.141 mu   -30.5  nullA99 0.110/0.110 bar 0.130
+K002/N15_M01_F10_K002_10.mat   N   71  ref  26.9 dB  f_el  99.99  F 0.35  orig R 0.894 mu   -47.6  resid R 0.603 mu   -58.9  nullA99 0.260/0.257 bar 0.306
+K002/N15_M01_F10_K002_11.mat   N  103  ref  22.4 dB  f_el  99.97  F 0.75  orig R 0.861 mu   -68.3  resid R 0.151 mu   -36.1  nullA99 0.219/0.208 bar 0.254
+K002/N15_M01_F10_K002_12.mat   N  167  ref  23.8 dB  f_el  99.96  F 0.73  orig R 0.874 mu   -48.5  resid R 0.228 mu   -14.3  nullA99 0.169/0.163 bar 0.199
+K002/N15_M01_F10_K002_13.mat   N  402  ref  23.2 dB  f_el  99.98  F 0.42  orig R 0.784 mu   -57.0  resid R 0.316 mu   -39.3  nullA99 0.104/0.110 bar 0.128
+K002/N15_M01_F10_K002_14.mat   N  219  ref  24.5 dB  f_el  99.95  F 0.62  orig R 0.897 mu   -46.0  resid R 0.269 mu   -19.3  nullA99 0.144/0.141 bar 0.174
+K002/N15_M01_F10_K002_15.mat   N   14  ref  24.4 dB  f_el  99.97  F 0.74  orig R 0.950 mu   -51.0  resid R 0.572 mu   -66.6  nullA99 0.545/0.570 bar 0.688
+K002/N15_M01_F10_K002_16.mat   N  114  ref  23.1 dB  f_el  99.99  F 0.41  orig R 0.908 mu   -49.2  resid R 0.561 mu   -49.0  nullA99 0.199/0.201 bar 0.241
+K002/N15_M01_F10_K002_17.mat   N   29  ref  27.5 dB  f_el  99.97  F 0.86  orig R 0.971 mu   -45.6  resid R 0.205 mu   -31.9  nullA99 0.384/0.391 bar 0.478
+K002/N15_M01_F10_K002_18.mat   N  142  ref  28.3 dB  f_el  99.99  F 0.88  orig R 0.926 mu   -54.8  resid R 0.381 mu   -27.6  nullA99 0.179/0.181 bar 0.216
+K002/N15_M01_F10_K002_19.mat   N  250  ref  23.6 dB  f_el 100.00  F 0.52  orig R 0.787 mu   -67.2  resid R 0.343 mu   -51.9  nullA99 0.135/0.132 bar 0.163
+K002/N15_M01_F10_K002_20.mat   N  104  ref  26.0 dB  f_el  99.96  F 0.82  orig R 0.917 mu   -36.5  resid R 0.370 mu   -21.9  nullA99 0.200/0.203 bar 0.253
+K002/N09_M07_F10_K002_6.mat    N   90  ref  28.0 dB  f_el  59.99  F 0.00  orig R 0.938 mu   -60.7  resid R 0.938 mu   -60.7  nullA99 0.227/0.226 bar 0.271
+K002/N09_M07_F10_K002_7.mat    N   89  ref  28.9 dB  f_el  60.00  F 0.00  orig R 0.922 mu   -60.7  resid R 0.922 mu   -60.7  nullA99 0.225/0.224 bar 0.273
+K002/N09_M07_F10_K002_8.mat    N  125  ref  27.6 dB  f_el  59.95  F 0.00  orig R 0.943 mu   -62.2  resid R 0.943 mu   -62.2  nullA99 0.189/0.192 bar 0.230
+K002/N09_M07_F10_K002_9.mat    N   73  ref  28.5 dB  f_el  59.99  F 0.00  orig R 0.917 mu   -61.6  resid R 0.917 mu   -61.6  nullA99 0.250/0.251 bar 0.301
+K002/N09_M07_F10_K002_10.mat   N  104  ref  27.8 dB  f_el  59.97  F 0.00  orig R 0.925 mu   -63.4  resid R 0.926 mu   -63.4  nullA99 0.208/0.218 bar 0.253
+K002/N09_M07_F10_K002_11.mat   N  104  ref  28.3 dB  f_el  59.97  F 0.00  orig R 0.913 mu   -65.7  resid R 0.913 mu   -65.7  nullA99 0.220/0.208 bar 0.253
+K002/N09_M07_F10_K002_12.mat   N  432  ref  28.5 dB  f_el  59.99  F 0.00  orig R 0.832 mu   -64.0  resid R 0.832 mu   -64.0  nullA99 0.106/0.102 bar 0.124
+K002/N09_M07_F10_K002_13.mat   N  175  ref  27.6 dB  f_el  59.99  F 0.00  orig R 0.924 mu   -60.0  resid R 0.924 mu   -60.0  nullA99 0.157/0.159 bar 0.195
+K002/N09_M07_F10_K002_14.mat   N   63  ref  28.9 dB  f_el  60.00  F 0.00  orig R 0.953 mu   -59.4  resid R 0.953 mu   -59.4  nullA99 0.268/0.271 bar 0.324
+K002/N09_M07_F10_K002_15.mat   N  121  ref  27.9 dB  f_el  59.98  F 0.00  orig R 0.916 mu   -62.3  resid R 0.916 mu   -62.3  nullA99 0.194/0.189 bar 0.234
+K002/N09_M07_F10_K002_16.mat   N  172  ref  27.4 dB  f_el  59.99  F 0.00  orig R 0.937 mu   -65.4  resid R 0.937 mu   -65.4  nullA99 0.169/0.165 bar 0.196
+K002/N09_M07_F10_K002_17.mat   N  352  ref  27.3 dB  f_el  59.99  F 0.00  orig R 0.890 mu   -61.2  resid R 0.890 mu   -61.2  nullA99 0.113/0.111 bar 0.137
+K002/N09_M07_F10_K002_18.mat   N  107  ref  27.8 dB  f_el  59.98  F 0.00  orig R 0.903 mu   -62.4  resid R 0.903 mu   -62.4  nullA99 0.205/0.209 bar 0.249
+K002/N09_M07_F10_K002_19.mat   N  278  ref  29.1 dB  f_el  59.99  F 0.00  orig R 0.911 mu   -62.0  resid R 0.911 mu   -61.9  nullA99 0.128/0.124 bar 0.154
+K002/N09_M07_F10_K002_20.mat   N  420  ref  28.4 dB  f_el  59.98  F 0.00  orig R 0.869 mu   -65.3  resid R 0.869 mu   -65.3  nullA99 0.105/0.106 bar 0.126
+not spiky: none
+
+[verdicts]
+{
+ "n15_m01_usable": 15,
+ "n09_usable": 15,
+ "null_a_ok_both_refs": true,
+ "median_share_n15_m01": 0.7302700185718608,
+ "median_share_n09": 4.462647281389814e-07,
+ "share_range_n15_m01": [
+  0.3450740556153831,
+  0.8776569035190764
+ ],
+ "f_el_range_n15_m01": [
+  99.94515118488194,
+  99.99725825787847
+ ],
+ "f_el_range_n09": [
+  59.95294205770245,
+  60.00277135758128
+ ],
+ "n15_m01_orig_r_between": 0.9833917868855954,
+ "n15_m01_orig_grand_mean_deg": -52.30306403519709,
+ "n15_m01_orig_p_between": 5.013852357480726e-07,
+ "n15_m01_resid_r_between": 0.9434491577738865,
+ "n15_m01_resid_grand_mean_deg": -33.478497519136866,
+ "n15_m01_resid_p_between": 1.5905277166020602e-06,
+ "n15_m01_resid_null_b_p": 0.0004997501249375312,
+ "n15_m01_resid_null_b_r99": 0.5485689973627952,
+ "n09_orig_r_between": 0.9994427698299646,
+ "n09_orig_grand_mean_deg": -62.41478568250108,
+ "n09_resid_r_between": 0.9994429576005484,
+ "n09_resid_grand_mean_deg": -62.41524227139527,
+ "f4_dist_deg": 28.93628816336422,
+ "f5_dist_deg": 0.00045658889418831455,
+ "F0": "PASS",
+ "Q": "not replicated",
+ "F5": "PASS",
+ "F1": "HELD",
+ "F2": "HELD",
+ "F3": "UNTESTABLE",
+ "F4": "HELD",
+ "reading": "H_fund supported"
+}
+            PASS  F0
+  not replicated  Q
+            HELD  F1
+            HELD  F2
+      UNTESTABLE  F3
+            HELD  F4
+            PASS  F5
+H_fund supported  reading
+
+[exploratory, already-used data: K001 _11.._20, same code]
+K001/N15_M01_F10_K001_11.mat   N  240  ref  33.3 dB  f_el  99.97  F 0.94  orig R 0.753 mu   -29.8  resid R 0.299 mu   -52.3  nullA99 0.141/0.151 bar 0.166
+K001/N15_M01_F10_K001_12.mat   N  263  ref  30.4 dB  f_el  99.97  F 0.90  orig R 0.772 mu  -111.7  resid R 0.211 mu   -62.5  nullA99 0.131/0.136 bar 0.159
+K001/N15_M01_F10_K001_13.mat   N  347  ref  32.9 dB  f_el  99.97  F 0.92  orig R 0.814 mu   -42.9  resid R 0.334 mu   -42.5  nullA99 0.115/0.118 bar 0.138
+K001/N15_M01_F10_K001_14.mat   N  354  ref  32.1 dB  f_el  99.97  F 0.90  orig R 0.714 mu    -6.7  resid R 0.371 mu   -53.6  nullA99 0.109/0.119 bar 0.137
+K001/N15_M01_F10_K001_15.mat   N  360  ref  33.2 dB  f_el  99.97  F 0.91  orig R 0.811 mu   -63.0  resid R 0.331 mu   -50.7  nullA99 0.109/0.123 bar 0.136
+K001/N15_M01_F10_K001_16.mat   N  265  ref  29.7 dB  f_el  99.97  F 0.76  orig R 0.703 mu   +25.8  resid R 0.440 mu   -63.6  nullA99 0.127/0.139 bar 0.158
+K001/N15_M01_F10_K001_17.mat   N  284  ref  27.2 dB  f_el  99.97  F 0.80  orig R 0.652 mu  -152.8  resid R 0.243 mu   -59.0  nullA99 0.127/0.135 bar 0.153
+K001/N15_M01_F10_K001_18.mat   N  200  ref  23.9 dB  f_el  99.96  F 0.57  orig R 0.280 mu  +150.1  resid R 0.452 mu   -39.9  nullA99 0.151/0.152 bar 0.182
+K001/N15_M01_F10_K001_19.mat   N  273  ref  33.2 dB  f_el  99.97  F 0.90  orig R 0.785 mu   -96.0  resid R 0.357 mu   -42.0  nullA99 0.134/0.147 bar 0.156
+K001/N15_M01_F10_K001_20.mat   N  293  ref  32.2 dB  f_el  99.97  F 0.92  orig R 0.796 mu   -95.7  resid R 0.129 mu   -36.7  nullA99 0.117/0.136 bar 0.150
+K001/N09_M07_F10_K001_11.mat   N  518  ref  28.3 dB  f_el  59.99  F 0.00  orig R 0.731 mu   -63.2  resid R 0.731 mu   -63.2  nullA99 0.093/0.094 bar 0.113
+K001/N09_M07_F10_K001_12.mat   N  196  ref  28.7 dB  f_el  59.98  F 0.00  orig R 0.804 mu   -61.5  resid R 0.804 mu   -61.5  nullA99 0.153/0.151 bar 0.184
+K001/N09_M07_F10_K001_13.mat   N  545  ref  28.4 dB  f_el  59.98  F 0.00  orig R 0.757 mu   -63.2  resid R 0.757 mu   -63.2  nullA99 0.089/0.090 bar 0.110
+K001/N09_M07_F10_K001_14.mat   N  386  ref  27.7 dB  f_el  59.98  F 0.00  orig R 0.788 mu   -63.9  resid R 0.788 mu   -63.9  nullA99 0.108/0.112 bar 0.131
+K001/N09_M07_F10_K001_15.mat   N  189  ref  28.8 dB  f_el  59.99  F 0.00  orig R 0.784 mu   -64.0  resid R 0.784 mu   -64.0  nullA99 0.146/0.149 bar 0.187
+K001/N09_M07_F10_K001_16.mat   N  200  ref  28.1 dB  f_el  59.98  F 0.00  orig R 0.777 mu   -62.1  resid R 0.777 mu   -62.1  nullA99 0.149/0.151 bar 0.182
+K001/N09_M07_F10_K001_17.mat   N  379  ref  28.6 dB  f_el  59.98  F 0.00  orig R 0.737 mu   -66.1  resid R 0.737 mu   -66.1  nullA99 0.112/0.107 bar 0.132
+K001/N09_M07_F10_K001_18.mat   N  307  ref  27.1 dB  f_el  59.98  F 0.00  orig R 0.780 mu   -65.5  resid R 0.780 mu   -65.5  nullA99 0.117/0.123 bar 0.147
+K001/N09_M07_F10_K001_19.mat   N  308  ref  28.3 dB  f_el  59.98  F 0.00  orig R 0.768 mu   -58.9  resid R 0.768 mu   -58.9  nullA99 0.116/0.122 bar 0.147
+K001/N09_M07_F10_K001_20.mat   N  550  ref  29.1 dB  f_el  59.99  F 0.00  orig R 0.744 mu   -59.2  resid R 0.744 mu   -59.2  nullA99 0.090/0.094 bar 0.110
+not spiky: none
+{
+ "median_share_n15_m01": 0.9018893512261236,
+ "median_share_n09": 4.0603560573348023e-07,
+ "n15_m01_orig_r_between": 0.49027188906199126,
+ "n15_m01_resid_r_between": 0.9872405439527572,
+ "n15_m01_resid_grand_mean_deg": -50.274353217827134,
+ "n09_orig_r_between": 0.9992186644878709,
+ "n09_orig_grand_mean_deg": -62.766105474253344
+}
+wrote artifacts/paderborn/fundamental-phase-metrics.json
