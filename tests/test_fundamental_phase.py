@@ -122,9 +122,13 @@ def _fr(mu_o: float, mu_r: float, share: float, n: int = 300) -> ps.FundRecord:
             mu=math.radians(mu),
             null_r99=0.1,
         )
-        lo, hi = 0, 10_000
-        rec._phase = np.full(hi, math.radians(mu))
-        rec._idx = np.arange(0, hi, hi // n)[:n]
+        # reference phase ramps through one cycle every 97 samples; the spikes sit
+        # at phase ``mu`` so circular shifts (null B) move them to random phases
+        period, lo, hi = 97, 0, 97 * n
+        k = np.arange(hi)
+        rec._phase = np.angle(np.exp(2j * math.pi * k / period))
+        off = int(round(math.radians(mu) / (2 * math.pi) * period)) % period
+        rec._idx = np.arange(n) * period + off
         rec._lo, rec._hi = lo, hi
         return rec
 
@@ -138,9 +142,7 @@ def test_verdicts_supported_and_rejected():
     v = ps.fund_verdicts(good, n09)
     assert (v["F0"], v["Q"], v["F1"], v["F5"]) == ("PASS", "replicated", "HELD", "PASS")
     assert v["F3"] == "HELD" and v["F4"] == "HELD"
-    # constant-phase fake references: every circular shift reproduces the observed
-    # R_between, so null B is not significant and F2 cannot be HELD
-    assert v["F2"] == "INCONCLUSIVE" and v["n15_m01_resid_null_b_p"] > 0.5
+    assert v["F2"] == "HELD" and v["n15_m01_resid_null_b_p"] <= ps.NULL_B_MAX_P
     bad = [_fr(a, a, 0.1) for a in scatter]
     v = ps.fund_verdicts(bad, n09)
     assert v["F1"] == "FALSIFIED" and v["F2"] == "FALSIFIED"
