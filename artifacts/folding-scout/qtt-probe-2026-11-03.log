@@ -1,0 +1,17 @@
+# run 2026-11-03 08:58:10 EST commit 5a5d9f0 python Python 3.13.5 numpy 2.5.4
+# folding-math scout smoke probe, EXPLORATORY (not the pre-registered test)
+# N = 2**17 = 131072 samples per signal; raw int32 = 524288 bytes; seed 20261103
+signal | eps | base rel | base best (bytes) | QTT rel | QTT max rank | QTT params | QTT xz bytes | QTT/base
+control: 3 tones, no noise | 0.01 | 9.99e-03 | xz_diff 12840 | 2.77e-03 | 6 | 874 | 3404 | 0.27
+control: 3 tones, no noise | 0.003 | 3.00e-03 | xz_diff 21612 | 4.96e-05 | 6 | 908 | 3504 | 0.16
+control: 3 tones, no noise | 0.001 | 1.00e-03 | xz_diff 32588 | 4.96e-05 | 6 | 908 | 3504 | 0.11
+control: 3 tones + 40 dB noise | 0.01 | 9.99e-03 | bz2_diff 41881 | 7.95e-03 | 145 | 118040 | 440056 | 10.51
+control: 3 tones + 40 dB noise | 0.003 | 3.00e-03 | bz2_diff 71922 | 1.31e-03 | 244 | 285714 | 1063408 | 14.79
+control: 3 tones + 40 dB noise | 0.001 | 9.98e-04 | bz2_diff 101152 | 2.67e-04 | 255 | 304298 | 1132312 | 11.19
+CWRU 97 (normal, 0 hp) | 0.01 | 1.00e-02 | bz2_diff 88655 | 4.57e-03 | 254 | 273176 | 1024528 | 11.56
+CWRU 97 (normal, 0 hp) | 0.003 | 3.00e-03 | bz2_diff 119297 | 1.14e-03 | 256 | 285212 | 1069424 | 8.96
+CWRU 97 (normal, 0 hp) | 0.001 | 1.00e-03 | bz2_diff 152882 | 3.17e-04 | 256 | 292916 | 1098276 | 7.18
+CWRU 238 (outer race 0.021 in @6) | 0.01 | 1.00e-02 | bz2_diff 51046 | 6.32e-03 | 202 | 166416 | 624264 | 12.23
+CWRU 238 (outer race 0.021 in @6) | 0.003 | 3.00e-03 | bz2_diff 77792 | 1.62e-03 | 242 | 242736 | 912876 | 11.73
+CWRU 238 (outer race 0.021 in @6) | 0.001 | 1.00e-03 | bz2_diff 109549 | 4.85e-04 | 254 | 272438 | 1024616 | 9.35
+# wall time 23817 ms
