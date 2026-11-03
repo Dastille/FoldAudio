@@ -38,6 +38,8 @@ CI (badge above) runs ruff, pytest and `pip-audit`. pip-audit audits the install
 
 **OEM one-pager:** [`docs/shockdaq-oem-onepager.md`](docs/shockdaq-oem-onepager.md) · **Scouts:** [`docs/company-adoption-scout.md`](docs/company-adoption-scout.md)
 
+**Folding-math watch (research only, not a pivot):** [`docs/folding-math-scout.md`](docs/folding-math-scout.md): QTT/origami-style folding scored vs xz/zstd; nothing BIG; pre-registered test FS-1.
+
 ### How to run ShockDAQ
 
 ```bash
