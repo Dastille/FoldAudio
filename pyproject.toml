@@ -11,7 +11,7 @@ dependencies = ["numpy"]
 
 [project.optional-dependencies]
 # ruff is pinned so local lint/format matches CI exactly.
-dev = ["pytest", "ruff==0.17.1", "pip-audit"]
+dev = ["pytest", "ruff==0.17.1", "pip-audit", "zstandard"]
 real = ["scipy"]
 
 [tool.setuptools.packages.find]
