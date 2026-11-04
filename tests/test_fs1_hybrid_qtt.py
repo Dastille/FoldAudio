@@ -88,6 +88,20 @@ def test_hybrid_does_not_win_on_white_noise_negative_control() -> None:
     assert h.nbytes >= 0.95 * b.nbytes
 
 
+def test_hybrid_kept_when_structure_alone_beats_target() -> None:
+    # Amendment A regression: three tones at 2**14 need rank 6; R = 8 float32
+    # structure is ~1e-7 accurate, which the residual bisection cannot raise
+    # into the window. That configuration must survive and win.
+    n = 2**14
+    t = np.arange(n) / 48000.0
+    x = _tones(n) + 0.25 * np.sin(2 * np.pi * 4100 * t + 1.1)
+    h = fs1.encode_hybrid(x, 14, 3e-3, ranks=(8,), precs=(4,))
+    assert h is not None
+    assert h.rel < 3e-3
+    assert h.choice.startswith("R8/f32")
+    assert fs1.rel_err(x, fs1.decode(h.stream)) == pytest.approx(h.rel)
+
+
 def test_decode_rejects_foreign_stream() -> None:
     with pytest.raises(ValueError):
         fs1.decode(b"XXXX" + bytes(20))

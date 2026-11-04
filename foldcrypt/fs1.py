@@ -302,15 +302,23 @@ def encode_hybrid(
             _cores, rk, s, cblob = st
             res = xc - s
             scale = float(np.sqrt(np.mean(xc**2)))
-            q = bisect_step(
-                target_rel,
-                tol,
-                lambda qq, s=s, res=res: rel_err(x, m + s + np.round(res / qq) * qq),
-                scale,
-            )
-            if q is None:
-                continue
-            k = np.round(res / q).astype(np.int64)
+            if rel_err(x, m + s) <= target_rel * (1 + tol):
+                # Structure alone meets the target (prereg Amendment A): the
+                # residual is all zeros and the hybrid keeps its lower error.
+                q = 10.0 * scale
+                k = np.zeros(x.size, dtype=np.int64)
+            else:
+                q = bisect_step(
+                    target_rel,
+                    tol,
+                    lambda qq, s=s, res=res: rel_err(
+                        x, m + s + np.round(res / qq) * qq
+                    ),
+                    scale,
+                )
+                if q is None:
+                    continue
+                k = np.round(res / q).astype(np.int64)
             ints = encode_ints(k)
             stream = (
                 _HEAD.pack(MAGIC_HYB, x.size, m, q)
