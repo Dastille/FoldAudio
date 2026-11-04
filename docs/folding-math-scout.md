@@ -73,7 +73,7 @@ Setup: first 2^17 = 131 072 samples (mean removed). Baseline: uniform quantizer,
 
 Cells are QTT bytes ÷ best-baseline bytes (< 1 means QTT wins). Caveats, both of which favour the baseline: (i) the TT-SVD per-unfolding error split is conservative, so QTT landed at 1.6–3.2× *lower* error than the baseline on the CWRU records (not tuned to equal error); (ii) the QTT cores were not quantized. Neither caveat closes the gap. On the CWRU records the TT parameter count (166 k–293 k values) already exceeds the sample count (131 k), so even 1 byte per parameter would be larger than the best baseline (51–153 kB). Reading: plain QTT is effectively closed for raw vibration. Only a structured-part variant remains worth a test.
 
-## 4. Pre-registered next experiment (NOT run today)
+## 4. Pre-registered next experiment (run 2026-11-04, see §4b)
 
 **ID:** FS-1 (folding scout, hybrid QTT). To be run on a later slice. Thresholds below are fixed now, before any FS-1 number exists.
 
@@ -101,6 +101,28 @@ Cells are QTT bytes ÷ best-baseline bytes (< 1 means QTT wins). Caveats, both o
 **Budget.** Single CPU, < 15 min total, no GPU (Parrot is not needed for this size). Script in `scripts/`, log in `artifacts/folding-scout/`, prereg file committed before the first run.
 
 **Expected outcome (stated now).** The probe suggests FAIL: the structured part of a bearing record (shaft and bearing-defect harmonics) is a small share of its energy. A FAIL is still a useful receipt. It would close "folding beats zip" for this data class with numbers instead of opinion.
+
+## 4b. FS-1 result (run 2026-11-04): H1 FALSIFIED
+
+Code `foldcrypt/fs1.py` (encoder and decoder; every byte count is the length of a stream that is decoded back, and the error is measured on the decoded samples), run script `scripts/fs1_hybrid_qtt.py`, tests `tests/test_fs1_hybrid_qtt.py`. Implementation details were fixed in `artifacts/folding-scout/prereg-2026-11-04-fs1.md` (commit f5a30b0) before any FS-1 number. zstd: Python `zstandard` 0.25.0, libzstd 1.5.7, level 22. CPU, 80 s wall time.
+
+**First run INVALID** (`artifacts/folding-scout/fs1-2026-11-04-first.log`, code badc77e). The positive control failed (hybrid/baseline 1.597 on noiseless tones). Cause, confirmed: when the QTT part alone was already more accurate than the target (three tones at R = 8), the residual-step search could not raise the error into the ±2 % window and the encoder silently dropped that setting. Amendment A (same prereg file, commit b0b4479, before the re-run) keeps such settings with an all-zero residual and their lower error. The first run's CWRU numbers had been seen; the fix cannot apply to them (their QTT part alone is far above the target error), and the re-run repeated all 7 CWRU rows byte for byte.
+
+**Valid run** (`artifacts/folding-scout/fs1-2026-11-04.log`). Both controls passed: noiseless tones 0.140 (hybrid wins, as it must); white noise 1.007 (no win, as it must).
+
+| CWRU record (48 kHz, drive end) | Best baseline (bytes, choice) | Hybrid (bytes, choice) | Hybrid ÷ baseline | Hybrid ÷ no-predictor baseline |
+|---|---|---|---|---|
+| 97 normal | 109 539, LPC2 + xz | 104 978, R8 float16 | 0.958 | 0.883 |
+| 109 inner race 0.007 in | 90 163, LPC2 + xz | 91 453, R4 float16 | 1.014 | 0.913 |
+| 122 ball 0.007 in | 79 179, LPC2 + xz | 80 858, R4 float16 | 1.021 | 0.887 |
+| 135 outer race 0.007 in | 58 123, LPC2 + bz2 | 61 668, R4 float16 | 1.061 | 0.852 |
+| 213 inner race 0.021 in | 72 773, LPC2 + bz2 | 70 534, R4 float16 | 0.969 | 0.873 |
+| 226 ball 0.021 in | 77 747, LPC2 + zstd | 87 685, R4 float16 | 1.128 | 0.931 |
+| 238 outer race 0.021 in | 67 619, LPC2 + xz | 75 490, R4 float16 | 1.116 | 0.983 |
+
+Errors matched: baseline relative error 2.97–3.01·10⁻³, hybrid 2.96–2.97·10⁻³ (hybrid slightly *more* accurate, inside the ±2 % window). Wins at ≤ 0.95×: **0/7** against the predictor baseline, 6/7 against the baseline without a predictor. Median ratio **1.021**. F1, F2 and F3 all fire.
+
+Reading: the low-rank QTT part acts as a crude predictor. It beats plain quantize + zip, but an ordinary order-2 linear predictor with 8 bytes of coefficients does the same job better. Records 97 and 213 come in 3–4 % under the baseline, which is short of the 5 % bar and is not claimed. Secondary Paderborn KA04 `_1` (64 kHz, not counted): 1.005–1.038, no win. Per §4, the "folding beats zip" line is **closed for vibration records of this kind** with this receipt. The watch continues only for ideas that are not QTT-as-predictor.
 
 ## 5. Limitations
 

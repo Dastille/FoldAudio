@@ -1,0 +1,35 @@
+# FS-1 hybrid QTT vs fair quantized baseline (PRE-REGISTERED)
+# prereg: docs/folding-math-scout.md §4 + artifacts/folding-scout/prereg-2026-11-04-fs1.md (f5a30b0)
+# 2026-11-04 09:00 EST; python 3.13.5; numpy 2.5.4; zstandard 0.25.0, libzstd 1.5.7
+# N = 2**17; eps = 0.003; win if hybrid <= 0.95 x baseline
+
+## Controls
+positive: 3 tones, no noise | base 20771 B (lpc2/i1/xz9e) rel 3.0007e-03 max 4.208e-03 | no-pred 23595 B (diff1/i1/xz9e) | hybrid 2907 B (R8/f16/cores xz9e 2837 B/max rank 8/res raw/i1/zstd22) rel 7.6231e-04 max 2.712e-03 | hyb/base 0.140 | hyb/no-pred 0.123 | 2.1 s
+negative: white noise seed 20261104 | base 150418 B (lpc2/i2/bz2_9) rel 2.9931e-03 max 5.207e-03 | no-pred 150433 B (raw/i2/bz2_9) | hybrid 151520 B (R4/f16/cores zstd22 914 B/max rank 4/res lpc2/i2/bz2_9) rel 2.9670e-03 max 5.149e-03 | hyb/base 1.007 | hyb/no-pred 1.007 | 4.0 s
+positive control PASS
+negative control PASS
+
+## CWRU 48 kHz drive end (counted for H1)
+CWRU 97 (normal, 0 hp) | base 109539 B (lpc2/i1/xz9e) rel 3.0035e-03 max 3.736e-04 | no-pred 118944 B (diff1/i2/bz2_9) | hybrid 104978 B (R8/f16/cores zstd22 3065 B/max rank 8/res lpc2/i1/zstd22) rel 2.9670e-03 max 3.694e-04 | hyb/base 0.958 | hyb/no-pred 0.883 | 4.0 s
+CWRU 109 (inner race 0.007 in) | base 90163 B (lpc2/i1/xz9e) rel 3.0100e-03 max 3.026e-03 | no-pred 100132 B (diff1/i2/bz2_9) | hybrid 91453 B (R4/f16/cores zstd22 912 B/max rank 4/res lpc2/i1/xz9e) rel 2.9619e-03 max 2.992e-03 | hyb/base 1.014 | hyb/no-pred 0.913 | 4.5 s
+CWRU 122 (ball 0.007 in) | base 79179 B (lpc2/i1/xz9e) rel 2.9745e-03 max 7.550e-04 | no-pred 91182 B (diff1/i2/bz2_9) | hybrid 80858 B (R4/f16/cores zstd22 913 B/max rank 4/res lpc2/i1/xz9e) rel 2.9702e-03 max 7.551e-04 | hyb/base 1.021 | hyb/no-pred 0.887 | 5.0 s
+CWRU 135 (outer race 0.007 in @6) | base 58123 B (lpc2/i1/bz2_9) rel 3.0065e-03 max 6.509e-03 | no-pred 72369 B (diff1/i2/bz2_9) | hybrid 61668 B (R4/f16/cores zstd22 923 B/max rank 4/res lpc2/i1/bz2_9) rel 2.9689e-03 max 6.437e-03 | hyb/base 1.061 | hyb/no-pred 0.852 | 6.7 s
+CWRU 213 (inner race 0.021 in) | base 72773 B (lpc2/i2/bz2_9) rel 3.0024e-03 max 2.995e-03 | no-pred 80808 B (diff1/i2/bz2_9) | hybrid 70534 B (R4/f16/cores zstd22 913 B/max rank 4/res lpc2/i1/xz9e) rel 2.9664e-03 max 2.962e-03 | hyb/base 0.969 | hyb/no-pred 0.873 | 6.9 s
+CWRU 226 (ball 0.021 in) | base 77747 B (lpc2/i1/zstd22) rel 2.9990e-03 max 1.835e-03 | no-pred 94151 B (diff1/i2/bz2_9) | hybrid 87685 B (R4/f16/cores zstd22 923 B/max rank 4/res lpc2/i2/bz2_9) rel 2.9682e-03 max 1.814e-03 | hyb/base 1.128 | hyb/no-pred 0.931 | 6.5 s
+CWRU 238 (outer race 0.021 in @6) | base 67619 B (lpc2/i1/xz9e) rel 2.9950e-03 max 3.415e-03 | no-pred 76784 B (diff1/i2/bz2_9) | hybrid 75490 B (R4/f16/cores zstd22 917 B/max rank 4/res lpc2/i2/bz2_9) rel 2.9678e-03 max 3.377e-03 | hyb/base 1.116 | hyb/no-pred 0.983 | 7.8 s
+
+## Paderborn KA04 _1, 64 kHz (secondary, NOT counted)
+KA04 N15_M07_F10 | base 122107 B (lpc2/i2/bz2_9) rel 2.9743e-03 max 2.448e-03 | no-pred 127711 B (diff1/i2/bz2_9) | hybrid 122719 B (R4/f16/cores zstd22 914 B/max rank 4/res lpc2/i2/bz2_9) rel 2.9685e-03 max 2.448e-03 | hyb/base 1.005 | hyb/no-pred 0.961 | 8.4 s
+KA04 N09_M07_F10 | base 125958 B (raw/i2/bz2_9) rel 3.0005e-03 max 1.106e-03 | no-pred 125958 B (raw/i2/bz2_9) | hybrid 130747 B (R4/f16/cores zstd22 910 B/max rank 4/res lpc2/i2/bz2_9) rel 2.9659e-03 max 1.093e-03 | hyb/base 1.038 | hyb/no-pred 1.038 | 11.4 s
+KA04 N15_M01_F10 | base 121639 B (lpc2/i2/bz2_9) rel 2.9846e-03 max 2.723e-03 | no-pred 128227 B (diff1/i2/bz2_9) | hybrid 122338 B (R4/f16/cores zstd22 914 B/max rank 4/res lpc2/i2/bz2_9) rel 2.9690e-03 max 2.724e-03 | hyb/base 1.006 | hyb/no-pred 0.954 | 7.4 s
+KA04 N15_M07_F04 | base 125028 B (lpc2/i2/bz2_9) rel 2.9984e-03 max 2.243e-03 | no-pred 130282 B (diff1/i2/bz2_9) | hybrid 125751 B (R4/f16/cores zstd22 917 B/max rank 4/res lpc2/i2/bz2_9) rel 2.9671e-03 max 2.218e-03 | hyb/base 1.006 | hyb/no-pred 0.965 | 5.4 s
+
+## Verdict
+wins vs predictor baseline: 0/7; vs no-predictor baseline: 6/7
+median hybrid/baseline: 1.021
+F1 (wins < 4): FIRES
+F2 (wins only without predictor): FIRES
+F3 (median >= 1.00): FIRES
+RESULT: H1 FALSIFIED
+# wall time 80 s
+EXIT 0
