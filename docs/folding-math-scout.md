@@ -1,8 +1,8 @@
 # Folding-math scout: folding, vectors and origami-like transforms for compression and recovery
 
-Date: 2026-11-03 (ET)  
+Date: 2026-11-03; second pass 2026-11-05 (ET)  
 Owner: FoldCrypt bot  
-Status: research watch, running alongside FoldAudio. **Not a pivot.** FoldAudio and ShockDAQ stay the product and science direction (NOTES #10).  
+Status: research watch, running alongside FoldAudio. **Not a pivot.** FoldAudio and ShockDAQ stay the product and science direction (NOTES #10). FS-1 (2026-11-04) closed QTT-as-predictor for vibration; this watch continues only for ideas that are not QTT-as-predictor.  
 Bar: an idea scores **BIG** only if it could plausibly beat ordinary compressors (xz / zstd / gzip at max level, *and* a fair quantized baseline) on structured data we actually hold, with recovery we can measure. Being elegant is not enough.
 
 ---
@@ -10,16 +10,17 @@ Bar: an idea scores **BIG** only if it could plausibly beat ordinary compressors
 ## Plain-language summary (for Ashlynn)
 
 - **The question.** Can "folding" a long signal or an irregular sheet into a small square, then unfolding it, store it in fewer bytes than ordinary zip-type tools?
-- **What already exists.** The closest real math is the **quantized tensor train (QTT)**. You reshape a list of 2^d numbers into a d-fold stack of 2×2 "creases", then keep only the few patterns that matter. Mathematicians have used it since 2009–2011 to shrink smooth functions and physics problems. It is **well known in numerical maths**, so it is not ours to claim. Other folding ideas (origami fold-and-cut, folding a 3D mesh flat onto a square image, hashing that "folds" a long vector onto a short one) are real and published, but none gives a compression lever for our data.
-- **Smoke probe today (exploratory, not the real test).** I folded two real CWRU bearing-vibration records this way. The QTT file came out **7–12× larger** than plain "round to a grid, then xz/bz2". It needed more numbers than the original recording had. On a clean three-tone test signal it was **4–9× smaller**, so the code works. Add only 1 % noise (40 dB) and the advantage goes away. Real vibration is mostly noise-like texture, and folding cannot compress noise.
-- **Verdict.** Nothing scored BIG. QTT is the only **MID**. The pre-registered next test checks one narrower, honest variant: fold only the *structured part* (tones and harmonics) and code the leftover noise normally. The probe predicts it will probably fail too. If so, we close this cleanly with a receipt.
-- **No crypto claims.** Nothing here is encryption or security. Folding/QTT is compression math only.
+- **What already exists.** The closest real math was the **quantized tensor train (QTT)**. You reshape a list of 2^d numbers into a d-fold stack of 2×2 "creases", then keep only the few patterns that matter. Mathematicians have used it since 2009–2011 to shrink smooth functions and physics problems. It is **well known in numerical maths**, so it is not ours to claim. Other folding ideas (origami fold-and-cut, folding a 3D mesh flat onto a square image, hashing that "folds" a long vector onto a short one) are real and published, but none gives a compression lever for our data.
+- **FS-1 (done 2026-11-04).** The hybrid "fold the tones, zip the noise" test **failed** on seven pinned CWRU records: 0/7 wins against a fair predictor baseline. QTT was acting as a weak predictor; an ordinary order-2 linear predictor does the same job better. That closes QTT-as-predictor for vibration with a receipt.
+- **Second pass today (2026-11-05, docs only).** Aimed at the imprint / irregular→square ask that the first table under-covered. Found recent physical origami that packs a shell into a small folded state and unfolds it, plus craft encodings and irregular-*tensor* (not geometric) compressors. None transfer to beating zip on 1D vibration. No new MID, no smoke probe.
+- **Verdict.** Still nothing BIG. Watch stays open at low cadence for non-QTT-as-predictor folding math only.
+- **No crypto claims.** Nothing here is encryption or security. Folding is compression / geometry math only.
 
 ---
 
 ## Abstract
 
-We surveyed published mathematics that compresses or recovers data by folding, reshaping, or origami-like transforms. The aim was an idea that could beat general-purpose compressors on the structured, real-valued sensor data FoldCrypt already holds (CWRU 48 kHz, Paderborn 64 kHz vibration). Eleven candidates were scored BIG/MID/NO. The strongest is quantized tensor-train (QTT) folding (Khoromskij 2011; Oseledets 2011). It is exponentially compact for signals that are sums of a few exponentials or low-degree polynomials, and the theory is well established. An exploratory smoke probe (one script, fixed seed, ~24 s CPU) found that QTT with TT-SVD truncation loses to a fair quantized + xz/bz2 baseline on two real CWRU records by 7.2–12.2× in bytes at matched or better error. It wins 3.8–9.3× on a noiseless three-tone control and loses 10.5–14.8× once 40 dB white noise is added. We pre-register one falsification experiment, a hybrid "QTT structured part + baseline-coded residual" against the same baselines on pinned CWRU records. We state FAIL criteria before running it. No experiment beyond the smoke probe was run today (soft freeze).
+We surveyed published mathematics that compresses or recovers data by folding, reshaping, or origami-like transforms. The aim was an idea that could beat general-purpose compressors on the structured, real-valued sensor data FoldCrypt already holds (CWRU 48 kHz, Paderborn 64 kHz vibration). Eleven candidates were scored BIG/MID/NO on 2026-11-03. The strongest was quantized tensor-train (QTT) folding (Khoromskij 2011; Oseledets 2011). An exploratory smoke probe found plain QTT 7.2–12.2× larger than fair quantized + xz/bz2 on two CWRU records. The pre-registered hybrid FS-1 ran on 2026-11-04 and **falsified** H1 (0/7 CWRU wins at ≤ 0.95× vs an LPC2 predictor baseline; median ratio 1.021; F1–F3 all fire). QTT-as-predictor compression is closed for vibration of this kind. A second, light pass on 2026-11-05 targeted Ashlynn's imprint / irregular→square ask and non-QTT folding compression for 1D sensor data (2024–2026). Five further candidates were scored; all **NO**. No new MID earned a smoke probe. The watch continues at low cadence for ideas that are not QTT-as-predictor.
 
 ## 1. Problem statement
 
@@ -45,7 +46,7 @@ Engineering restatement. Given a real-valued record x ∈ ℝ^N (N = 2^d), find 
 | # | Idea (what "folds") | Score | One plain sentence | Already well known? |
 |---|---|---|---|---|
 | 1 | **QTT / TT-SVD:** reshape a 2^d record into a 2×2×…×2 tensor and keep a low-rank tensor train [3][4] | **MID** | Very small for smooth or few-tone signals, but our smoke probe says real vibration is too noisy for it to beat round-then-xz. | Yes. Standard in numerical tensor methods since 2009–2011; applying it to measured vibration against general coders looks little-tested (not proven absent). |
-| 2 | **Hybrid:** QTT for the structured part + baseline-coded residual (our variant of #1) | **MID (pre-registered, §4)** | The only version of folding that could plausibly win: fold the tones, entropy-code the noise. | The parts are known; we did not find this exact pairing benchmarked on bearing vibration. |
+| 2 | **Hybrid:** QTT for the structured part + baseline-coded residual (our variant of #1) | **MID → closed (FS-1 falsified, §4b)** | Was the only QTT variant that could plausibly win; FS-1 showed it is a weaker predictor than LPC2. | The parts are known; we did not find this exact pairing benchmarked on bearing vibration before FS-1. |
 | 3 | **Modulo / unlimited sampling** as a source code (fold the amplitude, unwrap later) [1][2] | **MID** | This is already FoldAudio's core. The Modulo-PCM lineage it cites treats folding as source coding, so it is not new territory for us. | Yes (Ericson–Ramamoorthy Modulo-PCM 1979 is cited in [2]; Bhandari et al. 2017–2020). |
 | 4 | **Tucker / HOSVD bit-plane coding (TTHRESH)** [6] | **MID** | Beats zfp/sz on 3D simulation grids at medium-high ratios, but our records are 1D, and folding 1D into 3D gives you #1 again. | Yes (IEEE TVCG). |
 | 5 | **MPS image compression** (quantum-inspired) [5] | **NO** | The author's own conclusion is that gzip is vastly better unless the image has a definite block structure. | Yes (2005). |
@@ -56,7 +57,7 @@ Engineering restatement. Given a real-valued record x ∈ ℝ^N (N = 2^d), find 
 | 10 | **QTT compressed sensing** (Walsh–Hadamard measurements of a QTT signal) [13] | **MID (watch)** | Interesting 2026 theory for measuring few samples of a folded signal, but synthetic-only, noiseless, and it assumes ranks are known. | New (2026); watch only. |
 | 11 | **DNA-origami storage (dNAM)** [14] | **NO** | "Origami" here is wet-lab DNA scaffolds with fountain/parity codes; wrong domain, same NO→watch as the 2026-10-02 scout. | Yes. |
 
-Nothing scored BIG. The honest headline is that the folding maths that compresses (QTT/TT) is already known and works for smooth, low-rank signals. Our measured signals are dominated by broadband content, so folding has nothing to exploit.
+Nothing scored BIG. The honest headline is that the folding maths that compresses (QTT/TT) is already known and works for smooth, low-rank signals. Our measured signals are dominated by broadband content, so folding has nothing to exploit. FS-1 (§4b) later closed the hybrid QTT-as-predictor variant for vibration of this kind.
 
 ### Exploratory smoke probe (2026-11-03): not the pre-registered test
 
@@ -75,7 +76,7 @@ Cells are QTT bytes ÷ best-baseline bytes (< 1 means QTT wins). Caveats, both o
 
 ## 4. Pre-registered next experiment (run 2026-11-04, see §4b)
 
-**ID:** FS-1 (folding scout, hybrid QTT). To be run on a later slice. Thresholds below are fixed now, before any FS-1 number exists.
+**ID:** FS-1 (folding scout, hybrid QTT). Thresholds below were fixed on 2026-11-03, before any FS-1 number existed. Result in §4b.
 
 **Hypothesis H1.** Split each record into a structured part s and a residual r = x − s, where s is the QTT approximation of x at a fixed low max-rank R ∈ {4, 8, 16}, chosen per record by smallest total bytes. That choice is part of the coder and is charged in the byte count. Code s as quantized QTT cores and r with the same quantizer + general coder as the baseline. The hybrid is then smaller than the best fair baseline at matched error.
 
@@ -124,18 +125,52 @@ Errors matched: baseline relative error 2.97–3.01·10⁻³, hybrid 2.96–2.97
 
 Reading: the low-rank QTT part acts as a crude predictor. It beats plain quantize + zip, but an ordinary order-2 linear predictor with 8 bytes of coefficients does the same job better. Records 97 and 213 come in 3–4 % under the baseline, which is short of the 5 % bar and is not claimed. Secondary Paderborn KA04 `_1` (64 kHz, not counted): 1.005–1.038, no win. Per §4, the "folding beats zip" line is **closed for vibration records of this kind** with this receipt. The watch continues only for ideas that are not QTT-as-predictor.
 
-## 5. Limitations
+## 5. Second pass: imprint / irregular→square (2026-11-05)
 
-- Search coverage is limited to what WebSearch surfaced plus papers referenced by opened papers. Absence of a vibration-specific QTT-vs-zstd benchmark in my results does not prove none exists.
+Ashlynn's 2026-10-27 ask named two pictures the first table under-covered relative to QTT: (i) folding that leaves a **small imprint** of a 2D sheet, then unfolds back to a complex shape; (ii) **irregular → square** folding for arrays/signals, not only meshes. Geometry images (#7) and fold-and-cut (#8) already scored NO; this pass looked for prior art that is closer to those pictures, plus any 2024–2026 folding compression for 1D sensor / vibration / audio that is **not** QTT/TT.
+
+### 5.1 Search method (this pass)
+
+- WebSearch + WebFetch, 2026-11-05 (ET). Query families: origami imprint / inverse origami / surface compression by folding; irregular→square for arrays/signals; Miura-ori / map / accordion fold as a data transform; V-pleat / crease-pattern data encoding; folding OR origami compression of vibration / audio / accelerometer / time series, excluding tensor-train / QTT; leaf / insect-wing packing as imprint analogues; irregular-*tensor* compression (word collision check).
+- Every citation below was **opened** (abstract page, publisher page, author PDF, or MIT DSpace record) unless marked **unverified**.
+- Soft freeze: docs only. No QTT / FS-1 redo. No smoke probe unless a candidate scored MID with a clear tiny falsification (none did).
+
+### 5.2 New candidates
+
+| # | Idea (what "folds") | Score | One plain sentence | Already well known? |
+|---|---|---|---|---|
+| 12 | **Inverse-origami surface compression:** simulate packing a 3D shell into a small folded state, extract crease lines, unfold back [15] | **NO** | Closest literal match to "imprint then unfold", but the win is *physical volume*, not bytes, and the object is a shell mesh. | New (SIGGRAPH Asia 2025); domain is fabrication, not coding. |
+| 13 | **Leaf / bud packing (corrugated Miura-like unfold)** [16] | **NO** | Nature's imprint: a leaf packs into a bud and unfolds; beautiful geometry, zero byte lever for a 1D record. | Yes (1998). |
+| 14 | **V-pleat data origami:** encode a 1D dataset in the surface areas of folded V-pleats on paper [17] | **NO** | Craft / visualization encoding of numbers into physical pleat area; not a digital compressor and not measured against xz. | Yes (2022 chapter). |
+| 15 | **Light-IT / Light-IT++:** compact lossy coding of *irregular tensors* (variable-length slices) via a shared vocabulary + factors [18] | **NO** | Real compression paper, but "irregular" here means ragged multi-way tables (EHR, stocks), not an irregular *shape* folded onto a square; our records are regular 1D series. | New (KDD 2024); PARAFAC2/Tucker lineage, not geometric folding. |
+| 16 | **Origami as a sensor (e.g. inverted-Kresling capacitive)** [19] | **NO** | Folding produces a capacitance signal; it does not compress one. | New (2026 arXiv); soft-robotics sensing. |
+
+Also seen, not scored as folding-math compression: (a) 1D→2D reshape of a vibration window into a square matrix as a CNN input for fault diagnosis — that is a feature layout for classifiers, usually *larger* than the samples, not a coder; (b) compressive sensing on distributed acoustic sensing streams — random projections, already adjacent to count-sketch (#9), not origami. Search for 2024–2026 papers that fold or origami-encode 1D vibration / audio / accelerometer for *byte* compression, and that are not QTT/TT, returned **no opened match**. That absence is a search result, not a proof that none exist (§6).
+
+### 5.3 Why #7 and #8 still do not transfer to 1D vibration
+
+Short measured argument, no new experiment.
+
+- **Geometry images (#7)** need a 2D manifold (a cut mesh) to parameterize onto a square image, then an image coder. A CWRU / Paderborn record is a 1D time series: there is no surface to cut. The only 1D analogue is "reshape N samples into √N × √N and image-code". That is a reorder-plus-coder pipeline. Space-filling reorder before a general coder was already scored NO as #6 (a 1D series is already in time order; Hilbert gains are for 2D/3D grids). FS-1 further showed that a structured fold of the same samples lost to an order-2 linear predictor plus the same coders (median hybrid/baseline 1.021 on seven CWRU records). So the square-reshape route has no remaining lever we have not already stress-tested under a fair baseline.
+- **Fold-and-cut / computational origami (#8), and now #12/#13/#14,** produce crease patterns or physical packed states. The "imprint" is geometry (crease coordinates, mountain/valley bits, panel mesh). Storing that imprint plus any residual needed to rebuild a vibration record is a *description of a folding*, not an entropy code of the samples. Nothing in the opened papers claims, let alone measures, fewer bytes than quantize-then-xz/zstd on a 1D sensor stream. Physical volume reduction ≠ byte reduction.
+
+### 5.4 Second-pass verdict
+
+Nothing new scored BIG or MID. No smoke probe. QTT-as-predictor stays closed (FS-1). The parallel watch stays open at low cadence for folding math that is **not** QTT-as-predictor and that has a plausible byte lever on data we hold. Imprint / irregular→square, as published, remains physical-geometry or wrong data shape for our records.
+
+## 6. Limitations
+
+
+- Search coverage is limited to what WebSearch surfaced plus papers referenced by opened papers. Absence of a vibration-specific QTT-vs-zstd benchmark, or of a 2024–2026 non-QTT folding compressor for 1D vibration/audio, in my results does not prove none exists.
 - The smoke probe uses 2 real records and stdlib coders only (no zstd). It is exploratory, and its numbers must not be quoted as a result.
 - QTT was tried only in natural (time-major) bit order. Other bit orders, or a short-time transform before folding, are not covered by the probe. FS-1 does not cover them either unless amended before running.
 - Lossy compression only. Lossless compression of float64 sensor bytes is a different bar and was not scored.
 - Nothing here is cryptography. "Folding" in this memo carries no secrecy or integrity claim.
 - Whitepaper numbers are unchanged; this memo adds no table to `docs/foldaudio-whitepaper.md`.
 
-## 6. References
+## 7. References
 
-Opened = I loaded the page/PDF on 2026-11-02/03 (ET).
+Opened = I loaded the page/PDF (or the MIT DSpace / publisher abstract page) on 2026-11-02/03 or 2026-11-05 (ET).
 
 1. Bhandari, A., Krahmer, F., Raskar, R. "On Unlimited Sampling." SampTA 2017. arXiv:1707.06340. https://arxiv.org/abs/1707.06340 (opened)
 2. Bhandari, A., Krahmer, F., Raskar, R. "On Unlimited Sampling and Reconstruction." IEEE Trans. Signal Processing version. arXiv:1905.03901. https://arxiv.org/abs/1905.03901 (opened; recovery condition T ≤ 1/(2Ωe); discusses Itoh unwrapping and Modulo-PCM, Ericson & Ramamoorthy 1979)
@@ -152,4 +187,10 @@ Opened = I loaded the page/PDF on 2026-11-02/03 (ET).
 13. Shao, "Compressed Sensing with Quantized Tensor Trains (QTTs)." arXiv:2609.36506, 2026. https://arxiv.org/abs/2609.36506 (opened; synthetic, noiseless, oracle ranks)
 14. Dickinson, G. D., et al. "An alternative approach to nucleic acid memory." Nature Communications 12, 2021. https://www.nature.com/articles/s41467-021-22277-y (opened)
 
-Also seen but **not opened** (excluded from scoring): Oseledets, "Approximation of 2^d×2^d matrices using tensor decomposition," SIAM J. Matrix Anal. Appl. 31(4), 2010 (doi:10.1137/090757861; publisher returned 403). It is the original QTT-matrix paper. Also a 2025 IEEE TIM tensor-train DMD bearing-fault paper, which uses TT for fault features, not compression.
+15. Aoki, T., Tachi, T., Konaković Luković, M. "Discovering Folding Lines for Surface Compression." SIGGRAPH Asia 2025 Conference Papers (SA Conference Papers '25), Article 98, 1–12. doi:10.1145/3757377.3763983. MIT DSpace: https://hdl.handle.net/1721.1/164532 (opened 2026-11-05; abstract + citation record; ACM fulltext fetch timed out). Code mirror: https://github.com/Toshiki67/Discovering_Folding_Lines_for_Surface_Compression (opened; empty README at fetch time).
+16. Kobayashi, H., Kresling, B., Guest, S. D. "The geometry of unfolding tree leaves." Proc. R. Soc. Lond. B 265:147–154, 1998. doi:10.1098/rspb.1998.0276. https://doi.org/10.1098/rspb.1998.0276 (**unverified body:** publisher and PMC PDF fetches timed out / 403 on 2026-11-05; title, authors, year and DOI confirmed from search/DOI records; scored NO on domain alone — biological packing geometry, not byte coding).
+17. Hayes, S. "V-Pleat Data Origami." In *Making with Data*, A K Peters/CRC Press, 2022, ch. 3. doi:10.1201/9781003264903-3. https://www.taylorfrancis.com/chapters/edit/10.1201/9781003264903-3/pleat-data-origami-sarah-hayes (opened; publisher abstract: encodes a 1D dataset in folded V-pleat surface areas on paper).
+18. Kwon, T., Ko, J., Jung, J., Jang, J.-G., Shin, K. "Compact Decomposition of Irregular Tensors for Data Compression: From Sparse to Dense to High-Order Tensors." KDD '24, 2024. doi:10.1145/3637528.3671846. PDF: http://dmlab.kaist.ac.kr/~kijungs/papers/lightitKDD2024.pdf (opened).
+19. de Souza Oliveira, H., Li, X., Jafarpour, M., Milana, E. "Ori-Sense: origami capacitive sensing for soft robotic applications." arXiv:2602.18379, 2026. https://arxiv.org/abs/2602.18379 (opened).
+
+Also seen but **not opened** (excluded from scoring): Oseledets, "Approximation of 2^d×2^d matrices using tensor decomposition," SIAM J. Matrix Anal. Appl. 31(4), 2010 (doi:10.1137/090757861; publisher returned 403). It is the original QTT-matrix paper. Also a 2025 IEEE TIM tensor-train DMD bearing-fault paper, which uses TT for fault features, not compression. Second-pass searches also surfaced 1D→2D reshape-for-CNN fault-diagnosis papers and DAS compressive-sensing pipelines; those are classifier layouts or random projections, not folding-math compressors, and were not added to the score table.
