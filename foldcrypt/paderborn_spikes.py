@@ -1738,3 +1738,74 @@ def fund_verdicts(
     else:
         out["F4"] = "UNTESTABLE"
     return out
+
+
+# --- K003 N15_M01 phase scatter check (prereg-2026-11-06-k003-phase.md, NOTES #8k)
+
+K003_PHASE_SEED = 20261106
+K003_PHASE_MIN_RECORDS = 8
+
+
+def k003_phase_verdicts(
+    m01: list[PhaseRecord], n09: list[PhaseRecord], *, seed: int = K003_PHASE_SEED
+) -> dict:
+    """Apply the prereg-2026-11-06-k003-phase.md rules (Q3, C3n) to usable
+    PhaseRecords at N15_M01_F10 (``m01``) and N09_M07_F10 (``n09``).
+
+    Uses the original 100 Hz |i_s| ripple reference only (``phase_record`` /
+    confirmatory phase pipeline). No fundamental residual split.
+    """
+    del seed  # reserved; verdicts are deterministic given the record means
+    a = [r for r in m01 if r.usable]
+    b = [r for r in n09 if r.usable]
+    out: dict = {
+        "n15_m01_usable": len(a),
+        "n09_usable": len(b),
+        "n15_m01_spiky": sum(1 for r in m01 if r.n_spikes >= SPIKY_MIN),
+        "n09_spiky": sum(1 for r in n09 if r.n_spikes >= SPIKY_MIN),
+    }
+    if len(a) < K003_PHASE_MIN_RECORDS or len(b) < K003_PHASE_MIN_RECORDS:
+        return out | {
+            "Q3": "UNTESTABLE",
+            "C3n": "UNTESTABLE",
+            "reading": "UNTESTABLE",
+        }
+    rb_m, mu_m, p_m = between_stats(a)
+    rb_n, mu_n, p_n = between_stats(b)
+    out |= {
+        "n15_m01_r_between": rb_m,
+        "n15_m01_grand_mean_deg": math.degrees(mu_m),
+        "n15_m01_p_between": p_m,
+        "n09_r_between": rb_n,
+        "n09_grand_mean_deg": math.degrees(mu_n),
+        "n09_p_between": p_n,
+        "n15_m01_mean_phases_deg": [math.degrees(r.mu) for r in a],
+        "n09_mean_phases_deg": [math.degrees(r.mu) for r in b],
+        "n15_m01_ref_db_range": [min(r.ref_db for r in a), max(r.ref_db for r in a)],
+        "n09_ref_db_range": [min(r.ref_db for r in b), max(r.ref_db for r in b)],
+    }
+    if rb_m < R_BETWEEN_HELD:
+        q3 = "SCATTERS"
+    elif rb_m >= R_BETWEEN_HELD and p_m < ALPHA:
+        q3 = "LOCKS"
+    else:
+        q3 = "INCONCLUSIVE"
+    c3n = "PASS" if rb_n >= R_BETWEEN_HELD and p_n < ALPHA else "FAIL"
+    out["Q3"] = q3
+    out["C3n"] = c3n
+    if c3n != "PASS":
+        reading = "control failed"
+    elif q3 == "LOCKS":
+        reading = (
+            "supports scatter is K001-record-specific, not a property of "
+            "healthy bearings / low-torque condition"
+        )
+    elif q3 == "SCATTERS":
+        reading = (
+            "scatter is not unique to K001; follow-up warranted "
+            "(do not silently run fund residual without amended prereg)"
+        )
+    else:
+        reading = "not settled"
+    out["reading"] = reading
+    return out
