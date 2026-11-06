@@ -53,6 +53,7 @@ BEARINGS: dict[str, tuple[str, str]] = {
 #: that loop over ``BEARINGS`` reproduce unchanged.
 EXTRA_BEARINGS: dict[str, tuple[str, str]] = {
     "K002": ("healthy", "88631bc0081a6470846d18189d46381d"),
+    "K003": ("healthy", "08b61792e1058dc47dd21071666bca2c"),
 }
 
 #: operating conditions (speed / torque / radial force codes), measurement _1
@@ -316,6 +317,27 @@ MAT_SHA256: dict[str, str] = {
     "K002/N09_M07_F10_K002_18.mat": "b005846bad34ed01746e0035fce135211ad1f1f122b433f8691c6aa76a0c834f",
     "K002/N09_M07_F10_K002_19.mat": "72a229cf7eb29053baf0a9ee5e396355e8610abaca94a683e62f5ff352d9e8fa",
     "K002/N09_M07_F10_K002_20.mat": "3ce4c0e3b5d6eb54a9562092f362c9b1717acb5645e6f8b050ad36f8a1d08414",
+    # K003 N15_M01_F10 + N09_M07_F10 _1.._10 (NOTES #8k optional K003 phase), pinned 2026-11-06 before analysis
+    "K003/N15_M01_F10_K003_1.mat": "6fcf024174894fb6e275c6d44e97a3da97963c1830aebd7de28a4a52957dbd82",
+    "K003/N15_M01_F10_K003_2.mat": "7e469e5259730a73522f2ca0d75d20985d0207f7fe43c40ce4b355d921fb4852",
+    "K003/N15_M01_F10_K003_3.mat": "519034091e589cdfe1b9371cead5f743ce8654caf472a5640fca5c0dbc2ecbf1",
+    "K003/N15_M01_F10_K003_4.mat": "527ba8b55c0266136a4684b4ca9ff75a6a7e35f0500e7f6ebff7d8268efe0b59",
+    "K003/N15_M01_F10_K003_5.mat": "738eb99adf1551813ad1b6602a40a9ad230368c916c5681ff50e0d29e5b95309",
+    "K003/N15_M01_F10_K003_6.mat": "0b66fa37e8acd6d01c49cde5ff55d8abdf029527ea18f183c21a82297f47c03e",
+    "K003/N15_M01_F10_K003_7.mat": "1c0aabb368584d764894dc14218f05698fc856e90fa2a174ce96ff2513e14da1",
+    "K003/N15_M01_F10_K003_8.mat": "237ed99b83258172bb22b18f72ad0daf763a6891e8164422333f9c86d60a8c6a",
+    "K003/N15_M01_F10_K003_9.mat": "8739e4409aab825a90ba140b2cc824eee80eee0cd1d989ec931f8a10e4c0dcc3",
+    "K003/N15_M01_F10_K003_10.mat": "fd0f567b1733da5e7f83596ec1f09d141b075b448c1405760b74376994a78633",
+    "K003/N09_M07_F10_K003_1.mat": "f22af38489992fd268d67db1fb55a1af3c374cbabf5beac54c773fcb58570a2b",
+    "K003/N09_M07_F10_K003_2.mat": "e4605bbd7f28cd3cffa5300b5d2c3a8b3447fd51c8b264f163f96f43868145d3",
+    "K003/N09_M07_F10_K003_3.mat": "280d3e4a75b1bd7e3116d083ee24327a4a84fc3dfe0d0a204c0d476f25ac3d15",
+    "K003/N09_M07_F10_K003_4.mat": "c194b2e9a7f1a8b6baa98434618883330f4be6281e2b2844d4262cfee81e86d0",
+    "K003/N09_M07_F10_K003_5.mat": "c4d0850faba5713848fd11946525b80c1cd149983d5468529276a929699e9409",
+    "K003/N09_M07_F10_K003_6.mat": "f36326e65351f4d32dbb36c6ccc4263136d89973b5d63223ce6ce6239f09468e",
+    "K003/N09_M07_F10_K003_7.mat": "b10c885fb3f5697eff3c119b6bb0471886834df7d56f4cd643e50f120ebb12c2",
+    "K003/N09_M07_F10_K003_8.mat": "c85f58fe83ed9fffaee22ab873a9548c73a171b760b0b70029d52185853926f9",
+    "K003/N09_M07_F10_K003_9.mat": "260f7beed4915afcd977fd7f22340230eea2467e1a9a193125d9ae16278f607c",
+    "K003/N09_M07_F10_K003_10.mat": "f6c552c45e84aedbdd482a86ef1842c7155af371bb1dcce114897ca7d2996449",
 }
 
 #: Environment variable that overrides the Paderborn cache directory.
@@ -345,6 +367,10 @@ K002_MEASUREMENTS = (1, 2, 3, 4, 5)
 #: K002 measurement numbers and conditions for the 2026-11-02 fundamental-share test (NOTES #8k)
 FUND_MEASUREMENTS = tuple(range(6, 21))
 FUND_CONDITIONS = ("N15_M01_F10", "N09_M07_F10")
+
+#: K003 measurement numbers and conditions for the 2026-11-06 N15_M01 phase scatter check (NOTES #8k)
+K003_PHASE_MEASUREMENTS = tuple(range(1, 11))
+K003_PHASE_CONDITIONS = ("N15_M01_F10", "N09_M07_F10")
 
 
 def member(bearing: str, condition: str, meas: int = 1) -> str:
