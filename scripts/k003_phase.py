@@ -83,9 +83,7 @@ def main() -> int:
         "prereg": PREREG,
         "verdicts": v,
         "not_spiky": not_spiky,
-        "records": [
-            _row(r) for c in pb.K003_PHASE_CONDITIONS for r in by[c]
-        ],
+        "records": [_row(r) for c in pb.K003_PHASE_CONDITIONS for r in by[c]],
     }
     out = ROOT / "artifacts" / "paderborn" / "k003-phase-metrics.json"
     out.write_text(json.dumps(doc, indent=2) + "\n")

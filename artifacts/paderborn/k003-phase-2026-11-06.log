@@ -1,0 +1,77 @@
+# prereg artifacts/paderborn/prereg-2026-11-06-k003-phase.md
+# seed 20261106; conditions ('N15_M01_F10', 'N09_M07_F10')
+# measurements (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+K003/N15_M01_F10_K003_1.mat    N  586  ref  27.2 dB ok  depth 0.0072  R 0.775  mu   -48.7 deg  p 1.1e-153  ±45° 0.76  nullA99 0.089 / bar 0.106
+K003/N15_M01_F10_K003_2.mat    N   84  ref  27.1 dB ok  depth 0.0074  R 0.872  mu   -64.7 deg  p 1.9e-28  ±45° 0.88  nullA99 0.232 / bar 0.281
+K003/N15_M01_F10_K003_3.mat    N  386  ref  26.1 dB ok  depth 0.0066  R 0.861  mu   -52.1 deg  p 6.2e-125  ±45° 0.90  nullA99 0.111 / bar 0.131
+K003/N15_M01_F10_K003_4.mat    N  300  ref  21.7 dB ok  depth 0.0046  R 0.783  mu   -35.9 deg  p 1.1e-80  ±45° 0.79  nullA99 0.117 / bar 0.149
+K003/N15_M01_F10_K003_5.mat    N  145  ref  25.8 dB ok  depth 0.0059  R 0.817  mu   -49.8 deg  p 9.1e-43  ±45° 0.81  nullA99 0.178 / bar 0.214
+K003/N15_M01_F10_K003_6.mat    N  293  ref  26.3 dB ok  depth 0.0066  R 0.808  mu   -62.0 deg  p 7.5e-84  ±45° 0.82  nullA99 0.123 / bar 0.150
+K003/N15_M01_F10_K003_7.mat    N  117  ref  25.3 dB ok  depth 0.0067  R 0.808  mu   -48.9 deg  p 7.1e-34  ±45° 0.82  nullA99 0.204 / bar 0.238
+K003/N15_M01_F10_K003_8.mat    N  219  ref  27.9 dB ok  depth 0.0069  R 0.795  mu   -49.7 deg  p 7.9e-61  ±45° 0.78  nullA99 0.146 / bar 0.174
+K003/N15_M01_F10_K003_9.mat    N  442  ref  23.1 dB ok  depth 0.0056  R 0.768  mu   -59.2 deg  p 7.3e-114  ±45° 0.76  nullA99 0.102 / bar 0.122
+K003/N15_M01_F10_K003_10.mat   N  396  ref  24.7 dB ok  depth 0.0069  R 0.765  mu   -63.8 deg  p 1.9e-101  ±45° 0.79  nullA99 0.105 / bar 0.129
+K003/N09_M07_F10_K003_1.mat    N  463  ref  28.5 dB ok  depth 0.0044  R 0.792  mu   -62.6 deg  p 1.0e-126  ±45° 0.79  nullA99 0.107 / bar 0.120
+K003/N09_M07_F10_K003_2.mat    N  408  ref  27.4 dB ok  depth 0.0042  R 0.781  mu   -63.5 deg  p 8.2e-109  ±45° 0.81  nullA99 0.110 / bar 0.127
+K003/N09_M07_F10_K003_3.mat    N  174  ref  29.1 dB ok  depth 0.0043  R 0.815  mu   -64.8 deg  p 5.7e-51  ±45° 0.80  nullA99 0.159 / bar 0.195
+K003/N09_M07_F10_K003_4.mat    N  161  ref  28.5 dB ok  depth 0.0043  R 0.848  mu   -63.5 deg  p 5.3e-51  ±45° 0.83  nullA99 0.175 / bar 0.203
+K003/N09_M07_F10_K003_5.mat    N  350  ref  28.4 dB ok  depth 0.0044  R 0.816  mu   -63.8 deg  p 6.3e-102  ±45° 0.83  nullA99 0.114 / bar 0.138
+K003/N09_M07_F10_K003_6.mat    N  130  ref  28.4 dB ok  depth 0.0043  R 0.838  mu   -64.6 deg  p 2.2e-40  ±45° 0.85  nullA99 0.191 / bar 0.226
+K003/N09_M07_F10_K003_7.mat    N  477  ref  29.0 dB ok  depth 0.0043  R 0.816  mu   -61.7 deg  p 1.0e-138  ±45° 0.83  nullA99 0.098 / bar 0.118
+K003/N09_M07_F10_K003_8.mat    N  240  ref  29.9 dB ok  depth 0.0042  R 0.784  mu   -65.4 deg  p 9.1e-65  ±45° 0.79  nullA99 0.140 / bar 0.166
+K003/N09_M07_F10_K003_9.mat    N  369  ref  29.3 dB ok  depth 0.0044  R 0.798  mu   -63.1 deg  p 7.7e-103  ±45° 0.81  nullA99 0.108 / bar 0.134
+K003/N09_M07_F10_K003_10.mat   N  439  ref  27.9 dB ok  depth 0.0042  R 0.798  mu   -65.0 deg  p 3.7e-122  ±45° 0.80  nullA99 0.105 / bar 0.123
+not spiky: none
+
+[verdicts]
+{
+ "n15_m01_usable": 10,
+ "n09_usable": 10,
+ "n15_m01_spiky": 10,
+ "n09_spiky": 10,
+ "n15_m01_r_between": 0.989109608099979,
+ "n15_m01_grand_mean_deg": -53.487066396050444,
+ "n15_m01_p_between": 5.6381009432122985e-05,
+ "n09_r_between": 0.9998110181479568,
+ "n09_grand_mean_deg": -63.79572009279341,
+ "n09_p_between": 4.557183343591424e-05,
+ "n15_m01_mean_phases_deg": [
+  -48.724172982530334,
+  -64.65014873187945,
+  -52.11702555084326,
+  -35.90887855508975,
+  -49.7629109217251,
+  -61.98427267955056,
+  -48.94185290304,
+  -49.67494660956723,
+  -59.17414571214228,
+  -63.808709595995296
+ ],
+ "n09_mean_phases_deg": [
+  -62.61878782295217,
+  -63.46916355762186,
+  -64.84031532930919,
+  -63.51644498805294,
+  -63.770263447677586,
+  -64.58669333623683,
+  -61.67033986171879,
+  -65.41058169616444,
+  -63.06773312594737,
+  -65.00667207351778
+ ],
+ "n15_m01_ref_db_range": [
+  21.709441384941428,
+  27.869431358477538
+ ],
+ "n09_ref_db_range": [
+  27.38495129456895,
+  29.904984650329354
+ ],
+ "Q3": "LOCKS",
+ "C3n": "PASS",
+ "reading": "supports scatter is K001-record-specific, not a property of healthy bearings / low-torque condition"
+}
+           LOCKS  Q3
+            PASS  C3n
+supports scatter is K001-record-specific, not a property of healthy bearings / low-torque condition  reading
+wrote artifacts/paderborn/k003-phase-metrics.json
