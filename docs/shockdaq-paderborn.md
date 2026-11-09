@@ -6,7 +6,7 @@ The CWRU study ([`shockdaq-realdata.md`](shockdaq-realdata.md)) found that sampl
 
 ## Data
 
-Bearings K001 (healthy), KA04 (outer ring, fatigue pitting from an accelerated lifetime test) and KI04 (inner ring, fatigue pitting) [1, Table 5]. For each bearing, measurement `_1` at the four operating conditions N15_M07_F10, N09_M07_F10, N15_M01_F10 and N15_M07_F04 (12 records, 4 s, 256,001 samples each). Each record is also evaluated after plain 4:1 subsampling (64→16 kHz), as with CWRU 48→12 kHz. The archives come from the Zenodo mirror [2] (CC BY 4.0), are checked against Zenodo's MD5s, and only the 12 members are extracted (needs `unar`) and pinned by SHA-256 in `foldcrypt/paderborn.py`. Nothing is redistributed. The .mat files do not state the channel unit, so results are given as ratios and dB.
+Bearings K001 (healthy), KA04 (outer ring, fatigue pitting from an accelerated lifetime test) and KI04 (inner ring, fatigue pitting) [1, Table 5]. For each bearing, measurement `_1` at the four operating conditions N15_M07_F10, N09_M07_F10, N15_M01_F10 and N15_M07_F04 (12 records, 4 s, 256,001 samples each). Each record is also evaluated after plain 4:1 subsampling (64→16 kHz), as with CWRU 48→12 kHz. The archives come from the Zenodo mirror [2] (CC BY 4.0), are checked against Zenodo's MD5s, and only the 12 members are extracted (needs `unar`, or 7-Zip `7zz`/`7z` or `$FOLDCRYPT_7ZZ` since 2026-11-08) and pinned by SHA-256 in `foldcrypt/paderborn.py`. Nothing is redistributed. The .mat files do not state the channel unit, so results are given as ratios and dB.
 
 ## Method
 
@@ -172,4 +172,16 @@ Pre-registered in `artifacts/paderborn/prereg-2026-11-02-n15m01-fundamental.md` 
 
 ## K003 N15_M01 phase scatter check (2026-11-06, NOTES #8k optional)
 
-Pre-registered in `artifacts/paderborn/prereg-2026-11-06-k003-phase.md` (commit 91bd2ac, 20 SHA-256 pins for K003 N15_M01_F10 / N09_M07_F10 `_1.._10` in the same commit). `K003.rar` MD5 `08b61792e1058dc47dd21071666bca2c` (Zenodo). Same original 100 Hz |i_s| ripple reference pipeline as confirmatory phase (`ps.phase_record`); no fundamental residual. Usable 10/10 both conditions (all spiky, references 21.7–29.9 dB). **Q3 LOCKS** (N15_M01 R_between 0.989, Rayleigh p 5.6e-5; record mean phases −65° to −36°, grand mean −53.5°). **C3n PASS** (N09 R_between 0.9998, p 4.6e-5; grand mean −63.8°). Reading: supports that the K001 low-torque scatter (0.490) is record-/bearing-specific — K002 locked at 0.983 and K003 at 0.989 under the same condition. K004 not run. Script `scripts/k003_phase.py`, log `artifacts/paderborn/k003-phase-2026-11-06.log` (~4 s CPU). Whitepaper v1.21 Table 22.
+Pre-registered in `artifacts/paderborn/prereg-2026-11-06-k003-phase.md` (commit 91bd2ac, 20 SHA-256 pins for K003 N15_M01_F10 / N09_M07_F10 `_1.._10` in the same commit). `K003.rar` MD5 `08b61792e1058dc47dd21071666bca2c` (Zenodo). Same original 100 Hz |i_s| ripple reference pipeline as confirmatory phase (`ps.phase_record`); no fundamental residual. Usable 10/10 both conditions (all spiky, references 21.7–29.9 dB). **Q3 LOCKS** (N15_M01 R_between 0.989, Rayleigh p 5.6e-5; record mean phases −65° to −36°, grand mean −53.5°). **C3n PASS** (N09 R_between 0.9998, p 4.6e-5; grand mean −63.8°). Reading: supports that the K001 low-torque scatter (0.490) is record-/bearing-specific — K002 locked at 0.983 and K003 at 0.989 under the same condition. K004 not run (superseded 2026-11-08: see next section — the K001-specific reading did not survive). Script `scripts/k003_phase.py`, log `artifacts/paderborn/k003-phase-2026-11-06.log` (~4 s CPU). Whitepaper v1.21 Table 22.
+
+## Healthy-set N15_M01 phase check, K004–K006 (2026-11-08 Sunday hard push)
+
+Pre-registered in `artifacts/paderborn/prereg-2026-11-08-healthy-set-phase.md` (commit 551180f; 60 SHA-256 pins for K004/K005/K006 N15_M01_F10 / N09_M07_F10 `_1.._10` in the same commit, archive MD5s from the Zenodo API). Same per-bearing pipeline and Q3/C3n rules as the K003 check, seed 20261108. Prediction: all three lock (scatter is a K001 property). Usable 10/10 per condition on every bearing.
+
+| Bearing | N15_M01 R_between | N09 R_between | Q3 | C3n |
+|---|---|---|---|---|
+| K004 | 0.649 (p 1.5e-2) | 0.9975 | SCATTERS | PASS |
+| K005 | 0.910 (p 2.6e-4) | 0.980 | LOCKS | PASS |
+| K006 | 0.163 (p 0.77) | 0.9979 | SCATTERS | PASS |
+
+**Set verdict FALSIFIED** (2 of 3 valid bearings scatter). Across all six healthy bearings, three scatter at N15_M01 (K001 0.490, K004 0.649, K006 0.163) and three lock (K002 0.983, K003 0.989, K005 0.910). Reference SNR does not separate them (K006 references 30.2–38.5 dB). The K001-specific reading of the 11-02 and 11-06 checks is withdrawn; the cause is not identified. Script `scripts/healthy_set_phase.py`, log `artifacts/paderborn/healthy-set-phase-2026-11-08.log` (~10 s CPU). Whitepaper v1.22 Table 23.

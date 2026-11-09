@@ -13,7 +13,7 @@
 # $FOLDCRYPT_CWRU_CACHE or ~/.cache/foldcrypt/cwru (python -m foldcrypt
 # shockdaq-real downloads them once; every file is SHA-256 checked on use),
 # plus the 12 Paderborn files in $FOLDCRYPT_PADERBORN_CACHE or
-# ~/.cache/foldcrypt/paderborn (python scripts/run_paderborn.py; needs unar).
+# ~/.cache/foldcrypt/paderborn (python scripts/run_paderborn.py; needs unar, or 7-Zip via 7zz/7z or $FOLDCRYPT_7ZZ).
 set -uo pipefail
 
 full=0

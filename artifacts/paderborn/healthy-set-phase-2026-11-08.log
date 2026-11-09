@@ -1,0 +1,102 @@
+# prereg artifacts/paderborn/prereg-2026-11-08-healthy-set-phase.md
+# seed 20261108; bearings ('K004', 'K005', 'K006')
+# conditions ('N15_M01_F10', 'N09_M07_F10'); measurements (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+K004/N15_M01_F10_K004_1.mat    N   61  ref  36.7 dB ok  depth 0.0166  R 0.742  mu   -85.2 deg  p 2.7e-15  ±45° 0.69  nullA99 0.262 / bar 0.330
+K004/N15_M01_F10_K004_2.mat    N  149  ref  32.6 dB ok  depth 0.0129  R 0.718  mu  -116.1 deg  p 4.3e-34  ±45° 0.72  nullA99 0.173 / bar 0.211
+K004/N15_M01_F10_K004_3.mat    N  183  ref  33.1 dB ok  depth 0.0111  R 0.691  mu  -130.6 deg  p 1.2e-38  ±45° 0.74  nullA99 0.165 / bar 0.190
+K004/N15_M01_F10_K004_4.mat    N  218  ref  36.0 dB ok  depth 0.0174  R 0.456  mu   -45.9 deg  p 2.1e-20  ±45° 0.45  nullA99 0.144 / bar 0.174
+K004/N15_M01_F10_K004_5.mat    N   72  ref  36.9 dB ok  depth 0.0168  R 0.791  mu   -85.1 deg  p 2.9e-20  ±45° 0.76  nullA99 0.248 / bar 0.303
+K004/N15_M01_F10_K004_6.mat    N  302  ref  35.7 dB ok  depth 0.0145  R 0.657  mu  -104.1 deg  p 2.9e-57  ±45° 0.65  nullA99 0.129 / bar 0.148
+K004/N15_M01_F10_K004_7.mat    N  177  ref  32.6 dB ok  depth 0.0100  R 0.645  mu  -141.7 deg  p 9.6e-33  ±45° 0.67  nullA99 0.163 / bar 0.194
+K004/N15_M01_F10_K004_8.mat    N  109  ref  31.8 dB ok  depth 0.0102  R 0.635  mu  -146.5 deg  p 7.7e-20  ±45° 0.61  nullA99 0.210 / bar 0.247
+K004/N15_M01_F10_K004_9.mat    N  159  ref  36.2 dB ok  depth 0.0157  R 0.665  mu    +0.9 deg  p 3.2e-31  ±45° 0.72  nullA99 0.161 / bar 0.204
+K004/N15_M01_F10_K004_10.mat   N  213  ref  29.8 dB ok  depth 0.0086  R 0.416  mu  +160.8 deg  p 1.0e-16  ±45° 0.42  nullA99 0.144 / bar 0.176
+K004/N09_M07_F10_K004_1.mat    N   62  ref  28.9 dB ok  depth 0.0040  R 0.795  mu   -55.2 deg  p 1.0e-17  ±45° 0.73  nullA99 0.260 / bar 0.327
+K004/N09_M07_F10_K004_2.mat    N  235  ref  31.1 dB ok  depth 0.0043  R 0.543  mu   -61.5 deg  p 8.5e-31  ±45° 0.54  nullA99 0.142 / bar 0.168
+K004/N09_M07_F10_K004_3.mat    N  370  ref  29.9 dB ok  depth 0.0041  R 0.581  mu   -62.2 deg  p 6.3e-55  ±45° 0.60  nullA99 0.113 / bar 0.134
+K004/N09_M07_F10_K004_4.mat    N   76  ref  29.0 dB ok  depth 0.0040  R 0.640  mu   -68.4 deg  p 3.0e-14  ±45° 0.62  nullA99 0.249 / bar 0.295
+K004/N09_M07_F10_K004_5.mat    N  266  ref  29.8 dB ok  depth 0.0041  R 0.570  mu   -61.1 deg  p 2.8e-38  ±45° 0.55  nullA99 0.136 / bar 0.158
+K004/N09_M07_F10_K004_6.mat    N  347  ref  29.5 dB ok  depth 0.0041  R 0.486  mu   -64.1 deg  p 2.1e-36  ±45° 0.58  nullA99 0.108 / bar 0.138
+K004/N09_M07_F10_K004_7.mat    N  394  ref  29.7 dB ok  depth 0.0041  R 0.478  mu   -65.3 deg  p 9.5e-40  ±45° 0.52  nullA99 0.105 / bar 0.130
+K004/N09_M07_F10_K004_8.mat    N  224  ref  29.3 dB ok  depth 0.0042  R 0.606  mu   -69.6 deg  p 1.8e-36  ±45° 0.54  nullA99 0.141 / bar 0.172
+K004/N09_M07_F10_K004_9.mat    N  356  ref  29.2 dB ok  depth 0.0044  R 0.562  mu   -66.6 deg  p 1.6e-49  ±45° 0.62  nullA99 0.111 / bar 0.136
+K004/N09_M07_F10_K004_10.mat   N  425  ref  28.7 dB ok  depth 0.0040  R 0.515  mu   -67.6 deg  p 9.7e-50  ±45° 0.56  nullA99 0.102 / bar 0.125
+
+[K004] Q3 SCATTERS  C3n PASS  (scatter is not unique to K001; follow-up warranted (do not silently run fund residual without amended prereg))
+    n15_m01_r_between 0.6493
+    n15_m01_p_between 0.01475
+    n09_r_between 0.9975
+    n09_p_between 4.775e-05
+
+K005/N15_M01_F10_K005_1.mat    N  288  ref  29.5 dB ok  depth 0.0071  R 0.400  mu   -70.1 deg  p 1.1e-20  ±45° 0.52  nullA99 0.125 / bar 0.152
+K005/N15_M01_F10_K005_2.mat    N  154  ref  27.2 dB ok  depth 0.0060  R 0.655  mu   -26.9 deg  p 1.9e-29  ±45° 0.64  nullA99 0.178 / bar 0.208
+K005/N15_M01_F10_K005_3.mat    N   94  ref  21.2 dB ok  depth 0.0034  R 0.415  mu   -85.4 deg  p 9.0e-08  ±45° 0.40  nullA99 0.217 / bar 0.266
+K005/N15_M01_F10_K005_4.mat    N  178  ref  28.0 dB ok  depth 0.0077  R 0.450  mu   -62.0 deg  p 2.1e-16  ±45° 0.52  nullA99 0.161 / bar 0.193
+K005/N15_M01_F10_K005_5.mat    N  156  ref  20.0 dB ok  depth 0.0037  R 0.317  mu   -72.4 deg  p 1.6e-07  ±45° 0.37  nullA99 0.166 / bar 0.206
+K005/N15_M01_F10_K005_6.mat    N   80  ref  24.9 dB ok  depth 0.0050  R 0.404  mu   -88.7 deg  p 2.1e-06  ±45° 0.47  nullA99 0.244 / bar 0.288
+K005/N15_M01_F10_K005_7.mat    N  132  ref  25.6 dB ok  depth 0.0049  R 0.678  mu   -31.6 deg  p 4.3e-27  ±45° 0.68  nullA99 0.180 / bar 0.224
+K005/N15_M01_F10_K005_8.mat    N  272  ref  29.8 dB ok  depth 0.0090  R 0.443  mu   -31.2 deg  p 7.2e-24  ±45° 0.53  nullA99 0.124 / bar 0.156
+K005/N15_M01_F10_K005_9.mat    N   52  ref  25.2 dB ok  depth 0.0053  R 0.754  mu   -15.7 deg  p 1.4e-13  ±45° 0.73  nullA99 0.289 / bar 0.357
+K005/N15_M01_F10_K005_10.mat   N  272  ref  30.5 dB ok  depth 0.0083  R 0.351  mu   -57.6 deg  p 2.9e-15  ±45° 0.43  nullA99 0.122 / bar 0.156
+K005/N09_M07_F10_K005_1.mat    N  416  ref  28.6 dB ok  depth 0.0039  R 0.415  mu   -71.4 deg  p 9.0e-32  ±45° 0.48  nullA99 0.110 / bar 0.126
+K005/N09_M07_F10_K005_2.mat    N  357  ref  29.4 dB ok  depth 0.0040  R 0.417  mu   -64.1 deg  p 9.6e-28  ±45° 0.52  nullA99 0.113 / bar 0.136
+K005/N09_M07_F10_K005_3.mat    N  296  ref  29.0 dB ok  depth 0.0039  R 0.508  mu   -56.8 deg  p 6.3e-34  ±45° 0.56  nullA99 0.120 / bar 0.150
+K005/N09_M07_F10_K005_4.mat    N   45  ref  28.7 dB ok  depth 0.0040  R 0.648  mu   -52.5 deg  p 6.3e-09  ±45° 0.56  nullA99 0.306 / bar 0.384
+K005/N09_M07_F10_K005_5.mat    N  303  ref  28.6 dB ok  depth 0.0041  R 0.477  mu   -59.2 deg  p 1.1e-30  ±45° 0.57  nullA99 0.120 / bar 0.148
+K005/N09_M07_F10_K005_6.mat    N  210  ref  31.8 dB ok  depth 0.0041  R 0.533  mu   -71.5 deg  p 1.1e-26  ±45° 0.60  nullA99 0.150 / bar 0.178
+K005/N09_M07_F10_K005_7.mat    N   87  ref  29.4 dB ok  depth 0.0039  R 0.610  mu   -58.0 deg  p 8.3e-15  ±45° 0.61  nullA99 0.229 / bar 0.276
+K005/N09_M07_F10_K005_8.mat    N  170  ref  30.4 dB ok  depth 0.0040  R 0.379  mu   -94.3 deg  p 2.6e-11  ±45° 0.46  nullA99 0.160 / bar 0.198
+K005/N09_M07_F10_K005_9.mat    N  401  ref  30.1 dB ok  depth 0.0040  R 0.464  mu   -63.8 deg  p 2.7e-38  ±45° 0.51  nullA99 0.107 / bar 0.129
+K005/N09_M07_F10_K005_10.mat   N  164  ref  29.0 dB ok  depth 0.0039  R 0.454  mu   -55.3 deg  p 2.2e-15  ±45° 0.51  nullA99 0.173 / bar 0.201
+
+[K005] Q3 LOCKS  C3n PASS  (supports scatter is K001-record-specific, not a property of healthy bearings / low-torque condition)
+    n15_m01_r_between 0.9096
+    n15_m01_p_between 0.0002551
+    n09_r_between 0.9799
+    n09_p_between 6.755e-05
+
+K006/N15_M01_F10_K006_1.mat    N  468  ref  31.7 dB ok  depth 0.0119  R 0.661  mu  -177.3 deg  p 1.9e-89  ±45° 0.59  nullA99 0.096 / bar 0.119
+K006/N15_M01_F10_K006_2.mat    N  189  ref  34.4 dB ok  depth 0.0162  R 0.805  mu  -130.0 deg  p 6.1e-54  ±45° 0.76  nullA99 0.155 / bar 0.187
+K006/N15_M01_F10_K006_3.mat    N  211  ref  33.7 dB ok  depth 0.0144  R 0.709  mu   +53.7 deg  p 7.6e-47  ±45° 0.76  nullA99 0.147 / bar 0.177
+K006/N15_M01_F10_K006_4.mat    N  239  ref  30.2 dB ok  depth 0.0116  R 0.757  mu  +166.1 deg  p 3.1e-60  ±45° 0.71  nullA99 0.138 / bar 0.167
+K006/N15_M01_F10_K006_5.mat    N  478  ref  31.9 dB ok  depth 0.0144  R 0.812  mu   +52.7 deg  p 9.7e-138  ±45° 0.88  nullA99 0.098 / bar 0.118
+K006/N15_M01_F10_K006_6.mat    N  554  ref  36.9 dB ok  depth 0.0222  R 0.655  mu   -42.6 deg  p 6.3e-104  ±45° 0.67  nullA99 0.094 / bar 0.109
+K006/N15_M01_F10_K006_7.mat    N  151  ref  36.5 dB ok  depth 0.0221  R 0.853  mu   -45.1 deg  p 1.8e-48  ±45° 0.87  nullA99 0.179 / bar 0.210
+K006/N15_M01_F10_K006_8.mat    N  377  ref  37.1 dB ok  depth 0.0211  R 0.751  mu   -14.5 deg  p 3.8e-93  ±45° 0.79  nullA99 0.108 / bar 0.133
+K006/N15_M01_F10_K006_9.mat    N  436  ref  38.5 dB ok  depth 0.0221  R 0.794  mu   -63.8 deg  p 3.9e-120  ±45° 0.80  nullA99 0.106 / bar 0.123
+K006/N15_M01_F10_K006_10.mat   N  166  ref  32.8 dB ok  depth 0.0132  R 0.672  mu   +83.9 deg  p 2.6e-33  ±45° 0.58  nullA99 0.161 / bar 0.200
+K006/N09_M07_F10_K006_1.mat    N  459  ref  26.6 dB ok  depth 0.0040  R 0.781  mu   -54.4 deg  p 3.5e-122  ±45° 0.81  nullA99 0.098 / bar 0.120
+K006/N09_M07_F10_K006_2.mat    N  505  ref  29.4 dB ok  depth 0.0042  R 0.782  mu   -63.5 deg  p 8.3e-135  ±45° 0.80  nullA99 0.094 / bar 0.115
+K006/N09_M07_F10_K006_3.mat    N  451  ref  26.6 dB ok  depth 0.0042  R 0.740  mu   -59.7 deg  p 4.2e-108  ±45° 0.72  nullA99 0.101 / bar 0.121
+K006/N09_M07_F10_K006_4.mat    N  447  ref  27.3 dB ok  depth 0.0043  R 0.753  mu   -62.6 deg  p 1.1e-110  ±45° 0.75  nullA99 0.100 / bar 0.122
+K006/N09_M07_F10_K006_5.mat    N  418  ref  26.7 dB ok  depth 0.0041  R 0.770  mu   -58.4 deg  p 2.8e-108  ±45° 0.78  nullA99 0.109 / bar 0.126
+K006/N09_M07_F10_K006_6.mat    N  111  ref  27.3 dB ok  depth 0.0041  R 0.826  mu   -60.8 deg  p 1.3e-33  ±45° 0.79  nullA99 0.207 / bar 0.244
+K006/N09_M07_F10_K006_7.mat    N  421  ref  27.3 dB ok  depth 0.0040  R 0.767  mu   -65.0 deg  p 2.3e-108  ±45° 0.79  nullA99 0.106 / bar 0.126
+K006/N09_M07_F10_K006_8.mat    N  417  ref  27.2 dB ok  depth 0.0040  R 0.684  mu   -62.6 deg  p 1.6e-85  ±45° 0.73  nullA99 0.106 / bar 0.126
+K006/N09_M07_F10_K006_9.mat    N  321  ref  27.9 dB ok  depth 0.0041  R 0.625  mu   -68.1 deg  p 3.8e-55  ±45° 0.66  nullA99 0.120 / bar 0.144
+K006/N09_M07_F10_K006_10.mat   N  396  ref  26.8 dB ok  depth 0.0040  R 0.614  mu   -65.3 deg  p 1.4e-65  ±45° 0.67  nullA99 0.103 / bar 0.129
+
+[K006] Q3 SCATTERS  C3n PASS  (scatter is not unique to K001; follow-up warranted (do not silently run fund residual without amended prereg))
+    n15_m01_r_between 0.1628
+    n15_m01_p_between 0.7672
+    n09_r_between 0.9979
+    n09_p_between 4.735e-05
+
+not spiky: none
+
+[set verdict]
+{
+ "valid_bearings": [
+  "K004",
+  "K005",
+  "K006"
+ ],
+ "q3_valid": {
+  "K004": "SCATTERS",
+  "K005": "LOCKS",
+  "K006": "SCATTERS"
+ },
+ "n_valid": 3,
+ "S": "FALSIFIED"
+}
+wrote artifacts/paderborn/healthy-set-phase-metrics.json
