@@ -1809,3 +1809,41 @@ def k003_phase_verdicts(
         reading = "not settled"
     out["reading"] = reading
     return out
+
+
+# --- healthy-set N15_M01 phase check (prereg-2026-11-08-healthy-set-phase.md) ---
+
+HEALTHY_SET_SEED = 20261108
+HEALTHY_SET_MIN_VALID = 2
+
+
+def healthy_set_verdict(per_bearing: dict[str, dict]) -> dict:
+    """Set verdict S for the 2026-11-08 healthy-set check.
+
+    ``per_bearing`` maps bearing code → the dict returned by
+    :func:`k003_phase_verdicts` for that bearing (same Q3 / C3n rules).
+    A bearing is valid if C3n is PASS and Q3 is not UNTESTABLE. S is
+    UNTESTABLE with fewer than ``HEALTHY_SET_MIN_VALID`` valid bearings,
+    FALSIFIED if any valid bearing SCATTERS, HELD if every valid bearing
+    LOCKS, else NOT SETTLED.
+    """
+    valid = [
+        b
+        for b, v in per_bearing.items()
+        if v.get("C3n") == "PASS" and v.get("Q3") != "UNTESTABLE"
+    ]
+    q3 = {b: per_bearing[b].get("Q3") for b in valid}
+    if len(valid) < HEALTHY_SET_MIN_VALID:
+        s = "UNTESTABLE"
+    elif any(x == "SCATTERS" for x in q3.values()):
+        s = "FALSIFIED"
+    elif all(x == "LOCKS" for x in q3.values()):
+        s = "HELD"
+    else:
+        s = "NOT SETTLED"
+    return {
+        "valid_bearings": valid,
+        "q3_valid": q3,
+        "n_valid": len(valid),
+        "S": s,
+    }

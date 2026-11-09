@@ -54,6 +54,10 @@ BEARINGS: dict[str, tuple[str, str]] = {
 EXTRA_BEARINGS: dict[str, tuple[str, str]] = {
     "K002": ("healthy", "88631bc0081a6470846d18189d46381d"),
     "K003": ("healthy", "08b61792e1058dc47dd21071666bca2c"),
+    # healthy-set N15_M01 phase check (2026-11-08); MD5s from the Zenodo API listing
+    "K004": ("healthy", "5b9fde1c6d754806539f9a890ee6bbdd"),
+    "K005": ("healthy", "28d91412ad14583fbdfda958b64a8267"),
+    "K006": ("healthy", "b36389294fc5a21539d9fcfacfa3604a"),
 }
 
 #: operating conditions (speed / torque / radial force codes), measurement _1
@@ -338,6 +342,67 @@ MAT_SHA256: dict[str, str] = {
     "K003/N09_M07_F10_K003_8.mat": "c85f58fe83ed9fffaee22ab873a9548c73a171b760b0b70029d52185853926f9",
     "K003/N09_M07_F10_K003_9.mat": "260f7beed4915afcd977fd7f22340230eea2467e1a9a193125d9ae16278f607c",
     "K003/N09_M07_F10_K003_10.mat": "f6c552c45e84aedbdd482a86ef1842c7155af371bb1dcce114897ca7d2996449",
+    # K004/K005/K006 N15_M01_F10 + N09_M07_F10 _1.._10 (healthy-set phase), pinned 2026-11-08 before analysis
+    "K004/N15_M01_F10_K004_1.mat": "aa09c3c3da565c6dec605b837e5f2707d2d31c2e6480eb01261900efa77ec90d",
+    "K004/N15_M01_F10_K004_2.mat": "063dc7020f5bc984a305b8d5e2f36e858665194dd5e7e1ec98e00fd8cc24206d",
+    "K004/N15_M01_F10_K004_3.mat": "ef9d7b961b36822b38288cd183a478da5fc2a1840e9d03bbc5a557b96d0f2aef",
+    "K004/N15_M01_F10_K004_4.mat": "3af176c1a7d5ec2e392dd931d3749f1ad0092dfaec9fe8cb23c02051c90590da",
+    "K004/N15_M01_F10_K004_5.mat": "4900972a9d8f5d71c685baa585a15a649c3a8ff25c7d9d5d00cba956528578c2",
+    "K004/N15_M01_F10_K004_6.mat": "a5fb6a29f8690f1aaa8efadd5f33a14526129916a9ec484a8cb647da94d1bf1c",
+    "K004/N15_M01_F10_K004_7.mat": "25c62425101256ab6a66c2a166be6bbea313ebb802604bdf3986c28795cb59d9",
+    "K004/N15_M01_F10_K004_8.mat": "92dc2e832fa09abe08db2f0991cfb98d76f63fd721d83c73a8c100d9a9a50585",
+    "K004/N15_M01_F10_K004_9.mat": "97ceebe64e4b233596570c7824d5dfd27b545b52983d9077d3bbfa6d083befa2",
+    "K004/N15_M01_F10_K004_10.mat": "4b7f16b1e248766aefe40c2b84086f2117d003693c0afdfad9c23b1f2cd23631",
+    "K004/N09_M07_F10_K004_1.mat": "31426daacf26f23807759109a444ddc95ebe30db00f923981f7ed9ce76b4cab6",
+    "K004/N09_M07_F10_K004_2.mat": "5549d0dd2a53d9c0388f09653711a4a5edf3ee1be088773e5fdec2c83f86958a",
+    "K004/N09_M07_F10_K004_3.mat": "94b1f6ccff01adf6b8b6bcf093d87991a2de9e842a6489db3153ceec6a8abb47",
+    "K004/N09_M07_F10_K004_4.mat": "1ea311e79b3698988a985b167ef06f62803a051803cd606840cb370963fff8c5",
+    "K004/N09_M07_F10_K004_5.mat": "c32f97d8e1f9868e434b0a686674180392b506717a14d889f5d9c1f11d20e994",
+    "K004/N09_M07_F10_K004_6.mat": "43ed10f41bb020eb34da539a7a8c33b8f03732ef7250a0d1f29fa6d1675a550c",
+    "K004/N09_M07_F10_K004_7.mat": "7d481ecdbd3489537604824d10e8b1d4d2a57474afb7af7bb74a8b35ae0ca3a2",
+    "K004/N09_M07_F10_K004_8.mat": "fc712f2d838485283eba223153ee0931c805636914bbdb41660473374f87eab0",
+    "K004/N09_M07_F10_K004_9.mat": "e6b55b233b6ed3f830ee95d73943910525d44a2409a3bcc9f04676de4a63608f",
+    "K004/N09_M07_F10_K004_10.mat": "e29aaa324382f018b0c6e44b597806ae185118976a0d6185e523d9569f366423",
+    "K005/N15_M01_F10_K005_1.mat": "39f58535a9628b7119f3b333101ad336452df34a1eca1c17b3fe00367f51a4aa",
+    "K005/N15_M01_F10_K005_2.mat": "24bdf554a88f1235624a16d993804311a26624843cbb088b69bebd661080a836",
+    "K005/N15_M01_F10_K005_3.mat": "e024c3a7dba2e861a8c5acc78daf814466f825e8ec06a3dd635f825520d8ecee",
+    "K005/N15_M01_F10_K005_4.mat": "826f7c554fba68dfaa1fffb4c43cdd10ce0b86810ec9254bca6ea3255beaf5e3",
+    "K005/N15_M01_F10_K005_5.mat": "eb5e7ed1b5e53be0e8f7c114baf4dc09a3d07894a394186ba2b9fbc970f06152",
+    "K005/N15_M01_F10_K005_6.mat": "c211beb43953447bf580474ffacaf87e7ec741caee7e4529cc9e3389f2734184",
+    "K005/N15_M01_F10_K005_7.mat": "ebce5ffc397d74b7c59913e271ce2b56d84b5b74bbbb2bb85baf814f4bff63c0",
+    "K005/N15_M01_F10_K005_8.mat": "f7439b4d556ab9a4f60fc636246b9c72e824e124b0f2e46d3a9405b11046b09f",
+    "K005/N15_M01_F10_K005_9.mat": "a7e19ac7e06234f183694893f4892725f42fa586e1de7e9a318b50f6b390218d",
+    "K005/N15_M01_F10_K005_10.mat": "64948f19d16737e1e8b78be442ec6200b179257e2f1fe3ba891a3cdcc26658ca",
+    "K005/N09_M07_F10_K005_1.mat": "483bb71afbf45786faa3b960dc6850c87861a49cb07cae162574ef4e662a0c72",
+    "K005/N09_M07_F10_K005_2.mat": "7e9701c00f67e9732203132fa9c1e009ebef820571ee12b489301dbe6308eefd",
+    "K005/N09_M07_F10_K005_3.mat": "157355726066227a1fd38865d6b385c37f1fc64862fbf17c2e47eb4b81d9a752",
+    "K005/N09_M07_F10_K005_4.mat": "daf43de6e0c94273e26344fd0ac41775eef6f636d3c58c91c03f38d56737da48",
+    "K005/N09_M07_F10_K005_5.mat": "fa0c8cca1ae257ee1a98b12f0aa662db5a11eecad3241ae3b5a5ca634346ee69",
+    "K005/N09_M07_F10_K005_6.mat": "9094c83d11749d200d0d25452192bd683939abeec0f8a225ee331a01cb40a238",
+    "K005/N09_M07_F10_K005_7.mat": "5c48e8deac53882a95217684341d1a9fed8506506f0b5b82f614f21c7103d108",
+    "K005/N09_M07_F10_K005_8.mat": "3f6db296e6843ee81c8bfce4e0858eb4d4b90eaf14c3bf17ed1094fb621e2d72",
+    "K005/N09_M07_F10_K005_9.mat": "2bb151be36a87c48e27da25a74b13453e377d25e23919c18ba81f494392f2cd0",
+    "K005/N09_M07_F10_K005_10.mat": "8b6323ba2a2ecadc17fe4783dea66dc65215c96bb9c924abc6362fb8a1ae30fe",
+    "K006/N15_M01_F10_K006_1.mat": "89aac9c4346726d8989f758f6c985f13b03fff4a553e3ebb54ddc7acfc56fe59",
+    "K006/N15_M01_F10_K006_2.mat": "ac6affd0b93b6842d839972dd7bfb44f48130ce073e0f52f713d770d34cdc920",
+    "K006/N15_M01_F10_K006_3.mat": "be3394fb96a9a5ccf39bc4ffe0064e24b6c8349931b51a39c1d240723869bfac",
+    "K006/N15_M01_F10_K006_4.mat": "d3dd930b4cdc383b60af88684ac61d5f9bbaf9789a369c30c1f754bae8e5a976",
+    "K006/N15_M01_F10_K006_5.mat": "3a2d4f8fd34e98ad67d3f6edbaff389d5839a94742d2b549e3e7456cde784036",
+    "K006/N15_M01_F10_K006_6.mat": "49f1435a4fb0aa1a5bd94465ea71ab6d3e0189d5dc24ebcee0082048cb1f37ae",
+    "K006/N15_M01_F10_K006_7.mat": "ac85dd7cb860e5e1a40420a3fc3436abfe5e7f460a978f474e6297f5621efca0",
+    "K006/N15_M01_F10_K006_8.mat": "cecd4e5574076e7af916ddcdc467dcfdc8c09e98e6cf973c66e0b1c54a0ecc71",
+    "K006/N15_M01_F10_K006_9.mat": "2e3da4bfcc7adac2ac7a4edfd7c9ef3bfa693efadbe239ca1fc8cbc5223b3c10",
+    "K006/N15_M01_F10_K006_10.mat": "86312b89e0762ebaaabfff9720af2aacb812f2db10d63c38f61c2be61c92b98e",
+    "K006/N09_M07_F10_K006_1.mat": "04e95745d8e71a23ba60c96bd57b9fa69278d40f0beb439f86c68ec7328bd4d0",
+    "K006/N09_M07_F10_K006_2.mat": "06e1271b246708ce880f83a81c32991736a07d0bdcf8203f3e9b03ea66fd8d8b",
+    "K006/N09_M07_F10_K006_3.mat": "edf0e95cb5f5f39f1b7b59cd35e1787506da72c8e25b97bd52f200c5cbb2d1f0",
+    "K006/N09_M07_F10_K006_4.mat": "e38326433b9c5de82a5c9d6028f1d31451272ba1bf46080e3e1e26a7f9e58865",
+    "K006/N09_M07_F10_K006_5.mat": "19d7ea5a7b762cce56e44654fc93ad07a2af540cec4ddf56daf059797128d215",
+    "K006/N09_M07_F10_K006_6.mat": "dc44154c78bf4efee3ff22aa1743415ef50c5756fe7f237516bcc0d582ad581a",
+    "K006/N09_M07_F10_K006_7.mat": "e6a87501af27d9b12850161848b51c47315263554f61c635b7703fd24f35af9c",
+    "K006/N09_M07_F10_K006_8.mat": "be94363cf312a832106c1bb4ad228020330ce8507b878aa6d34e165d16e61c6c",
+    "K006/N09_M07_F10_K006_9.mat": "dbb252f3ff3386da4c6c99420baa24ff69bb144465bd534318ad1e710d639a22",
+    "K006/N09_M07_F10_K006_10.mat": "ca19dd05781cdc0ffafabd7abbd315f6d8735e5afc20cf0d9fd9d824c7539bd8",
 }
 
 #: Environment variable that overrides the Paderborn cache directory.
@@ -372,6 +437,11 @@ FUND_CONDITIONS = ("N15_M01_F10", "N09_M07_F10")
 K003_PHASE_MEASUREMENTS = tuple(range(1, 11))
 K003_PHASE_CONDITIONS = ("N15_M01_F10", "N09_M07_F10")
 
+#: 2026-11-08 healthy-set N15_M01 phase check (prereg-2026-11-08-healthy-set-phase.md)
+HEALTHY_SET_BEARINGS = ("K004", "K005", "K006")
+HEALTHY_SET_MEASUREMENTS = tuple(range(1, 11))
+HEALTHY_SET_CONDITIONS = ("N15_M01_F10", "N09_M07_F10")
+
 
 def member(bearing: str, condition: str, meas: int = 1) -> str:
     """Archive member path, e.g. ``K001/N15_M07_F10_K001_1.mat``."""
@@ -401,6 +471,40 @@ def _fetch_rar(bearing: str, cache: Path) -> Path:
     return rar
 
 
+#: Environment variable naming a 7-Zip binary to use when ``unar`` is absent.
+SEVENZIP_ENV = "FOLDCRYPT_7ZZ"
+
+
+def extractor() -> tuple[str, str] | None:
+    """``("unar", path)`` or ``("7z", path)`` for the first available .rar
+    extractor, else ``None``.
+
+    Prefers ``unar``; falls back to 7-Zip (``$FOLDCRYPT_7ZZ``, then ``7zz``,
+    then ``7z`` on PATH). Extracted files are SHA-256 checked afterwards, so
+    results do not depend on which extractor ran.
+    """
+    unar = shutil.which("unar")
+    if unar is not None:
+        return ("unar", unar)
+    env = os.environ.get(SEVENZIP_ENV, "").strip()
+    for c in ([env] if env else []) + ["7zz", "7z"]:
+        exe = shutil.which(c)
+        if exe is not None:
+            return ("7z", exe)
+    return None
+
+
+def extract_command(
+    tool: tuple[str, str], rar: Path, cache: Path, name: str
+) -> list[str]:
+    """Command that extracts member ``name`` of ``rar`` into ``cache``, keeping
+    the member's ``<bearing>/`` folder."""
+    kind, exe = tool
+    if kind == "unar":
+        return [exe, "-q", "-f", "-o", str(cache), str(rar), name]
+    return [exe, "x", "-y", "-bso0", "-bsp0", f"-o{cache}", str(rar), name]
+
+
 def fetch(
     bearing: str,
     condition: str,
@@ -421,13 +525,15 @@ def fetch(
         return path
     if not download:
         raise FileNotFoundError(f"{path} missing or bad checksum")
-    if shutil.which("unar") is None:
-        raise OSError("extracting the Paderborn .rar archives needs the 'unar' tool")
+    tool = extractor()
+    if tool is None:
+        raise OSError(
+            "extracting the Paderborn .rar archives needs 'unar' or 7-Zip "
+            f"('7zz'/'7z' on PATH, or ${SEVENZIP_ENV})"
+        )
     rar = _fetch_rar(bearing, cache)
     subprocess.run(
-        ["unar", "-q", "-f", "-o", str(cache), str(rar), name],
-        check=True,
-        stdout=subprocess.DEVNULL,
+        extract_command(tool, rar, cache, name), check=True, stdout=subprocess.DEVNULL
     )
     got = _digest(path, "sha256")
     if want is not None and got != want:
