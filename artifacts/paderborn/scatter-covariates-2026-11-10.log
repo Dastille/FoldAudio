@@ -1,0 +1,92 @@
+# prereg artifacts/paderborn/prereg-2026-11-10-scatter-covariates.md
+# seed 20261110; condition N15_M01_F10
+K001/N15_M01_F10_K001_11.mat   speed_cv 0.000220135  torque_mean_nm 0.621934  spike_amp_median 2.85797  temp_mean_c 44.8944  n_spikes_trimmed 240  ripple_depth 0.0151368
+K001/N15_M01_F10_K001_12.mat   speed_cv 9.96266e-05  torque_mean_nm 0.621584  spike_amp_median 2.76184  temp_mean_c 44.9414  n_spikes_trimmed 263  ripple_depth 0.0101715
+K001/N15_M01_F10_K001_13.mat   speed_cv 0.000141588  torque_mean_nm 0.620946  spike_amp_median 2.76184  temp_mean_c 45.0012  n_spikes_trimmed 347  ripple_depth 0.0163026
+K001/N15_M01_F10_K001_14.mat   speed_cv 0.000286655  torque_mean_nm 0.620316  spike_amp_median 2.71759  temp_mean_c 45.0226  n_spikes_trimmed 354  ripple_depth 0.0131498
+K001/N15_M01_F10_K001_15.mat   speed_cv 0.000130988  torque_mean_nm 0.619672  spike_amp_median 2.73132  temp_mean_c 45.116  n_spikes_trimmed 360  ripple_depth 0.0146802
+K001/N15_M01_F10_K001_16.mat   speed_cv 0.000163227  torque_mean_nm 0.619684  spike_amp_median 2.74353  temp_mean_c 45.2795  n_spikes_trimmed 265  ripple_depth 0.0101137
+K001/N15_M01_F10_K001_17.mat   speed_cv 0.000171747  torque_mean_nm 0.619953  spike_amp_median 2.77863  temp_mean_c 45.304  n_spikes_trimmed 284  ripple_depth 0.00768037
+K001/N15_M01_F10_K001_18.mat   speed_cv 0.000155382  torque_mean_nm 0.619265  spike_amp_median 2.99683  temp_mean_c 45.3381  n_spikes_trimmed 200  ripple_depth 0.00638235
+K001/N15_M01_F10_K001_19.mat   speed_cv 9.55451e-05  torque_mean_nm 0.618804  spike_amp_median 2.85034  temp_mean_c 45.481  n_spikes_trimmed 273  ripple_depth 0.0129199
+K001/N15_M01_F10_K001_20.mat   speed_cv 0.000249678  torque_mean_nm 0.618347  spike_amp_median 2.72522  temp_mean_c 45.5194  n_spikes_trimmed 293  ripple_depth 0.0125099
+K002/N15_M01_F10_K002_6.mat    speed_cv 0.00109867  torque_mean_nm 0.656144  spike_amp_median 2.25067  temp_mean_c 47.3077  n_spikes_trimmed 142  ripple_depth 0.00511872
+K002/N15_M01_F10_K002_7.mat    speed_cv 0.00100652  torque_mean_nm 0.649125  spike_amp_median 2.24609  temp_mean_c 48.1403  n_spikes_trimmed 101  ripple_depth 0.00731432
+K002/N15_M01_F10_K002_8.mat    speed_cv 0.000834853  torque_mean_nm 0.649631  spike_amp_median 2.4292  temp_mean_c 47.7454  n_spikes_trimmed 53  ripple_depth 0.00628993
+K002/N15_M01_F10_K002_9.mat    speed_cv 0.00065616  torque_mean_nm 0.657153  spike_amp_median 1.84631  temp_mean_c 47.3224  n_spikes_trimmed 391  ripple_depth 0.00610418
+K002/N15_M01_F10_K002_10.mat   speed_cv 0.0012748  torque_mean_nm 0.657938  spike_amp_median 2.3407  temp_mean_c 47.4377  n_spikes_trimmed 71  ripple_depth 0.00692406
+K002/N15_M01_F10_K002_11.mat   speed_cv 0.000777585  torque_mean_nm 0.649511  spike_amp_median 2.19421  temp_mean_c 47.3358  n_spikes_trimmed 103  ripple_depth 0.00493117
+K002/N15_M01_F10_K002_12.mat   speed_cv 0.000945719  torque_mean_nm 0.651256  spike_amp_median 2.0752  temp_mean_c 47.55  n_spikes_trimmed 167  ripple_depth 0.00523833
+K002/N15_M01_F10_K002_13.mat   speed_cv 0.00144896  torque_mean_nm 0.64924  spike_amp_median 1.88904  temp_mean_c 47.8876  n_spikes_trimmed 402  ripple_depth 0.00514251
+K002/N15_M01_F10_K002_14.mat   speed_cv 0.000539486  torque_mean_nm 0.652776  spike_amp_median 2.02332  temp_mean_c 47.5513  n_spikes_trimmed 219  ripple_depth 0.00553093
+K002/N15_M01_F10_K002_15.mat   speed_cv 0.000665329  torque_mean_nm 0.655158  spike_amp_median 2.92358  temp_mean_c 47.6117  n_spikes_trimmed 14  ripple_depth 0.00544716
+K002/N15_M01_F10_K002_16.mat   speed_cv 0.000656145  torque_mean_nm 0.652026  spike_amp_median 2.211  temp_mean_c 47.9218  n_spikes_trimmed 114  ripple_depth 0.00678761
+K002/N15_M01_F10_K002_17.mat   speed_cv 0.000495235  torque_mean_nm 0.654812  spike_amp_median 2.44141  temp_mean_c 47.5543  n_spikes_trimmed 29  ripple_depth 0.00715607
+K002/N15_M01_F10_K002_18.mat   speed_cv 0.000740517  torque_mean_nm 0.649172  spike_amp_median 2.16675  temp_mean_c 47.5763  n_spikes_trimmed 142  ripple_depth 0.00743477
+K002/N15_M01_F10_K002_19.mat   speed_cv 0.000829803  torque_mean_nm 0.644738  spike_amp_median 1.89056  temp_mean_c 47.9681  n_spikes_trimmed 250  ripple_depth 0.00611895
+K002/N15_M01_F10_K002_20.mat   speed_cv 0.000470519  torque_mean_nm 0.648231  spike_amp_median 2.18353  temp_mean_c 47.7325  n_spikes_trimmed 104  ripple_depth 0.00620804
+K003/N15_M01_F10_K003_1.mat    speed_cv 0.000121991  torque_mean_nm 0.641384  spike_amp_median 2.36511  temp_mean_c 44.1748  n_spikes_trimmed 586  ripple_depth 0.00723996
+K003/N15_M01_F10_K003_2.mat    speed_cv 0.000248733  torque_mean_nm 0.631546  spike_amp_median 3.09448  temp_mean_c 44.1113  n_spikes_trimmed 84  ripple_depth 0.00737453
+K003/N15_M01_F10_K003_3.mat    speed_cv 0.000223758  torque_mean_nm 0.628057  spike_amp_median 2.56195  temp_mean_c 44.0527  n_spikes_trimmed 386  ripple_depth 0.0066335
+K003/N15_M01_F10_K003_4.mat    speed_cv 0.000173106  torque_mean_nm 0.621577  spike_amp_median 2.64893  temp_mean_c 44.0155  n_spikes_trimmed 300  ripple_depth 0.0045553
+K003/N15_M01_F10_K003_5.mat    speed_cv 0.000162902  torque_mean_nm 0.617719  spike_amp_median 2.98767  temp_mean_c 44.079  n_spikes_trimmed 145  ripple_depth 0.00588553
+K003/N15_M01_F10_K003_6.mat    speed_cv 0.000142069  torque_mean_nm 0.615363  spike_amp_median 2.73132  temp_mean_c 44.0485  n_spikes_trimmed 293  ripple_depth 0.00658231
+K003/N15_M01_F10_K003_7.mat    speed_cv 0.000140495  torque_mean_nm 0.613719  spike_amp_median 3.03955  temp_mean_c 44.1144  n_spikes_trimmed 117  ripple_depth 0.00672155
+K003/N15_M01_F10_K003_8.mat    speed_cv 0.000242104  torque_mean_nm 0.612505  spike_amp_median 2.83813  temp_mean_c 44.1644  n_spikes_trimmed 219  ripple_depth 0.00690218
+K003/N15_M01_F10_K003_9.mat    speed_cv 0.000152243  torque_mean_nm 0.611426  spike_amp_median 2.43683  temp_mean_c 44.2462  n_spikes_trimmed 442  ripple_depth 0.0056424
+K003/N15_M01_F10_K003_10.mat   speed_cv 0.000173778  torque_mean_nm 0.611129  spike_amp_median 2.49634  temp_mean_c 44.2572  n_spikes_trimmed 396  ripple_depth 0.00691868
+K004/N15_M01_F10_K004_1.mat    speed_cv 0.000323873  torque_mean_nm 0.674879  spike_amp_median 1.09253  temp_mean_c 49.4165  n_spikes_trimmed 61  ripple_depth 0.0166346
+K004/N15_M01_F10_K004_2.mat    speed_cv 0.000366353  torque_mean_nm 0.659721  spike_amp_median 0.958252  temp_mean_c 49.2841  n_spikes_trimmed 149  ripple_depth 0.0128505
+K004/N15_M01_F10_K004_3.mat    speed_cv 0.000180615  torque_mean_nm 0.650655  spike_amp_median 0.961304  temp_mean_c 49.2389  n_spikes_trimmed 183  ripple_depth 0.0111328
+K004/N15_M01_F10_K004_4.mat    speed_cv 0.000150015  torque_mean_nm 0.643761  spike_amp_median 0.927734  temp_mean_c 49.1522  n_spikes_trimmed 218  ripple_depth 0.017412
+K004/N15_M01_F10_K004_5.mat    speed_cv 0.000136272  torque_mean_nm 0.639626  spike_amp_median 1.03149  temp_mean_c 49.2297  n_spikes_trimmed 72  ripple_depth 0.0168404
+K004/N15_M01_F10_K004_6.mat    speed_cv 0.000113739  torque_mean_nm 0.633704  spike_amp_median 0.881958  temp_mean_c 49.2712  n_spikes_trimmed 302  ripple_depth 0.0145434
+K004/N15_M01_F10_K004_7.mat    speed_cv 0.000240648  torque_mean_nm 0.630743  spike_amp_median 0.942993  temp_mean_c 49.2529  n_spikes_trimmed 177  ripple_depth 0.0100202
+K004/N15_M01_F10_K004_8.mat    speed_cv 0.000189153  torque_mean_nm 0.628908  spike_amp_median 0.973511  temp_mean_c 49.2438  n_spikes_trimmed 109  ripple_depth 0.01023
+K004/N15_M01_F10_K004_9.mat    speed_cv 0.000155264  torque_mean_nm 0.627723  spike_amp_median 0.909424  temp_mean_c 49.2377  n_spikes_trimmed 159  ripple_depth 0.0156874
+K004/N15_M01_F10_K004_10.mat   speed_cv 0.000115013  torque_mean_nm 0.625049  spike_amp_median 0.888062  temp_mean_c 49.2664  n_spikes_trimmed 213  ripple_depth 0.00857093
+K005/N15_M01_F10_K005_1.mat    speed_cv 0.000121479  torque_mean_nm 0.662054  spike_amp_median 0.828552  temp_mean_c 44.9896  n_spikes_trimmed 288  ripple_depth 0.00714032
+K005/N15_M01_F10_K005_2.mat    speed_cv 0.000137584  torque_mean_nm 0.650697  spike_amp_median 0.915527  temp_mean_c 44.7144  n_spikes_trimmed 154  ripple_depth 0.00604476
+K005/N15_M01_F10_K005_3.mat    speed_cv 0.000186052  torque_mean_nm 0.643572  spike_amp_median 0.958252  temp_mean_c 44.6838  n_spikes_trimmed 94  ripple_depth 0.00336319
+K005/N15_M01_F10_K005_4.mat    speed_cv 0.000146863  torque_mean_nm 0.636316  spike_amp_median 0.906372  temp_mean_c 44.5624  n_spikes_trimmed 178  ripple_depth 0.00768005
+K005/N15_M01_F10_K005_5.mat    speed_cv 0.000214494  torque_mean_nm 0.632829  spike_amp_median 0.938416  temp_mean_c 44.5978  n_spikes_trimmed 156  ripple_depth 0.00365245
+K005/N15_M01_F10_K005_6.mat    speed_cv 0.000210468  torque_mean_nm 0.630718  spike_amp_median 0.918579  temp_mean_c 44.4507  n_spikes_trimmed 80  ripple_depth 0.00503692
+K005/N15_M01_F10_K005_7.mat    speed_cv 0.000132558  torque_mean_nm 0.629836  spike_amp_median 0.990295  temp_mean_c 44.4147  n_spikes_trimmed 132  ripple_depth 0.00489208
+K005/N15_M01_F10_K005_8.mat    speed_cv 0.000115169  torque_mean_nm 0.62941  spike_amp_median 0.881958  temp_mean_c 44.2627  n_spikes_trimmed 272  ripple_depth 0.00901837
+K005/N15_M01_F10_K005_9.mat    speed_cv 7.32258e-05  torque_mean_nm 0.627243  spike_amp_median 1.01013  temp_mean_c 44.2664  n_spikes_trimmed 52  ripple_depth 0.00531915
+K005/N15_M01_F10_K005_10.mat   speed_cv 6.86912e-05  torque_mean_nm 0.626603  spike_amp_median 0.868225  temp_mean_c 44.2584  n_spikes_trimmed 272  ripple_depth 0.00830119
+K006/N15_M01_F10_K006_1.mat    speed_cv 8.19366e-05  torque_mean_nm 0.610759  spike_amp_median 2.62146  temp_mean_c 43.1659  n_spikes_trimmed 468  ripple_depth 0.0118918
+K006/N15_M01_F10_K006_2.mat    speed_cv 5.73553e-05  torque_mean_nm 0.607999  spike_amp_median 2.82898  temp_mean_c 43.1323  n_spikes_trimmed 189  ripple_depth 0.0161822
+K006/N15_M01_F10_K006_3.mat    speed_cv 0.000284909  torque_mean_nm 0.604679  spike_amp_median 2.83203  temp_mean_c 43.2355  n_spikes_trimmed 211  ripple_depth 0.0144273
+K006/N15_M01_F10_K006_4.mat    speed_cv 0.000138304  torque_mean_nm 0.602905  spike_amp_median 2.92358  temp_mean_c 43.1543  n_spikes_trimmed 239  ripple_depth 0.0115728
+K006/N15_M01_F10_K006_5.mat    speed_cv 7.40657e-05  torque_mean_nm 0.600131  spike_amp_median 2.57416  temp_mean_c 43.3679  n_spikes_trimmed 478  ripple_depth 0.0144414
+K006/N15_M01_F10_K006_6.mat    speed_cv 8.87472e-05  torque_mean_nm 0.599126  spike_amp_median 2.56653  temp_mean_c 43.5101  n_spikes_trimmed 554  ripple_depth 0.0221716
+K006/N15_M01_F10_K006_7.mat    speed_cv 0.000177572  torque_mean_nm 0.596035  spike_amp_median 3.08228  temp_mean_c 43.4741  n_spikes_trimmed 151  ripple_depth 0.0220651
+K006/N15_M01_F10_K006_8.mat    speed_cv 0.000151772  torque_mean_nm 0.595076  spike_amp_median 2.59094  temp_mean_c 43.2135  n_spikes_trimmed 377  ripple_depth 0.0211321
+K006/N15_M01_F10_K006_9.mat    speed_cv 8.55129e-05  torque_mean_nm 0.593458  spike_amp_median 2.63672  temp_mean_c 43.3459  n_spikes_trimmed 436  ripple_depth 0.0221465
+K006/N15_M01_F10_K006_10.mat   speed_cv 0.000130042  torque_mean_nm 0.593964  spike_amp_median 3.02887  temp_mean_c 43.2855  n_spikes_trimmed 166  ripple_depth 0.0132457
+
+[bearing medians]  label  R_between  speed_cv  torque_mean_nm  spike_amp_median  temp_mean_c  n_spikes_trimmed  ripple_depth
+K001 SCATTER  0.490  0.000159305  0.619819  2.76184  45.1978  278.5  0.0127149
+K002 LOCK     0.983  0.000777585  0.651256  2.19421  47.5763  114  0.00611895
+K003 LOCK     0.989  0.000168004  0.616541  2.69012  44.1129  296.5  0.00667752
+K004 SCATTER  0.649  0.000167939  0.636665  0.950623  49.2484  168  0.013697
+K005 LOCK     0.910  0.000135071  0.631773  0.917053  44.5065  155  0.00568195
+K006 SCATTER  0.163  0.000109395  0.599629  2.73285  43.2605  308  0.0153118
+
+[pre-registered covariates, k = 4] (exploratory; min two-sided p = 0.10)
+speed_cv           OVERLAPS   dir None  p 0.40  ranges_disjoint False  scatter ['0.000159305', '0.000167939', '0.000109395']  lock ['0.000777585', '0.000168004', '0.000135071']
+torque_mean_nm     OVERLAPS   dir None  p 0.70  ranges_disjoint False  scatter ['0.619819', '0.636665', '0.599629']  lock ['0.651256', '0.616541', '0.631773']
+spike_amp_median   OVERLAPS   dir None  p 0.40  ranges_disjoint False  scatter ['2.76184', '0.950623', '2.73285']  lock ['2.19421', '2.69012', '0.917053']
+temp_mean_c        OVERLAPS   dir None  p 1.00  ranges_disjoint False  scatter ['45.1978', '49.2484', '43.2605']  lock ['47.5763', '44.1129', '44.5065']
+
+[controls]
+P+ R_between, true labels: SEPARATES p 0.10 -> PASS
+P- R_between, shuffled {'K001': 'LOCK', 'K002': 'SCATTER', 'K003': 'LOCK', 'K004': 'LOCK', 'K005': 'SCATTER', 'K006': 'SCATTER'}: OVERLAPS p 1.00 -> PASS
+controls PASS
+
+[NON-BLIND, already published quantities; not verdicts]
+n_spikes_trimmed   OVERLAPS   dir None  p 0.40  ranges_disjoint False  ranges {K001: 200-360, K002: 14-402, K003: 84-586, K004: 61-302, K005: 52-288, K006: 151-554}
+ripple_depth       SEPARATES  dir SCATTER > LOCK  p 0.10  ranges_disjoint False  ranges {K001: 0.00638235-0.0163026, K002: 0.00493117-0.00743477, K003: 0.0045553-0.00737453, K004: 0.00857093-0.017412, K005: 0.00336319-0.00901837, K006: 0.0115728-0.0221716}
+R0 run-in hours (Lessmeier 2016 Table 7, K001 '>50' as 50): OVERLAPS p 0.70
+wrote artifacts/paderborn/scatter-covariates-metrics.json

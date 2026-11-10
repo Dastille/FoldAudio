@@ -1847,3 +1847,141 @@ def healthy_set_verdict(per_bearing: dict[str, dict]) -> dict:
         "n_valid": len(valid),
         "S": s,
     }
+
+
+# --- scatter vs lock covariates (prereg-2026-11-10-scatter-covariates.md, NOTES #8k) ---
+# Explicitly exploratory: 3 scatter vs 3 lock bearings, exact permutation over 20
+# labellings, smallest two-sided p = 0.10. Nothing here can be confirmed.
+
+SCATTER_COV_SEED = 20261110
+#: bearing → (label, published N15_M01 R_between, label measurement numbers)
+SCATTER_COV_LABELS: dict[str, tuple[str, float, tuple[int, ...]]] = {
+    "K001": ("SCATTER", 0.49027188906199126, tuple(range(11, 21))),
+    "K002": ("LOCK", 0.9833917868855954, tuple(range(6, 21))),
+    "K003": ("LOCK", 0.989109608099979, tuple(range(1, 11))),
+    "K004": ("SCATTER", 0.6493378856513056, tuple(range(1, 11))),
+    "K005": ("LOCK", 0.9096092373426211, tuple(range(1, 11))),
+    "K006": ("SCATTER", 0.16278464006519464, tuple(range(1, 11))),
+}
+SCATTER_COV_CONDITION = "N15_M01_F10"
+#: pre-registered covariates (k = 4)
+SCATTER_COVARIATES = ("speed_cv", "torque_mean_nm", "spike_amp_median", "temp_mean_c")
+#: non-blind quantities (already in published logs) — reported, not verdicts
+SCATTER_NONBLIND = ("n_spikes_trimmed", "ripple_depth")
+MECH_SR = 4000
+#: official run-in metadata, Lessmeier et al. PHME 2016 Table 7 (non-blind context R0);
+#: K001 is ">50" h, stored as its lower bound 50.
+RUN_IN_HOURS = {
+    "K001": 50.0,
+    "K002": 19.0,
+    "K003": 1.0,
+    "K004": 5.0,
+    "K005": 10.0,
+    "K006": 16.0,
+}
+SCATTER_COV_CHANNELS = (
+    "vibration_1",
+    *CURRENT_CHANNELS,
+    "speed",
+    "torque",
+    "temp_2_bearing_module",
+)
+
+
+def _trim(x: np.ndarray, sr: float) -> np.ndarray:
+    e = int(round(EDGE_TRIM_S * sr))
+    x = np.asarray(x, dtype=float)
+    return x[e : len(x) - e] if len(x) > 2 * e else x
+
+
+def covariates_from_signals(ch: dict[str, np.ndarray]) -> dict[str, float]:
+    """Pre-registered per-record covariates (C1–C4) plus the non-blind
+    spike count / ripple depth, from one record's channels."""
+    sp = _trim(ch["speed"], MECH_SR)
+    tq = _trim(ch["torque"], MECH_SR)
+    x = np.asarray(ch["vibration_1"], dtype=float)
+    kept, _lo, _hi = trim_indices(spike_indices(x), len(x), pb.SR)
+    amp = float(np.median(np.abs(x[kept]))) if len(kept) else math.nan
+    m = current_magnitude(ch[CURRENT_CHANNELS[0]], ch[CURRENT_CHANNELS[1]])
+    _phase, depth = ripple_phase(m, pb.SR)
+    mean_sp = float(np.mean(sp))
+    return {
+        "speed_cv": float(np.std(sp) / abs(mean_sp)) if mean_sp != 0 else math.nan,
+        "torque_mean_nm": float(np.mean(tq)),
+        "spike_amp_median": amp,
+        "temp_mean_c": float(np.mean(ch["temp_2_bearing_module"])),
+        "n_spikes_trimmed": float(len(kept)),
+        "ripple_depth": depth,
+    }
+
+
+def scatter_covariates_record(bearing: str, meas: int, cache=None) -> dict[str, float]:
+    """Load one pinned N15_M01 label record (no download) → covariates."""
+    path = pb.fetch(bearing, SCATTER_COV_CONDITION, cache, download=False, meas=meas)
+    return covariates_from_signals(load_channels(path, SCATTER_COV_CHANNELS))
+
+
+def _labellings(n: int = 6, k: int = 3) -> list[tuple[int, ...]]:
+    from itertools import combinations
+
+    return list(combinations(range(n), k))
+
+
+def rank_stat(values: list[float], group: tuple[int, ...]) -> float:
+    """|mean rank(group) − mean rank(rest)| (average ranks for ties)."""
+    from scipy.stats import rankdata
+
+    r = rankdata(values)
+    g = np.zeros(len(values), dtype=bool)
+    g[list(group)] = True
+    return float(abs(r[g].mean() - r[~g].mean()))
+
+
+def covariate_verdict(values: dict[str, float], labels: dict[str, str]) -> dict:
+    """SEPARATES / OVERLAPS / UNTESTABLE for one covariate (prereg rules) plus
+    the exact two-sided permutation p over all labellings of equal group size."""
+    bs = list(values)
+    v = [float(values[b]) for b in bs]
+    if not all(math.isfinite(x) for x in v):
+        return {"verdict": "UNTESTABLE"}
+    s = [values[b] for b in bs if labels[b] == "SCATTER"]
+    lk = [values[b] for b in bs if labels[b] == "LOCK"]
+    if max(s) < min(lk):
+        verdict, direction = "SEPARATES", "SCATTER < LOCK"
+    elif max(lk) < min(s):
+        verdict, direction = "SEPARATES", "SCATTER > LOCK"
+    else:
+        verdict, direction = "OVERLAPS", None
+    grp = tuple(i for i, b in enumerate(bs) if labels[b] == "SCATTER")
+    obs = rank_stat(v, grp)
+    labs = _labellings(len(bs), len(grp))
+    p = sum(rank_stat(v, g) >= obs - 1e-12 for g in labs) / len(labs)
+    return {
+        "verdict": verdict,
+        "direction": direction,
+        "scatter_values": s,
+        "lock_values": lk,
+        "rank_stat": obs,
+        "perm_p_two_sided": p,
+        "n_labellings": len(labs),
+    }
+
+
+def ranges_disjoint(per_record: dict[str, list[float]], labels: dict[str, str]) -> bool:
+    """Descriptive: record-level ranges of the two groups do not overlap."""
+    s = [x for b, xs in per_record.items() if labels[b] == "SCATTER" for x in xs]
+    lk = [x for b, xs in per_record.items() if labels[b] == "LOCK" for x in xs]
+    return max(s) < min(lk) or max(lk) < min(s)
+
+
+def shuffled_labels(
+    labels: dict[str, str], seed: int = SCATTER_COV_SEED
+) -> dict[str, str]:
+    """Negative-control labelling: uniform draw from the labellings with the same
+    group sizes that are neither the true labelling nor its complement."""
+    bs = list(labels)
+    true = tuple(i for i, b in enumerate(bs) if labels[b] == "SCATTER")
+    comp = tuple(i for i in range(len(bs)) if i not in true)
+    pool = [g for g in _labellings(len(bs), len(true)) if g not in (true, comp)]
+    g = pool[int(np.random.default_rng(seed).integers(len(pool)))]
+    return {b: ("SCATTER" if i in g else "LOCK") for i, b in enumerate(bs)}
