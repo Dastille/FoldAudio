@@ -1985,3 +1985,86 @@ def shuffled_labels(
     pool = [g for g in _labellings(len(bs), len(true)) if g not in (true, comp)]
     g = pool[int(np.random.default_rng(seed).integers(len(pool)))]
     return {b: ("SCATTER" if i in g else "LOCK") for i, b in enumerate(bs)}
+
+
+# --- ripple-depth held-out check (prereg-2026-11-11-ripple-heldout.md, NOTES #8k) ---
+# Direction pre-stated (SCATTER > LOCK), so permutation p is one-sided.
+
+#: published training bearing medians (Table 24, scatter-covariates-metrics.json)
+RIPPLE_TRAIN_MEDIANS = {
+    "K001": 0.012714899518091804,
+    "K002": 0.006118949254488217,
+    "K003": 0.00667752251638782,
+    "K004": 0.01369698816280954,
+    "K005": 0.00568195263080804,
+    "K006": 0.015311796585769841,
+}
+#: fixed threshold: midpoint of the training gap (0.009696), two significant figures
+RIPPLE_HELDOUT_T = 0.0097
+#: bearings whose held-out depth was already printed in published logs (non-blind)
+RIPPLE_HELDOUT_NONBLIND = ("K001",)
+
+
+def ripple_depth_from_signals(ch: dict[str, np.ndarray]) -> float:
+    """100 Hz |i_s| ripple modulation depth from one record's two phase currents
+    (same computation as ``covariates_from_signals``)."""
+    m = current_magnitude(ch[CURRENT_CHANNELS[0]], ch[CURRENT_CHANNELS[1]])
+    return ripple_phase(m, pb.SR)[1]
+
+
+def ripple_depth_record(bearing: str, meas: int, cache=None) -> float:
+    """Load one pinned N15_M01_F10 record (no download) → ripple depth."""
+    path = pb.fetch(bearing, SCATTER_COV_CONDITION, cache, download=False, meas=meas)
+    return ripple_depth_from_signals(load_channels(path, CURRENT_CHANNELS))
+
+
+def one_sided_verdict(values: dict[str, float], labels: dict[str, str]) -> dict:
+    """HELD iff every SCATTER value exceeds every LOCK value (pre-stated
+    direction), plus the exact one-sided permutation p over all labellings with
+    the same group sizes (statistic mean rank SCATTER − mean rank LOCK)."""
+    from itertools import combinations
+
+    from scipy.stats import rankdata
+
+    bs = list(values)
+    v = [float(values[b]) for b in bs]
+    if not all(math.isfinite(x) for x in v):
+        return {"verdict": "UNTESTABLE"}
+    s = [values[b] for b in bs if labels[b] == "SCATTER"]
+    lk = [values[b] for b in bs if labels[b] == "LOCK"]
+    if not s or not lk:
+        return {"verdict": "UNTESTABLE"}
+    r = rankdata(v)
+
+    def stat(group: tuple[int, ...]) -> float:
+        g = np.zeros(len(v), dtype=bool)
+        g[list(group)] = True
+        return float(r[g].mean() - r[~g].mean())
+
+    grp = tuple(i for i, b in enumerate(bs) if labels[b] == "SCATTER")
+    obs = stat(grp)
+    labs = list(combinations(range(len(bs)), len(grp)))
+    p = sum(stat(g) >= obs - 1e-12 for g in labs) / len(labs)
+    return {
+        "verdict": "HELD" if min(s) > max(lk) else "FALSIFIED",
+        "scatter_values": s,
+        "lock_values": lk,
+        "rank_stat": obs,
+        "perm_p_one_sided": p,
+        "n_labellings": len(labs),
+    }
+
+
+def threshold_verdict(
+    values: dict[str, float], labels: dict[str, str], t: float = RIPPLE_HELDOUT_T
+) -> dict:
+    """Classify each value SCATTER iff > ``t``; HELD iff all are correct."""
+    pred = {b: ("SCATTER" if x > t else "LOCK") for b, x in values.items()}
+    correct = sum(pred[b] == labels[b] for b in values)
+    return {
+        "verdict": "HELD" if correct == len(values) else "FALSIFIED",
+        "threshold": t,
+        "predicted": pred,
+        "correct": correct,
+        "n": len(values),
+    }
