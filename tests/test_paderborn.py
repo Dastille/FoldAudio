@@ -73,6 +73,11 @@ def test_every_member_is_pinned():
         for c in pb.HEALTHY_SET_CONDITIONS
         for m in pb.HEALTHY_SET_MEASUREMENTS
     }
+    names |= {
+        pb.member(b, "N15_M01_F10", m)
+        for b, ms in pb.RIPPLE_HELDOUT_MEASUREMENTS.items()
+        for m in ms
+    }
     assert names == set(pb.MAT_SHA256)
     assert all(len(h) == 64 for h in pb.MAT_SHA256.values())
 

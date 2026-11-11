@@ -1,2 +1,87 @@
-# run 2026-11-11 09:01:28 EST commit e87ce3d (prereg e87ce3d)
---: line 1: /usr/bin/time: No such file or directory
+# run 2026-11-11 09:01:34 EST code commit 558d114 (prereg e87ce3d)
+# prereg artifacts/paderborn/prereg-2026-11-11-ripple-heldout.md
+[P+ training medians recomputed vs published]
+K001 0.0127148995 vs 0.0127148995
+K002 0.00611894925 vs 0.00611894925
+K003 0.00667752252 vs 0.00667752252
+K004 0.0136969882 vs 0.0136969882
+K005 0.00568195263 vs 0.00568195263
+K006 0.0153117966 vs 0.0153117966
+P+ PASS
+
+[held-out records]
+K001/N15_M01_F10_K001_1.mat    SCATTER  depth 0.006180
+K001/N15_M01_F10_K001_2.mat    SCATTER  depth 0.011447
+K001/N15_M01_F10_K001_3.mat    SCATTER  depth 0.012168
+K001/N15_M01_F10_K001_4.mat    SCATTER  depth 0.014765
+K001/N15_M01_F10_K001_5.mat    SCATTER  depth 0.007172
+K001/N15_M01_F10_K001_6.mat    SCATTER  depth 0.015193
+K001/N15_M01_F10_K001_7.mat    SCATTER  depth 0.005721
+K001/N15_M01_F10_K001_8.mat    SCATTER  depth 0.004968
+K001/N15_M01_F10_K001_9.mat    SCATTER  depth 0.014918
+K001/N15_M01_F10_K001_10.mat   SCATTER  depth 0.013328
+K002/N15_M01_F10_K002_1.mat    LOCK     depth 0.006670
+K002/N15_M01_F10_K002_2.mat    LOCK     depth 0.007016
+K002/N15_M01_F10_K002_3.mat    LOCK     depth 0.007572
+K002/N15_M01_F10_K002_4.mat    LOCK     depth 0.006475
+K002/N15_M01_F10_K002_5.mat    LOCK     depth 0.006412
+K003/N15_M01_F10_K003_11.mat   LOCK     depth 0.007050
+K003/N15_M01_F10_K003_12.mat   LOCK     depth 0.006622
+K003/N15_M01_F10_K003_13.mat   LOCK     depth 0.004271
+K003/N15_M01_F10_K003_14.mat   LOCK     depth 0.006754
+K003/N15_M01_F10_K003_15.mat   LOCK     depth 0.006739
+K003/N15_M01_F10_K003_16.mat   LOCK     depth 0.005063
+K003/N15_M01_F10_K003_17.mat   LOCK     depth 0.004295
+K003/N15_M01_F10_K003_18.mat   LOCK     depth 0.005696
+K003/N15_M01_F10_K003_19.mat   LOCK     depth 0.005300
+K003/N15_M01_F10_K003_20.mat   LOCK     depth 0.006839
+K004/N15_M01_F10_K004_11.mat   SCATTER  depth 0.008232
+K004/N15_M01_F10_K004_12.mat   SCATTER  depth 0.018062
+K004/N15_M01_F10_K004_13.mat   SCATTER  depth 0.011019
+K004/N15_M01_F10_K004_14.mat   SCATTER  depth 0.015988
+K004/N15_M01_F10_K004_15.mat   SCATTER  depth 0.008811
+K004/N15_M01_F10_K004_16.mat   SCATTER  depth 0.008206
+K004/N15_M01_F10_K004_17.mat   SCATTER  depth 0.011046
+K004/N15_M01_F10_K004_18.mat   SCATTER  depth 0.018077
+K004/N15_M01_F10_K004_19.mat   SCATTER  depth 0.011217
+K004/N15_M01_F10_K004_20.mat   SCATTER  depth 0.009120
+K005/N15_M01_F10_K005_11.mat   LOCK     depth 0.009172
+K005/N15_M01_F10_K005_12.mat   LOCK     depth 0.004241
+K005/N15_M01_F10_K005_13.mat   LOCK     depth 0.008959
+K005/N15_M01_F10_K005_14.mat   LOCK     depth 0.008619
+K005/N15_M01_F10_K005_15.mat   LOCK     depth 0.008814
+K005/N15_M01_F10_K005_16.mat   LOCK     depth 0.007153
+K005/N15_M01_F10_K005_17.mat   LOCK     depth 0.005646
+K005/N15_M01_F10_K005_18.mat   LOCK     depth 0.004096
+K005/N15_M01_F10_K005_19.mat   LOCK     depth 0.007710
+K005/N15_M01_F10_K005_20.mat   LOCK     depth 0.003977
+K006/N15_M01_F10_K006_11.mat   SCATTER  depth 0.017609
+K006/N15_M01_F10_K006_12.mat   SCATTER  depth 0.017539
+K006/N15_M01_F10_K006_13.mat   SCATTER  depth 0.022128
+K006/N15_M01_F10_K006_14.mat   SCATTER  depth 0.021914
+K006/N15_M01_F10_K006_15.mat   SCATTER  depth 0.019086
+K006/N15_M01_F10_K006_16.mat   SCATTER  depth 0.013741
+K006/N15_M01_F10_K006_17.mat   SCATTER  depth 0.023045
+K006/N15_M01_F10_K006_18.mat   SCATTER  depth 0.018222
+K006/N15_M01_F10_K006_19.mat   SCATTER  depth 0.018551
+K006/N15_M01_F10_K006_20.mat   SCATTER  depth 0.022677
+
+[held-out bearing medians]
+K001 SCATTER  held-out 0.011808  training 0.012715 (non-blind)
+K002 LOCK     held-out 0.006670  training 0.006119
+K003 LOCK     held-out 0.006159  training 0.006678
+K004 SCATTER  held-out 0.011033  training 0.013697
+K005 LOCK     held-out 0.007431  training 0.005682
+K006 SCATTER  held-out 0.018818  training 0.015312
+
+P- shuffled {'K001': 'LOCK', 'K002': 'SCATTER', 'K003': 'LOCK', 'K004': 'LOCK', 'K005': 'SCATTER', 'K006': 'SCATTER'}: OVERLAPS -> PASS
+controls PASS
+
+[verdicts]
+H1  all 6 bearings: HELD  one-sided p 0.05
+H1b blind 5:        HELD  one-sided p 0.10
+H2  T=0.0097: HELD  6/6 bearings
+
+[descriptive] per-record accuracy at T: 47/55; record ranges disjoint: False
+wrote artifacts/paderborn/ripple-heldout-metrics.json
+# 8 s wall
