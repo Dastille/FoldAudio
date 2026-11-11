@@ -1,0 +1,393 @@
+{
+  "source": "Paderborn KAt via Zenodo 15845309 (CC BY 4.0); N15_M01_F10 K001-K006",
+  "prereg": "artifacts/paderborn/prereg-2026-11-11-ripple-heldout.md",
+  "exploratory": true,
+  "controls": {
+    "p_plus": {
+      "pass": true,
+      "recomputed": {
+        "K001": 0.012714899518091804,
+        "K002": 0.006118949254488217,
+        "K003": 0.00667752251638782,
+        "K004": 0.01369698816280954,
+        "K005": 0.00568195263080804,
+        "K006": 0.015311796585769841
+      }
+    },
+    "p_minus": {
+      "verdict": "OVERLAPS",
+      "direction": null,
+      "scatter_values": [
+        0.006669749560686085,
+        0.007431283265400784,
+        0.018818304740334635
+      ],
+      "lock_values": [
+        0.011807881858824785,
+        0.00615858812544637,
+        0.011032752476400428
+      ],
+      "rank_stat": 0.33333333333333304,
+      "perm_p_two_sided": 1.0,
+      "n_labellings": 20,
+      "pass": true,
+      "labels": {
+        "K001": "LOCK",
+        "K002": "SCATTER",
+        "K003": "LOCK",
+        "K004": "LOCK",
+        "K005": "SCATTER",
+        "K006": "SCATTER"
+      }
+    },
+    "valid": true
+  },
+  "verdicts": {
+    "H1": {
+      "verdict": "HELD",
+      "scatter_values": [
+        0.011807881858824785,
+        0.011032752476400428,
+        0.018818304740334635
+      ],
+      "lock_values": [
+        0.006669749560686085,
+        0.00615858812544637,
+        0.007431283265400784
+      ],
+      "rank_stat": 3.0,
+      "perm_p_one_sided": 0.05,
+      "n_labellings": 20
+    },
+    "H1b_blind": {
+      "verdict": "HELD",
+      "scatter_values": [
+        0.011032752476400428,
+        0.018818304740334635
+      ],
+      "lock_values": [
+        0.006669749560686085,
+        0.00615858812544637,
+        0.007431283265400784
+      ],
+      "rank_stat": 2.5,
+      "perm_p_one_sided": 0.1,
+      "n_labellings": 10
+    },
+    "H2": {
+      "verdict": "HELD",
+      "threshold": 0.0097,
+      "predicted": {
+        "K001": "SCATTER",
+        "K002": "LOCK",
+        "K003": "LOCK",
+        "K004": "SCATTER",
+        "K005": "LOCK",
+        "K006": "SCATTER"
+      },
+      "correct": 6,
+      "n": 6
+    }
+  },
+  "heldout_medians": {
+    "K001": 0.011807881858824785,
+    "K002": 0.006669749560686085,
+    "K003": 0.00615858812544637,
+    "K004": 0.011032752476400428,
+    "K005": 0.007431283265400784,
+    "K006": 0.018818304740334635
+  },
+  "train_medians": {
+    "K001": 0.012714899518091804,
+    "K002": 0.006118949254488217,
+    "K003": 0.00667752251638782,
+    "K004": 0.01369698816280954,
+    "K005": 0.00568195263080804,
+    "K006": 0.015311796585769841
+  },
+  "nonblind": [
+    "K001"
+  ],
+  "per_record_accuracy": [
+    47,
+    55
+  ],
+  "record_ranges_disjoint": false,
+  "records": [
+    {
+      "record": "K001/N15_M01_F10_K001_1.mat",
+      "ripple_depth": 0.006179942121969584,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K001/N15_M01_F10_K001_2.mat",
+      "ripple_depth": 0.011447313947970878,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K001/N15_M01_F10_K001_3.mat",
+      "ripple_depth": 0.01216844976967869,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K001/N15_M01_F10_K001_4.mat",
+      "ripple_depth": 0.014765448521101005,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K001/N15_M01_F10_K001_5.mat",
+      "ripple_depth": 0.007171564890486624,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K001/N15_M01_F10_K001_6.mat",
+      "ripple_depth": 0.015192635919312466,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K001/N15_M01_F10_K001_7.mat",
+      "ripple_depth": 0.00572082666070935,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K001/N15_M01_F10_K001_8.mat",
+      "ripple_depth": 0.004968369592058238,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K001/N15_M01_F10_K001_9.mat",
+      "ripple_depth": 0.014918460420321479,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K001/N15_M01_F10_K001_10.mat",
+      "ripple_depth": 0.01332830850184559,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K002/N15_M01_F10_K002_1.mat",
+      "ripple_depth": 0.006669749560686085,
+      "label": "LOCK"
+    },
+    {
+      "record": "K002/N15_M01_F10_K002_2.mat",
+      "ripple_depth": 0.0070157931784412065,
+      "label": "LOCK"
+    },
+    {
+      "record": "K002/N15_M01_F10_K002_3.mat",
+      "ripple_depth": 0.007571510267283989,
+      "label": "LOCK"
+    },
+    {
+      "record": "K002/N15_M01_F10_K002_4.mat",
+      "ripple_depth": 0.006474745078087345,
+      "label": "LOCK"
+    },
+    {
+      "record": "K002/N15_M01_F10_K002_5.mat",
+      "ripple_depth": 0.0064124224870326305,
+      "label": "LOCK"
+    },
+    {
+      "record": "K003/N15_M01_F10_K003_11.mat",
+      "ripple_depth": 0.007050127056191777,
+      "label": "LOCK"
+    },
+    {
+      "record": "K003/N15_M01_F10_K003_12.mat",
+      "ripple_depth": 0.0066215159906876505,
+      "label": "LOCK"
+    },
+    {
+      "record": "K003/N15_M01_F10_K003_13.mat",
+      "ripple_depth": 0.004270809735831589,
+      "label": "LOCK"
+    },
+    {
+      "record": "K003/N15_M01_F10_K003_14.mat",
+      "ripple_depth": 0.006754456579046497,
+      "label": "LOCK"
+    },
+    {
+      "record": "K003/N15_M01_F10_K003_15.mat",
+      "ripple_depth": 0.0067391574947194485,
+      "label": "LOCK"
+    },
+    {
+      "record": "K003/N15_M01_F10_K003_16.mat",
+      "ripple_depth": 0.0050628946961910745,
+      "label": "LOCK"
+    },
+    {
+      "record": "K003/N15_M01_F10_K003_17.mat",
+      "ripple_depth": 0.0042947649282366095,
+      "label": "LOCK"
+    },
+    {
+      "record": "K003/N15_M01_F10_K003_18.mat",
+      "ripple_depth": 0.005695660260205089,
+      "label": "LOCK"
+    },
+    {
+      "record": "K003/N15_M01_F10_K003_19.mat",
+      "ripple_depth": 0.005299729179644743,
+      "label": "LOCK"
+    },
+    {
+      "record": "K003/N15_M01_F10_K003_20.mat",
+      "ripple_depth": 0.006838720467557179,
+      "label": "LOCK"
+    },
+    {
+      "record": "K004/N15_M01_F10_K004_11.mat",
+      "ripple_depth": 0.008231582947802641,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K004/N15_M01_F10_K004_12.mat",
+      "ripple_depth": 0.018062008884615476,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K004/N15_M01_F10_K004_13.mat",
+      "ripple_depth": 0.011019010661788712,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K004/N15_M01_F10_K004_14.mat",
+      "ripple_depth": 0.015987966351436143,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K004/N15_M01_F10_K004_15.mat",
+      "ripple_depth": 0.008811051827565806,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K004/N15_M01_F10_K004_16.mat",
+      "ripple_depth": 0.008205634183046871,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K004/N15_M01_F10_K004_17.mat",
+      "ripple_depth": 0.011046494291012144,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K004/N15_M01_F10_K004_18.mat",
+      "ripple_depth": 0.018077011337178425,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K004/N15_M01_F10_K004_19.mat",
+      "ripple_depth": 0.011217041202889987,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K004/N15_M01_F10_K004_20.mat",
+      "ripple_depth": 0.0091202640771681,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K005/N15_M01_F10_K005_11.mat",
+      "ripple_depth": 0.009172181433103882,
+      "label": "LOCK"
+    },
+    {
+      "record": "K005/N15_M01_F10_K005_12.mat",
+      "ripple_depth": 0.004241005599108054,
+      "label": "LOCK"
+    },
+    {
+      "record": "K005/N15_M01_F10_K005_13.mat",
+      "ripple_depth": 0.008959113135125553,
+      "label": "LOCK"
+    },
+    {
+      "record": "K005/N15_M01_F10_K005_14.mat",
+      "ripple_depth": 0.00861905192957264,
+      "label": "LOCK"
+    },
+    {
+      "record": "K005/N15_M01_F10_K005_15.mat",
+      "ripple_depth": 0.008813677301192214,
+      "label": "LOCK"
+    },
+    {
+      "record": "K005/N15_M01_F10_K005_16.mat",
+      "ripple_depth": 0.007152853388358361,
+      "label": "LOCK"
+    },
+    {
+      "record": "K005/N15_M01_F10_K005_17.mat",
+      "ripple_depth": 0.005646436282348279,
+      "label": "LOCK"
+    },
+    {
+      "record": "K005/N15_M01_F10_K005_18.mat",
+      "ripple_depth": 0.004096080546339052,
+      "label": "LOCK"
+    },
+    {
+      "record": "K005/N15_M01_F10_K005_19.mat",
+      "ripple_depth": 0.007709713142443207,
+      "label": "LOCK"
+    },
+    {
+      "record": "K005/N15_M01_F10_K005_20.mat",
+      "ripple_depth": 0.003976744216367945,
+      "label": "LOCK"
+    },
+    {
+      "record": "K006/N15_M01_F10_K006_11.mat",
+      "ripple_depth": 0.017608878778854743,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K006/N15_M01_F10_K006_12.mat",
+      "ripple_depth": 0.01753901053993568,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K006/N15_M01_F10_K006_13.mat",
+      "ripple_depth": 0.022128304797579646,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K006/N15_M01_F10_K006_14.mat",
+      "ripple_depth": 0.021913629180403287,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K006/N15_M01_F10_K006_15.mat",
+      "ripple_depth": 0.0190860640227349,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K006/N15_M01_F10_K006_16.mat",
+      "ripple_depth": 0.013740615765324251,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K006/N15_M01_F10_K006_17.mat",
+      "ripple_depth": 0.02304451268036775,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K006/N15_M01_F10_K006_18.mat",
+      "ripple_depth": 0.018221824121625728,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K006/N15_M01_F10_K006_19.mat",
+      "ripple_depth": 0.01855054545793437,
+      "label": "SCATTER"
+    },
+    {
+      "record": "K006/N15_M01_F10_K006_20.mat",
+      "ripple_depth": 0.022676739759564926,
+      "label": "SCATTER"
+    }
+  ]
+}
