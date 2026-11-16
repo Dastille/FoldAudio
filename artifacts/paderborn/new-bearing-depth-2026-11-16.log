@@ -1,0 +1,42 @@
+# prereg artifacts/paderborn/prereg-2026-11-16-new-bearing.md
+# stage 1 (depth only); T = 0.0097; bearings ('KA01', 'KA05', 'KI01')
+[P+a] K001 N15_M01_F10 _11.._20 median depth 0.0127148995 vs published 0.0127148995
+P+a PASS
+
+[new-bearing N15_M01 records]
+KA01/N15_M01_F10_KA01_1.mat    depth 0.004665
+KA01/N15_M01_F10_KA01_2.mat    depth 0.005837
+KA01/N15_M01_F10_KA01_3.mat    depth 0.007669
+KA01/N15_M01_F10_KA01_4.mat    depth 0.007083
+KA01/N15_M01_F10_KA01_5.mat    depth 0.007677
+KA01/N15_M01_F10_KA01_6.mat    depth 0.007159
+KA01/N15_M01_F10_KA01_7.mat    depth 0.007888
+KA01/N15_M01_F10_KA01_8.mat    depth 0.007345
+KA01/N15_M01_F10_KA01_9.mat    depth 0.007688
+KA01/N15_M01_F10_KA01_10.mat   depth 0.006007
+KA05/N15_M01_F10_KA05_1.mat    depth 0.005766
+KA05/N15_M01_F10_KA05_2.mat    depth 0.009142
+KA05/N15_M01_F10_KA05_3.mat    depth 0.007028
+KA05/N15_M01_F10_KA05_4.mat    depth 0.008634
+KA05/N15_M01_F10_KA05_5.mat    depth 0.008926
+KA05/N15_M01_F10_KA05_6.mat    depth 0.008900
+KA05/N15_M01_F10_KA05_7.mat    depth 0.006414
+KA05/N15_M01_F10_KA05_8.mat    depth 0.006554
+KA05/N15_M01_F10_KA05_9.mat    depth 0.006766
+KA05/N15_M01_F10_KA05_10.mat   depth 0.007241
+KI01/N15_M01_F10_KI01_1.mat    depth 0.007204
+KI01/N15_M01_F10_KI01_2.mat    depth 0.005723
+KI01/N15_M01_F10_KI01_3.mat    depth 0.006265
+KI01/N15_M01_F10_KI01_4.mat    depth 0.007367
+KI01/N15_M01_F10_KI01_5.mat    depth 0.007596
+KI01/N15_M01_F10_KI01_6.mat    depth 0.005860
+KI01/N15_M01_F10_KI01_7.mat    depth 0.005264
+KI01/N15_M01_F10_KI01_8.mat    depth 0.005250
+KI01/N15_M01_F10_KI01_9.mat    depth 0.006309
+KI01/N15_M01_F10_KI01_10.mat   depth 0.005823
+
+[predictions]
+KA01 median 0.007252  range 0.004665-0.007888  -> predicted LOCK
+KA05 median 0.007135  range 0.005766-0.009142  -> predicted LOCK
+KI01 median 0.006063  range 0.005250-0.007596  -> predicted LOCK
+wrote artifacts/paderborn/new-bearing-depth-metrics.json
