@@ -1,0 +1,181 @@
+{
+  "source": "Paderborn KAt via Zenodo 15845309 (CC BY 4.0); KA01/KA05/KI01 + K001 vibration_1 + phase_current_1/2, 64 kHz",
+  "prereg": "artifacts/paderborn/prereg-2026-11-16-new-bearing.md",
+  "depth_metrics": "artifacts/paderborn/new-bearing-depth-metrics.json",
+  "controls": {
+    "p_plus_a": true,
+    "p_plus_b": {
+      "pass": true,
+      "k001": {
+        "n15_m01_usable": 10,
+        "n09_usable": 10,
+        "n15_m01_spiky": 10,
+        "n09_spiky": 10,
+        "n15_m01_r_between": 0.49027188906199126,
+        "n15_m01_grand_mean_deg": -70.72864553587878,
+        "n15_m01_p_between": 0.09038605773766252,
+        "n09_r_between": 0.9992186644878709,
+        "n09_grand_mean_deg": -62.766105474253344,
+        "n09_p_between": 4.611467196983146e-05,
+        "n15_m01_mean_phases_deg": [
+          -29.82155724852894,
+          -111.67533540496596,
+          -42.885374029078214,
+          -6.72628964267215,
+          -63.03402204509001,
+          25.76508457845147,
+          -152.84929674646008,
+          150.07999590173188,
+          -96.02446954122453,
+          -95.65393830311761
+        ],
+        "n09_mean_phases_deg": [
+          -63.22876152917086,
+          -61.52507007619632,
+          -63.227029352233394,
+          -63.916534896061684,
+          -63.96259696355871,
+          -62.0720928003991,
+          -66.08567089404958,
+          -65.52060944826209,
+          -58.92472183515529,
+          -59.19575755926171
+        ],
+        "n15_m01_ref_db_range": [
+          23.902074057407336,
+          33.33805946067582
+        ],
+        "n09_ref_db_range": [
+          27.076863463651264,
+          29.129423729595253
+        ],
+        "Q3": "SCATTERS",
+        "C3n": "PASS",
+        "reading": "scatter is not unique to K001; follow-up warranted (do not silently run fund residual without amended prereg)"
+      }
+    },
+    "p_minus": {
+      "pass": true,
+      "null_b_r99": {
+        "KA05": 0.6505907345773705
+      }
+    },
+    "valid": true
+  },
+  "verdict": {
+    "per_bearing": {
+      "KA01": {
+        "predicted": "LOCK",
+        "phase_label": null,
+        "match": null
+      },
+      "KA05": {
+        "predicted": "LOCK",
+        "phase_label": "LOCK",
+        "match": true
+      },
+      "KI01": {
+        "predicted": "LOCK",
+        "phase_label": null,
+        "match": null
+      }
+    },
+    "valid_bearings": [
+      "KA05"
+    ],
+    "n_valid": 1,
+    "n_match": 1,
+    "N": "UNTESTABLE",
+    "both_labels_predicted_among_valid": false,
+    "chance_all_match_p": 0.5
+  },
+  "per_bearing": {
+    "KA01": {
+      "n15_m01_usable": 0,
+      "n09_usable": 10,
+      "n15_m01_spiky": 0,
+      "n09_spiky": 10,
+      "Q3": "UNTESTABLE",
+      "C3n": "UNTESTABLE",
+      "reading": "UNTESTABLE"
+    },
+    "KA05": {
+      "n15_m01_usable": 10,
+      "n09_usable": 10,
+      "n15_m01_spiky": 10,
+      "n09_spiky": 10,
+      "n15_m01_r_between": 0.9759682994368822,
+      "n15_m01_grand_mean_deg": -49.01359679207945,
+      "n15_m01_p_between": 7.299342312467088e-05,
+      "n09_r_between": 0.9979947038468683,
+      "n09_grand_mean_deg": -65.27863253235645,
+      "n09_p_between": 4.725584116790587e-05,
+      "n15_m01_mean_phases_deg": [
+        -61.122140963941604,
+        -63.405116947021845,
+        -53.07528922110931,
+        -58.015566906779654,
+        -35.70764953365962,
+        -39.36624313612882,
+        -30.160283590056345,
+        -31.699563262384753,
+        -62.21850477700685,
+        -55.008806838309404
+      ],
+      "n09_mean_phases_deg": [
+        -56.82192762604475,
+        -68.91680071297745,
+        -66.54242345152319,
+        -69.34006200902077,
+        -64.33134472594672,
+        -67.34128522644478,
+        -64.83262089088701,
+        -68.41550135597394,
+        -61.632476673668876,
+        -64.58664585039277
+      ],
+      "n15_m01_ref_db_range": [
+        23.177905086115018,
+        28.421051529717538
+      ],
+      "n09_ref_db_range": [
+        26.891468680544016,
+        29.813564960061964
+      ],
+      "Q3": "LOCKS",
+      "C3n": "PASS",
+      "reading": "supports scatter is K001-record-specific, not a property of healthy bearings / low-torque condition"
+    },
+    "KI01": {
+      "n15_m01_usable": 0,
+      "n09_usable": 10,
+      "n15_m01_spiky": 0,
+      "n09_spiky": 10,
+      "Q3": "UNTESTABLE",
+      "C3n": "UNTESTABLE",
+      "reading": "UNTESTABLE"
+    }
+  },
+  "not_spiky": [
+    "KA01/N15_M01_F10_KA01_1.mat",
+    "KA01/N15_M01_F10_KA01_2.mat",
+    "KA01/N15_M01_F10_KA01_3.mat",
+    "KA01/N15_M01_F10_KA01_4.mat",
+    "KA01/N15_M01_F10_KA01_5.mat",
+    "KA01/N15_M01_F10_KA01_6.mat",
+    "KA01/N15_M01_F10_KA01_7.mat",
+    "KA01/N15_M01_F10_KA01_8.mat",
+    "KA01/N15_M01_F10_KA01_9.mat",
+    "KA01/N15_M01_F10_KA01_10.mat",
+    "KI01/N15_M01_F10_KI01_1.mat",
+    "KI01/N15_M01_F10_KI01_2.mat",
+    "KI01/N15_M01_F10_KI01_3.mat",
+    "KI01/N15_M01_F10_KI01_4.mat",
+    "KI01/N15_M01_F10_KI01_5.mat",
+    "KI01/N15_M01_F10_KI01_6.mat",
+    "KI01/N15_M01_F10_KI01_7.mat",
+    "KI01/N15_M01_F10_KI01_8.mat",
+    "KI01/N15_M01_F10_KI01_9.mat",
+    "KI01/N15_M01_F10_KI01_10.mat"
+  ]
+}
