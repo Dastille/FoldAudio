@@ -2068,3 +2068,97 @@ def threshold_verdict(
         "correct": correct,
         "n": len(values),
     }
+
+
+# --- new-bearing ripple-depth prediction (prereg-2026-11-16-new-bearing.md, NOTES #8k) ---
+# Order is fixed: ripple depth and predicted label for each new bearing are committed
+# before any spike or phase number is computed on that bearing.
+
+NEW_BEARING_SEED = 20261116
+#: minimum number of bearings with a phase label for a set verdict
+NEW_BEARING_MIN_VALID = 2
+#: descriptive only: a bearing median within this relative distance of T is "near T"
+NEW_BEARING_NEAR_T_FRAC = 0.10
+#: K001 measurements 11–20: published N15_M01 / N09 R_between (Table 19,
+#: ref-snr-phase-metrics.json) and training ripple median (Table 24) for the P+ controls
+NEW_BEARING_PPLUS_MEASUREMENTS = tuple(range(11, 21))
+NEW_BEARING_PPLUS_RB = {
+    "N15_M01_F10": 0.49027188906199126,
+    "N09_M07_F10": 0.9992186644878709,
+}
+
+
+def predict_label(depths: list[float], t: float = RIPPLE_HELDOUT_T) -> dict:
+    """Bearing median of per-record ripple depths and the predicted label
+    (SCATTER iff median > ``t``, as :func:`threshold_verdict`)."""
+    import statistics
+
+    v = [float(x) for x in depths]
+    if not v or not all(math.isfinite(x) for x in v):
+        return {"median": math.nan, "predicted": "UNTESTABLE", "near_t": False}
+    med = float(statistics.median(v))
+    return {
+        "median": med,
+        "predicted": "SCATTER" if med > t else "LOCK",
+        "near_t": abs(med - t) <= NEW_BEARING_NEAR_T_FRAC * t,
+        "n": len(v),
+        "min": min(v),
+        "max": max(v),
+    }
+
+
+def phase_label(v: dict) -> str | None:
+    """Phase label from a :func:`k003_phase_verdicts` result: SCATTER, LOCK, or
+    None if the bearing is not valid (C3n not PASS, or Q3 not LOCKS/SCATTERS)."""
+    if v.get("C3n") != "PASS":
+        return None
+    return {"SCATTERS": "SCATTER", "LOCKS": "LOCK"}.get(v.get("Q3"))
+
+
+def new_bearing_verdict(
+    predicted: dict[str, str], per_bearing: dict[str, dict]
+) -> dict:
+    """Set verdict N for the new-bearing prediction.
+
+    ``predicted`` maps bearing → predicted label (SCATTER/LOCK) from ripple depth;
+    ``per_bearing`` maps bearing → :func:`k003_phase_verdicts` result. A bearing is
+    valid if :func:`phase_label` gives a label. N is UNTESTABLE with fewer than
+    ``NEW_BEARING_MIN_VALID`` valid bearings, FALSIFIED if any valid bearing's
+    phase label differs from its prediction, else HELD.
+    """
+    rows = {}
+    for b, pred in predicted.items():
+        lab = phase_label(per_bearing.get(b, {}))
+        rows[b] = {
+            "predicted": pred,
+            "phase_label": lab,
+            "match": None if lab is None else lab == pred,
+        }
+    valid = [b for b, r in rows.items() if r["match"] is not None]
+    if len(valid) < NEW_BEARING_MIN_VALID:
+        n = "UNTESTABLE"
+    elif all(rows[b]["match"] for b in valid):
+        n = "HELD"
+    else:
+        n = "FALSIFIED"
+    preds = {rows[b]["predicted"] for b in valid}
+    return {
+        "per_bearing": rows,
+        "valid_bearings": valid,
+        "n_valid": len(valid),
+        "n_match": sum(bool(rows[b]["match"]) for b in valid),
+        "N": n,
+        "both_labels_predicted_among_valid": len(preds) == 2,
+        "chance_all_match_p": 0.5 ** len(valid) if valid else None,
+    }
+
+
+def null_b_r99(recs: list[PhaseRecord], *, seed: int = NEW_BEARING_SEED) -> float:
+    """P− control: 99th percentile of R_between when each usable record's spikes
+    are circularly shifted at random within its window (null B). Random spike
+    timing must not produce a lock, so this must be below R_BETWEEN_HELD."""
+    use = [r for r in recs if r.usable]
+    if not use:
+        return math.nan
+    rb, _mu, _p = between_stats(use)
+    return null_shift_p(use, rb, np.random.default_rng(seed + 2))[1]
