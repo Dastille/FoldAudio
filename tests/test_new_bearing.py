@@ -210,3 +210,20 @@ def test_screen_select_stops_at_target_in_pool_order():
     assert set(cnt) == set(scr)
     sel, scr, _ = ps.screen_select(("P", "S"), fn, target=4)
     assert sel == [] and scr == ["P", "S"]
+
+
+def test_screened_set_matches_committed_screen():
+    import json
+    from pathlib import Path
+
+    d = json.loads(
+        (
+            Path(__file__).resolve().parents[1]
+            / "artifacts/paderborn/spiky-screen-metrics.json"
+        ).read_text()
+    )
+    assert tuple(d["screened"]) == pb.SPIKY_SCREEN_SCREENED
+    assert pb.SPIKY_SCREEN_SCREENED == pb.SPIKY_SCREEN_POOL[:5]
+    assert d["selected"] == ["KA06", "KA07", "KA09", "KI03"]
+    assert d["sha256"] == {k: v for k, v in pb.MAT_SHA256.items() if k in d["sha256"]}
+    assert len(d["sha256"]) == 100

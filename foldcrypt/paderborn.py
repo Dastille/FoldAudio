@@ -716,6 +716,9 @@ SPIKY_SCREEN_POOL = (
     "KI18",
     "KI21",
 )
+#: bearings the 2026-11-23 screen actually screened (pool order; stopped at 4 eligible),
+#: whose N15_M01/N09 measurements 1–10 are SHA-256 pinned (spiky-screen-metrics.json)
+SPIKY_SCREEN_SCREENED = ("KA03", "KA06", "KA07", "KA09", "KI03")
 
 
 def member(bearing: str, condition: str, meas: int = 1) -> str:
