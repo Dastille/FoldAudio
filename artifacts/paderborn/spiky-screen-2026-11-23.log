@@ -1,0 +1,21 @@
+# prereg artifacts/paderborn/prereg-2026-11-23-spiky-new-bearing.md
+# spike-count screen (vibration_1 only; no reference, depth or phase); spiky = >= 10 spikes after 0.1 s edge trim; eligible = >= 8/10 spiky at each of ('N15_M01_F10', 'N09_M07_F10'); stop at 4 eligible
+KA03 N15_M01_F10 spike counts [20, 6, 3, 4, 9, 3, 19, 9, 6, 19]
+KA03 N09_M07_F10 spike counts [236, 261, 158, 106, 164, 166, 219, 251, 332, 84]
+KA03 -> not eligible
+KA06 N15_M01_F10 spike counts [69, 256, 114, 162, 57, 472, 182, 282, 109, 156]
+KA06 N09_M07_F10 spike counts [153, 315, 309, 150, 363, 468, 86, 181, 265, 459]
+KA06 -> ELIGIBLE
+KA07 N15_M01_F10 spike counts [174, 63, 87, 156, 114, 155, 37, 170, 274, 179]
+KA07 N09_M07_F10 spike counts [122, 172, 81, 69, 262, 305, 317, 214, 192, 87]
+KA07 -> ELIGIBLE
+KA09 N15_M01_F10 spike counts [106, 224, 243, 78, 284, 117, 91, 267, 100, 134]
+KA09 N09_M07_F10 spike counts [68, 93, 119, 160, 115, 141, 223, 214, 191, 95]
+KA09 -> ELIGIBLE
+KI03 N15_M01_F10 spike counts [28, 57, 64, 65, 5, 54, 49, 79, 83, 48]
+KI03 N09_M07_F10 spike counts [267, 201, 223, 100, 99, 222, 166, 319, 172, 24]
+KI03 -> ELIGIBLE
+
+screened ['KA03', 'KA06', 'KA07', 'KA09', 'KI03']
+selected ['KA06', 'KA07', 'KA09', 'KI03']
+wrote artifacts/paderborn/spiky-screen-metrics.json
