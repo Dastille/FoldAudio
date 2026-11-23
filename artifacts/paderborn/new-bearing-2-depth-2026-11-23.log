@@ -1,0 +1,53 @@
+# prereg artifacts/paderborn/prereg-2026-11-23-spiky-new-bearing.md
+# stage 1 (depth only); T = 0.0097; bearings ('KA06', 'KA07', 'KA09', 'KI03')
+[P+a] K001 N15_M01_F10 _11.._20 median depth 0.0127148995 vs published 0.0127148995
+P+a PASS
+
+[new-bearing N15_M01 records]
+KA06/N15_M01_F10_KA06_1.mat    depth 0.009828
+KA06/N15_M01_F10_KA06_2.mat    depth 0.002731
+KA06/N15_M01_F10_KA06_3.mat    depth 0.002287
+KA06/N15_M01_F10_KA06_4.mat    depth 0.009405
+KA06/N15_M01_F10_KA06_5.mat    depth 0.008540
+KA06/N15_M01_F10_KA06_6.mat    depth 0.003973
+KA06/N15_M01_F10_KA06_7.mat    depth 0.006259
+KA06/N15_M01_F10_KA06_8.mat    depth 0.004599
+KA06/N15_M01_F10_KA06_9.mat    depth 0.007931
+KA06/N15_M01_F10_KA06_10.mat   depth 0.002949
+KA07/N15_M01_F10_KA07_1.mat    depth 0.009772
+KA07/N15_M01_F10_KA07_2.mat    depth 0.008841
+KA07/N15_M01_F10_KA07_3.mat    depth 0.009855
+KA07/N15_M01_F10_KA07_4.mat    depth 0.013436
+KA07/N15_M01_F10_KA07_5.mat    depth 0.007305
+KA07/N15_M01_F10_KA07_6.mat    depth 0.004636
+KA07/N15_M01_F10_KA07_7.mat    depth 0.006622
+KA07/N15_M01_F10_KA07_8.mat    depth 0.007120
+KA07/N15_M01_F10_KA07_9.mat    depth 0.013795
+KA07/N15_M01_F10_KA07_10.mat   depth 0.012225
+KA09/N15_M01_F10_KA09_1.mat    depth 0.008063
+KA09/N15_M01_F10_KA09_2.mat    depth 0.006447
+KA09/N15_M01_F10_KA09_3.mat    depth 0.009889
+KA09/N15_M01_F10_KA09_4.mat    depth 0.006700
+KA09/N15_M01_F10_KA09_5.mat    depth 0.004447
+KA09/N15_M01_F10_KA09_6.mat    depth 0.004868
+KA09/N15_M01_F10_KA09_7.mat    depth 0.008253
+KA09/N15_M01_F10_KA09_8.mat    depth 0.008477
+KA09/N15_M01_F10_KA09_9.mat    depth 0.007966
+KA09/N15_M01_F10_KA09_10.mat   depth 0.005248
+KI03/N15_M01_F10_KI03_1.mat    depth 0.005518
+KI03/N15_M01_F10_KI03_2.mat    depth 0.005346
+KI03/N15_M01_F10_KI03_3.mat    depth 0.005006
+KI03/N15_M01_F10_KI03_4.mat    depth 0.006025
+KI03/N15_M01_F10_KI03_5.mat    depth 0.006134
+KI03/N15_M01_F10_KI03_6.mat    depth 0.005908
+KI03/N15_M01_F10_KI03_7.mat    depth 0.004563
+KI03/N15_M01_F10_KI03_8.mat    depth 0.005387
+KI03/N15_M01_F10_KI03_9.mat    depth 0.006770
+KI03/N15_M01_F10_KI03_10.mat   depth 0.006321
+
+[predictions]
+KA06 median 0.005429  range 0.002287-0.009828  -> predicted LOCK
+KA07 median 0.009306  range 0.004636-0.013795  -> predicted LOCK  (within 10% of T)
+KA09 median 0.007333  range 0.004447-0.009889  -> predicted LOCK
+KI03 median 0.005713  range 0.004563-0.006770  -> predicted LOCK
+wrote artifacts/paderborn/new-bearing-2-depth-metrics.json

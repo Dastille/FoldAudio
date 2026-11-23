@@ -1,0 +1,180 @@
+# prereg artifacts/paderborn/prereg-2026-11-23-spiky-new-bearing.md
+# stage 2 (phase); seed 20261123; predictions {'KA06': 'LOCK', 'KA07': 'LOCK', 'KA09': 'LOCK', 'KI03': 'LOCK'}
+
+[P+b K001 _11.._20 pipeline reproduction]
+K001/N15_M01_F10_K001_11.mat   N  240  ref  33.3 dB ok   R 0.753  mu   -29.8 deg
+K001/N15_M01_F10_K001_12.mat   N  263  ref  30.4 dB ok   R 0.772  mu  -111.7 deg
+K001/N15_M01_F10_K001_13.mat   N  347  ref  32.9 dB ok   R 0.814  mu   -42.9 deg
+K001/N15_M01_F10_K001_14.mat   N  354  ref  32.1 dB ok   R 0.714  mu    -6.7 deg
+K001/N15_M01_F10_K001_15.mat   N  360  ref  33.2 dB ok   R 0.811  mu   -63.0 deg
+K001/N15_M01_F10_K001_16.mat   N  265  ref  29.7 dB ok   R 0.703  mu   +25.8 deg
+K001/N15_M01_F10_K001_17.mat   N  284  ref  27.2 dB ok   R 0.652  mu  -152.8 deg
+K001/N15_M01_F10_K001_18.mat   N  200  ref  23.9 dB ok   R 0.280  mu  +150.1 deg
+K001/N15_M01_F10_K001_19.mat   N  273  ref  33.2 dB ok   R 0.785  mu   -96.0 deg
+K001/N15_M01_F10_K001_20.mat   N  293  ref  32.2 dB ok   R 0.796  mu   -95.7 deg
+K001/N09_M07_F10_K001_11.mat   N  518  ref  28.3 dB ok   R 0.731  mu   -63.2 deg
+K001/N09_M07_F10_K001_12.mat   N  196  ref  28.7 dB ok   R 0.804  mu   -61.5 deg
+K001/N09_M07_F10_K001_13.mat   N  545  ref  28.4 dB ok   R 0.757  mu   -63.2 deg
+K001/N09_M07_F10_K001_14.mat   N  386  ref  27.7 dB ok   R 0.788  mu   -63.9 deg
+K001/N09_M07_F10_K001_15.mat   N  189  ref  28.8 dB ok   R 0.784  mu   -64.0 deg
+K001/N09_M07_F10_K001_16.mat   N  200  ref  28.1 dB ok   R 0.777  mu   -62.1 deg
+K001/N09_M07_F10_K001_17.mat   N  379  ref  28.6 dB ok   R 0.737  mu   -66.1 deg
+K001/N09_M07_F10_K001_18.mat   N  307  ref  27.1 dB ok   R 0.780  mu   -65.5 deg
+K001/N09_M07_F10_K001_19.mat   N  308  ref  28.3 dB ok   R 0.768  mu   -58.9 deg
+K001/N09_M07_F10_K001_20.mat   N  550  ref  29.1 dB ok   R 0.744  mu   -59.2 deg
+K001 N15_M01 R_between 0.490271889 (published 0.490271889); N09 0.999218664 (published 0.999218664); Q3 SCATTERS C3n PASS
+P+b PASS
+
+[KA06]
+KA06/N15_M01_F10_KA06_1.mat    N   69  ref  30.7 dB ok   R 0.760  mu   -52.8 deg
+KA06/N15_M01_F10_KA06_2.mat    N  256  ref  15.9 dB ok   R 0.538  mu   -40.2 deg
+KA06/N15_M01_F10_KA06_3.mat    N  114  ref  13.6 dB ok   R 0.451  mu   +15.0 deg
+KA06/N15_M01_F10_KA06_4.mat    N  162  ref  29.4 dB ok   R 0.664  mu   -28.8 deg
+KA06/N15_M01_F10_KA06_5.mat    N   57  ref  29.2 dB ok   R 0.772  mu   -14.3 deg
+KA06/N15_M01_F10_KA06_6.mat    N  472  ref  20.1 dB ok   R 0.590  mu    +5.5 deg
+KA06/N15_M01_F10_KA06_7.mat    N  182  ref  27.5 dB ok   R 0.754  mu   -91.1 deg
+KA06/N15_M01_F10_KA06_8.mat    N  282  ref  23.6 dB ok   R 0.696  mu    -5.4 deg
+KA06/N15_M01_F10_KA06_9.mat    N  109  ref  28.3 dB ok   R 0.735  mu   -78.3 deg
+KA06/N15_M01_F10_KA06_10.mat   N  156  ref  18.5 dB ok   R 0.454  mu   -94.6 deg
+KA06/N09_M07_F10_KA06_1.mat    N  153  ref  28.1 dB ok   R 0.794  mu   -57.7 deg
+KA06/N09_M07_F10_KA06_2.mat    N  315  ref  28.5 dB ok   R 0.676  mu   -67.5 deg
+KA06/N09_M07_F10_KA06_3.mat    N  309  ref  28.2 dB ok   R 0.708  mu   -57.7 deg
+KA06/N09_M07_F10_KA06_4.mat    N  150  ref  28.1 dB ok   R 0.855  mu   -54.7 deg
+KA06/N09_M07_F10_KA06_5.mat    N  363  ref  28.8 dB ok   R 0.665  mu   -56.5 deg
+KA06/N09_M07_F10_KA06_6.mat    N  468  ref  28.4 dB ok   R 0.611  mu   -59.5 deg
+KA06/N09_M07_F10_KA06_7.mat    N   86  ref  28.1 dB ok   R 0.841  mu   -61.4 deg
+KA06/N09_M07_F10_KA06_8.mat    N  181  ref  28.4 dB ok   R 0.762  mu   -61.6 deg
+KA06/N09_M07_F10_KA06_9.mat    N  265  ref  28.3 dB ok   R 0.720  mu   -55.2 deg
+KA06/N09_M07_F10_KA06_10.mat   N  459  ref  28.3 dB ok   R 0.589  mu   -63.0 deg
+KA06 usable N15_M01 10 / N09 10  Q3 SCATTERS  C3n PASS
+    n15_m01_r_between 0.7951
+    n15_m01_p_between 0.001796
+    n09_r_between 0.9978
+    n09_p_between 4.74e-05
+    P- null-B R_between 99th pct 0.669
+
+[KA07]
+KA07/N15_M01_F10_KA07_1.mat    N  174  ref  30.1 dB ok   R 0.849  mu   -10.7 deg
+KA07/N15_M01_F10_KA07_2.mat    N   63  ref  29.2 dB ok   R 0.895  mu   -97.2 deg
+KA07/N15_M01_F10_KA07_3.mat    N   87  ref  30.2 dB ok   R 0.934  mu    +1.5 deg
+KA07/N15_M01_F10_KA07_4.mat    N  156  ref  31.5 dB ok   R 0.850  mu   -57.6 deg
+KA07/N15_M01_F10_KA07_5.mat    N  114  ref  27.5 dB ok   R 0.760  mu  -113.9 deg
+KA07/N15_M01_F10_KA07_6.mat    N  155  ref  22.7 dB ok   R 0.594  mu  -158.6 deg
+KA07/N15_M01_F10_KA07_7.mat    N   37  ref  26.9 dB ok   R 0.865  mu  -113.3 deg
+KA07/N15_M01_F10_KA07_8.mat    N  170  ref  26.3 dB ok   R 0.683  mu  -124.7 deg
+KA07/N15_M01_F10_KA07_9.mat    N  274  ref  31.7 dB ok   R 0.833  mu   -57.9 deg
+KA07/N15_M01_F10_KA07_10.mat   N  179  ref  31.7 dB ok   R 0.876  mu   -73.4 deg
+KA07/N09_M07_F10_KA07_1.mat    N  122  ref  29.2 dB ok   R 0.865  mu   -61.3 deg
+KA07/N09_M07_F10_KA07_2.mat    N  172  ref  29.1 dB ok   R 0.863  mu   -66.0 deg
+KA07/N09_M07_F10_KA07_3.mat    N   81  ref  29.1 dB ok   R 0.890  mu   -60.4 deg
+KA07/N09_M07_F10_KA07_4.mat    N   69  ref  29.8 dB ok   R 0.885  mu   -59.3 deg
+KA07/N09_M07_F10_KA07_5.mat    N  262  ref  27.6 dB ok   R 0.837  mu   -66.5 deg
+KA07/N09_M07_F10_KA07_6.mat    N  305  ref  27.6 dB ok   R 0.840  mu   -62.8 deg
+KA07/N09_M07_F10_KA07_7.mat    N  317  ref  28.7 dB ok   R 0.795  mu   -63.2 deg
+KA07/N09_M07_F10_KA07_8.mat    N  214  ref  29.1 dB ok   R 0.835  mu   -65.3 deg
+KA07/N09_M07_F10_KA07_9.mat    N  192  ref  28.5 dB ok   R 0.839  mu   -62.7 deg
+KA07/N09_M07_F10_KA07_10.mat   N   87  ref  28.4 dB ok   R 0.848  mu   -59.0 deg
+KA07 usable N15_M01 10 / N09 10  Q3 SCATTERS  C3n PASS
+    n15_m01_r_between 0.688
+    n15_m01_p_between 0.008797
+    n09_r_between 0.999
+    n09_p_between 4.632e-05
+    P- null-B R_between 99th pct 0.670
+
+[KA09]
+KA09/N15_M01_F10_KA09_1.mat    N  106  ref  28.6 dB ok   R 0.836  mu   -24.3 deg
+KA09/N15_M01_F10_KA09_2.mat    N  224  ref  24.0 dB ok   R 0.782  mu   -25.9 deg
+KA09/N15_M01_F10_KA09_3.mat    N  243  ref  30.2 dB ok   R 0.800  mu   -52.2 deg
+KA09/N15_M01_F10_KA09_4.mat    N   78  ref  24.7 dB ok   R 0.799  mu   -69.6 deg
+KA09/N15_M01_F10_KA09_5.mat    N  284  ref  25.0 dB ok   R 0.767  mu   -31.6 deg
+KA09/N15_M01_F10_KA09_6.mat    N  117  ref  24.0 dB ok   R 0.809  mu   -78.4 deg
+KA09/N15_M01_F10_KA09_7.mat    N   91  ref  29.5 dB ok   R 0.865  mu   -57.5 deg
+KA09/N15_M01_F10_KA09_8.mat    N  267  ref  30.2 dB ok   R 0.833  mu   -53.4 deg
+KA09/N15_M01_F10_KA09_9.mat    N  100  ref  28.1 dB ok   R 0.860  mu   -64.2 deg
+KA09/N15_M01_F10_KA09_10.mat   N  134  ref  23.9 dB ok   R 0.826  mu   -17.8 deg
+KA09/N09_M07_F10_KA09_1.mat    N   68  ref  28.6 dB ok   R 0.842  mu   -63.8 deg
+KA09/N09_M07_F10_KA09_2.mat    N   93  ref  28.3 dB ok   R 0.894  mu   -54.5 deg
+KA09/N09_M07_F10_KA09_3.mat    N  119  ref  28.5 dB ok   R 0.893  mu   -59.6 deg
+KA09/N09_M07_F10_KA09_4.mat    N  160  ref  28.0 dB ok   R 0.840  mu   -62.2 deg
+KA09/N09_M07_F10_KA09_5.mat    N  115  ref  28.8 dB ok   R 0.868  mu   -60.9 deg
+KA09/N09_M07_F10_KA09_6.mat    N  141  ref  28.6 dB ok   R 0.813  mu   -59.8 deg
+KA09/N09_M07_F10_KA09_7.mat    N  223  ref  29.2 dB ok   R 0.849  mu   -65.9 deg
+KA09/N09_M07_F10_KA09_8.mat    N  214  ref  27.1 dB ok   R 0.860  mu   -61.2 deg
+KA09/N09_M07_F10_KA09_9.mat    N  191  ref  28.7 dB ok   R 0.842  mu   -59.6 deg
+KA09/N09_M07_F10_KA09_10.mat   N   95  ref  28.4 dB ok   R 0.859  mu   -62.8 deg
+KA09 usable N15_M01 10 / N09 10  Q3 LOCKS  C3n PASS
+    n15_m01_r_between 0.9398
+    n15_m01_p_between 0.000146
+    n09_r_between 0.9987
+    n09_p_between 4.658e-05
+    P- null-B R_between 99th pct 0.625
+
+[KI03]
+KI03/N15_M01_F10_KI03_1.mat    N   28  ref  24.6 dB ok   R 0.433  mu   -46.2 deg
+KI03/N15_M01_F10_KI03_2.mat    N   57  ref  22.4 dB ok   R 0.381  mu   -60.7 deg
+KI03/N15_M01_F10_KI03_3.mat    N   64  ref  21.4 dB ok   R 0.321  mu    +9.0 deg
+KI03/N15_M01_F10_KI03_4.mat    N   65  ref  24.5 dB ok   R 0.178  mu   -39.9 deg
+KI03/N15_M01_F10_KI03_6.mat    N   54  ref  24.3 dB ok   R 0.094  mu   -92.4 deg
+KI03/N15_M01_F10_KI03_7.mat    N   49  ref  19.7 dB ok   R 0.284  mu    +3.7 deg
+KI03/N15_M01_F10_KI03_8.mat    N   79  ref  22.4 dB ok   R 0.139  mu    +1.5 deg
+KI03/N15_M01_F10_KI03_9.mat    N   83  ref  25.3 dB ok   R 0.301  mu   +23.4 deg
+KI03/N15_M01_F10_KI03_10.mat   N   48  ref  25.2 dB ok   R 0.365  mu   -89.1 deg
+KI03/N09_M07_F10_KI03_1.mat    N  267  ref  27.7 dB ok   R 0.022  mu   -21.9 deg
+KI03/N09_M07_F10_KI03_2.mat    N  201  ref  25.4 dB ok   R 0.080  mu   -47.1 deg
+KI03/N09_M07_F10_KI03_3.mat    N  223  ref  25.6 dB ok   R 0.092  mu   -37.5 deg
+KI03/N09_M07_F10_KI03_4.mat    N  100  ref  27.0 dB ok   R 0.270  mu   -89.6 deg
+KI03/N09_M07_F10_KI03_5.mat    N   99  ref  28.4 dB ok   R 0.294  mu   -44.5 deg
+KI03/N09_M07_F10_KI03_6.mat    N  222  ref  26.9 dB ok   R 0.152  mu   -91.6 deg
+KI03/N09_M07_F10_KI03_7.mat    N  166  ref  25.4 dB ok   R 0.153  mu   -38.8 deg
+KI03/N09_M07_F10_KI03_8.mat    N  319  ref  27.7 dB ok   R 0.109  mu   -60.2 deg
+KI03/N09_M07_F10_KI03_9.mat    N  172  ref  27.2 dB ok   R 0.095  mu   -67.6 deg
+KI03/N09_M07_F10_KI03_10.mat   N   24  ref  26.3 dB ok   R 0.177  mu   -45.2 deg
+KI03 usable N15_M01 9 / N09 10  Q3 SCATTERS  C3n PASS
+    n15_m01_r_between 0.7604
+    n15_m01_p_between 0.005492
+    n09_r_between 0.931
+    n09_p_between 0.0001722
+    P- null-B R_between 99th pct 0.687
+
+not spiky: ['KI03/N15_M01_F10_KI03_5.mat']
+P- PASS {'KA06': 0.6688072142546148, 'KA07': 0.6700410486153321, 'KA09': 0.625045439135151, 'KI03': 0.686647128953905}
+S0 PASS
+controls PASS
+
+[verdict]
+{
+ "per_bearing": {
+  "KA06": {
+   "predicted": "LOCK",
+   "phase_label": "SCATTER",
+   "match": false
+  },
+  "KA07": {
+   "predicted": "LOCK",
+   "phase_label": "SCATTER",
+   "match": false
+  },
+  "KA09": {
+   "predicted": "LOCK",
+   "phase_label": "LOCK",
+   "match": true
+  },
+  "KI03": {
+   "predicted": "LOCK",
+   "phase_label": "SCATTER",
+   "match": false
+  }
+ },
+ "valid_bearings": [
+  "KA06",
+  "KA07",
+  "KA09",
+  "KI03"
+ ],
+ "n_valid": 4,
+ "n_match": 1,
+ "N": "FALSIFIED",
+ "both_labels_predicted_among_valid": false,
+ "chance_all_match_p": 0.0625
+}
+wrote artifacts/paderborn/new-bearing-2-phase-metrics.json

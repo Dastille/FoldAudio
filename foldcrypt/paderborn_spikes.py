@@ -2162,3 +2162,49 @@ def null_b_r99(recs: list[PhaseRecord], *, seed: int = NEW_BEARING_SEED) -> floa
         return math.nan
     rb, _mu, _p = between_stats(use)
     return null_shift_p(use, rb, np.random.default_rng(seed + 2))[1]
+
+
+# --- spike-count screened new-bearing prediction (prereg-2026-11-23-spiky-new-bearing.md) ---
+# The screen reads vibration only and counts spikes; it never computes a reference,
+# ripple depth or phase. Selection is fixed before stage 1.
+
+SPIKY_SCREEN_SEED = 20261123
+#: stop the screen once this many bearings are eligible
+SPIKY_SCREEN_TARGET = 4
+#: spiky records needed per condition (= K003_PHASE_MIN_RECORDS, the stage-2 minimum)
+SPIKY_SCREEN_MIN_RECORDS = 8
+
+
+def screen_spike_count(x: np.ndarray, sr: float = pb.SR) -> int:
+    """Spikes counted by the stage-2 usable gate: ``spike_indices`` outside the
+    edge trim (equals ``PhaseRecord.n_spikes``)."""
+    kept, _lo, _hi = trim_indices(spike_indices(x), len(x), sr)
+    return int(len(kept))
+
+
+def screen_eligible(counts: dict[str, list[int]]) -> bool:
+    """Eligible iff, at every condition, at least ``SPIKY_SCREEN_MIN_RECORDS``
+    records have ``>= SPIKY_MIN`` spikes."""
+    return bool(counts) and all(
+        sum(c >= SPIKY_MIN for c in v) >= SPIKY_SCREEN_MIN_RECORDS
+        for v in counts.values()
+    )
+
+
+def screen_select(
+    pool, count_fn, target: int = SPIKY_SCREEN_TARGET
+) -> tuple[list[str], list[str], dict[str, dict[str, list[int]]]]:
+    """Screen ``pool`` in order with ``count_fn(bearing) -> {condition: counts}``;
+    stop as soon as ``target`` bearings are eligible. Returns (selected,
+    screened, counts)."""
+    selected: list[str] = []
+    screened: list[str] = []
+    counts: dict[str, dict[str, list[int]]] = {}
+    for b in pool:
+        if len(selected) >= target:
+            break
+        counts[b] = count_fn(b)
+        screened.append(b)
+        if screen_eligible(counts[b]):
+            selected.append(b)
+    return selected, screened, counts
