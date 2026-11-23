@@ -130,3 +130,83 @@ def test_null_b_r99_low_for_locked_spikes():
     r99 = ps.null_b_r99(recs)
     assert r99 < ps.R_BETWEEN_HELD  # shifted timing does not
     assert math.isnan(ps.null_b_r99([]))
+
+
+# --- 2026-11-23 spike-count screen (prereg-2026-11-23-spiky-new-bearing.md) ---
+
+POOL_MD5 = {
+    "KA03": "0bba6927ac1732d23934a909af4c1fc6",
+    "KA06": "be58a820fee4851b2c16a97a88c282cb",
+    "KA07": "185e3de688149ebabf20c51d80fd7dd8",
+    "KA09": "de9392fdbf878171a429c2451d2696fd",
+    "KI03": "26f0452f00ab698a4e657e27b7a249b3",
+    "KI05": "c777459ddc7a1d38df7155f09e0ce782",
+    "KI07": "c26144f53ebcc34562bdc2e3a0ef1087",
+    "KI08": "f546b3481ffdcd80f0d14a797db48deb",
+    "KA15": "db518f97ba5bcaedb09c648a317431e0",
+    "KA16": "ef848f5621f9c10523c313131d1a4c21",
+    "KA22": "7a16a5bc88d5fe1d83d169f88f0709e8",
+    "KA30": "715c0cf7862a7ba83e7c6a6fb5c91a61",
+    "KB23": "bb87c72669baa9dbbefd10b5294ffcc8",
+    "KB24": "c60ce8867c824583540794ae00cce333",
+    "KB27": "965dd4af26391d7def4638c8b31a87e7",
+    "KI14": "13603834975435ca10eb08de6d1840dc",
+    "KI16": "db14eae04a213afd0d1ca99d3d850342",
+    "KI17": "d1055fe5cc44948e5d3a39f2e0db9dbe",
+    "KI18": "db5da511e9240dbc56ec1e850fd91699",
+    "KI21": "911ce3e37a86d258818e3e93274752a2",
+}
+
+
+def test_screen_pool_order_md5_and_disjoint_from_used_bearings():
+    assert pb.SPIKY_SCREEN_POOL == tuple(POOL_MD5)
+    used = set(pb.BEARINGS) | {"K002", "K003", "K004", "K005", "K006"}
+    used |= set(pb.NEW_BEARINGS)
+    for b in pb.SPIKY_SCREEN_POOL:
+        assert b not in used
+        assert pb.EXTRA_BEARINGS[b][1] == POOL_MD5[b]
+    assert ps.SPIKY_SCREEN_SEED == 20261123
+    assert ps.SPIKY_SCREEN_MIN_RECORDS == ps.K003_PHASE_MIN_RECORDS == 8
+
+
+def test_screen_spike_count_matches_phase_record_n_spikes():
+    r = _phase_rec(0.3, 3)
+    cyc = np.arange(15, 185)
+    p0 = 0.4 * 3
+    idx = np.unique(
+        np.round((2 * np.pi * cyc + 0.3 - p0) / (2 * np.pi * 100.0) * SR).astype(int)
+    )
+    x = 0.05 * np.random.default_rng(3).standard_normal(N)
+    x[idx] = 5.0 * np.where(np.arange(len(idx)) % 2 == 0, 1.0, -1.0)
+    assert ps.screen_spike_count(x, SR) == r.n_spikes
+    # spikes inside the 0.1 s edge trim are not counted
+    y = np.zeros(N)
+    y[[100, 200, 300]] = [5.0, -5.0, 5.0]
+    assert len(ps.spike_indices(y)) == 3 and ps.screen_spike_count(y, SR) == 0
+
+
+def test_screen_eligible_needs_eight_spiky_at_each_condition():
+    ok = [10] * 8 + [0, 9]
+    bad = [10] * 7 + [9, 9, 9]
+    assert ps.screen_eligible({"a": ok, "b": ok})
+    assert not ps.screen_eligible({"a": ok, "b": bad})
+    assert not ps.screen_eligible({"a": bad, "b": ok})
+    assert not ps.screen_eligible({})
+
+
+def test_screen_select_stops_at_target_in_pool_order():
+    yes = {"a": [50] * 10, "b": [50] * 10}
+    no = {"a": [0] * 10, "b": [50] * 10}
+    table = {"P": no, "Q": yes, "R": yes, "S": no, "T": yes, "U": yes, "V": yes}
+    seen = []
+
+    def fn(b):
+        seen.append(b)
+        return table[b]
+
+    sel, scr, cnt = ps.screen_select(tuple(table), fn, target=4)
+    assert sel == ["Q", "R", "T", "U"]
+    assert scr == seen == ["P", "Q", "R", "S", "T", "U"]  # V never screened
+    assert set(cnt) == set(scr)
+    sel, scr, _ = ps.screen_select(("P", "S"), fn, target=4)
+    assert sel == [] and scr == ["P", "S"]

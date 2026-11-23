@@ -66,6 +66,28 @@ EXTRA_BEARINGS: dict[str, tuple[str, str]] = {
         "22b6ffd9ff083f084918c34f6ddcc538",
     ),
     "KI01": ("inner ring, EDM trench, level 1", "03429a4ab5e3768b7395d1654e55bead"),
+    # spike-count screened new-bearing prediction (2026-11-23,
+    # prereg-2026-11-23-spiky-new-bearing.md); MD5s from the Zenodo API listing
+    "KA03": ("outer ring, artificial damage", "0bba6927ac1732d23934a909af4c1fc6"),
+    "KA06": ("outer ring, artificial damage", "be58a820fee4851b2c16a97a88c282cb"),
+    "KA07": ("outer ring, artificial damage", "185e3de688149ebabf20c51d80fd7dd8"),
+    "KA09": ("outer ring, artificial damage", "de9392fdbf878171a429c2451d2696fd"),
+    "KI03": ("inner ring, artificial damage", "26f0452f00ab698a4e657e27b7a249b3"),
+    "KI05": ("inner ring, artificial damage", "c777459ddc7a1d38df7155f09e0ce782"),
+    "KI07": ("inner ring, artificial damage", "c26144f53ebcc34562bdc2e3a0ef1087"),
+    "KI08": ("inner ring, artificial damage", "f546b3481ffdcd80f0d14a797db48deb"),
+    "KA15": ("outer ring, real damage", "db518f97ba5bcaedb09c648a317431e0"),
+    "KA16": ("outer ring, real damage", "ef848f5621f9c10523c313131d1a4c21"),
+    "KA22": ("outer ring, real damage", "7a16a5bc88d5fe1d83d169f88f0709e8"),
+    "KA30": ("outer ring, real damage", "715c0cf7862a7ba83e7c6a6fb5c91a61"),
+    "KB23": ("outer + inner ring, real damage", "bb87c72669baa9dbbefd10b5294ffcc8"),
+    "KB24": ("outer + inner ring, real damage", "c60ce8867c824583540794ae00cce333"),
+    "KB27": ("outer + inner ring, real damage", "965dd4af26391d7def4638c8b31a87e7"),
+    "KI14": ("inner ring, real damage", "13603834975435ca10eb08de6d1840dc"),
+    "KI16": ("inner ring, real damage", "db14eae04a213afd0d1ca99d3d850342"),
+    "KI17": ("inner ring, real damage", "d1055fe5cc44948e5d3a39f2e0db9dbe"),
+    "KI18": ("inner ring, real damage", "db5da511e9240dbc56ec1e850fd91699"),
+    "KI21": ("inner ring, real damage", "911ce3e37a86d258818e3e93274752a2"),
 }
 
 #: operating conditions (speed / torque / radial force codes), measurement _1
@@ -567,6 +589,31 @@ RIPPLE_HELDOUT_MEASUREMENTS: dict[str, tuple[int, ...]] = {
 NEW_BEARINGS = ("KA01", "KA05", "KI01")
 NEW_BEARING_MEASUREMENTS = tuple(range(1, 11))
 NEW_BEARING_CONDITIONS = ("N15_M01_F10", "N09_M07_F10")
+
+#: 2026-11-23 spike-count screened new-bearing prediction
+#: (prereg-2026-11-23-spiky-new-bearing.md): fixed screen order
+SPIKY_SCREEN_POOL = (
+    "KA03",
+    "KA06",
+    "KA07",
+    "KA09",
+    "KI03",
+    "KI05",
+    "KI07",
+    "KI08",
+    "KA15",
+    "KA16",
+    "KA22",
+    "KA30",
+    "KB23",
+    "KB24",
+    "KB27",
+    "KI14",
+    "KI16",
+    "KI17",
+    "KI18",
+    "KI21",
+)
 
 
 def member(bearing: str, condition: str, meas: int = 1) -> str:
